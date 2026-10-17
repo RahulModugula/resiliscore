@@ -23,3 +23,6 @@
 .status {padding:24px 20px;min-height:220px;}
 .status button {margin-top:12px;}
 @media(max-width:650px){.heading{padding:16px;display:block;}.heading span{display:block;margin-top:5px;}.scene{height:360px;}.measurements{padding:16px;gap:16px;}.measurements div{min-width:calc(50% - 16px);}.controls{font-size:10px;max-width:calc(100% - 24px);}.details{padding:12px 16px;}}
+
+.touchControls {display:none;}
+@media(pointer:coarse){.pointerControls{display:none;}.touchControls{display:inline;}}

@@ -53,9 +53,8 @@ export function contextBounds(selected: Building, buildings: Building[]): { boun
   return {bounds:[...southwest,...northeast],taxBlock:sameBlock.length ? taxBlock : null,wholeBlock};
 }
 export function selectBlockBuildings(buildings: Building[], selected: Building, bounds: Bounds): Building[] {
-  const nearby = buildings.filter(b => intersects(pointBounds(b.footprint[0]), bounds));
-  if (!nearby.some(b => b.id === selected.id)) nearby.push(selected);
-  return nearby;
+  const nearby = buildings.filter(b => b.id!==selected.id && intersects(pointBounds(b.footprint[0]), bounds));
+  return [selected,...nearby];
 }
 export function selectContextStreets(streets: ContextStreet[], bounds: Bounds) {
   return streets.filter(street => intersects(pointBounds(street.coordinates), bounds));
@@ -71,7 +70,10 @@ export function cropTerrain(terrain: TerrainGrid, bounds: Bounds): TerrainGrid {
   if(x1<=x0 || y1<=y0) throw new Error("Measured elevation is unavailable for this block");
   const elevationsM=[];
   for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++) elevationsM.push(terrain.elevationsM[y*terrain.width+x]);
-  return { bounds:[w+x0*dx,s+y0*dy,w+x1*dx,s+y1*dy], width:x1-x0+1,height:y1-y0+1,elevationsM,source:terrain.source };
+  const croppedBounds:Bounds=[w+x0*dx,s+y0*dy,w+x1*dx,s+y1*dy];
+  return { ...terrain,bounds:croppedBounds,width:x1-x0+1,height:y1-y0+1,elevationsM,
+    ...(terrain.raster ? {raster:{...terrain.raster,extent:[croppedBounds[0]-dx/2,croppedBounds[1]-dy/2,croppedBounds[2]+dx/2,croppedBounds[3]+dy/2] as Bounds}} : {}),
+  };
 }
 export async function loadBuildingContext(property: {id: string; neighborhoodId: string}, signal?: AbortSignal): Promise<BlockContext> {
   const [manifest, overview, addresses, streets] = await Promise.all([

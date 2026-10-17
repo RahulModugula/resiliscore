@@ -65,6 +65,6 @@ export default function BlockContextScene({context}:{context:BlockContext}) {
       <Block context={context}/><Camera context={context} reset={reset}/>
     </Canvas></SceneBoundary>
     <button type="button" className={styles.reset} onClick={()=>setReset(r=>r+1)}>Reset block view</button>
-    <span className={styles.controls}>Drag to rotate · Right-drag to pan · Scroll to zoom</span>
+    <span className={styles.controls}><span className={styles.pointerControls}>Drag to rotate · Right-drag to pan · Scroll to zoom</span><span className={styles.touchControls}>Drag to rotate · Two fingers to pan and zoom</span></span>
   </div>;
 }

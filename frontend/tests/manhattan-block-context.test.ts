@@ -24,7 +24,8 @@ test("tax block grouping includes same-block lots and adjoining building footpri
   assert.equal(taxBlock,"100001");
   assert.equal(taxBlockId("1000010002"),"100001");
   assert.equal(taxBlockId("not-a-bbl"),null);
-  assert.deepEqual(selectBlockBuildings([neighbor,far],building,bounds).map(b=>b.id),["neighbor","selected"]);
+  assert.deepEqual(selectBlockBuildings([neighbor,far],building,bounds).map(b=>b.id),["selected","neighbor"]);
+  assert.equal(selectBlockBuildings([{...building,address:"Stale overview"}],building,bounds)[0],building);
   assert.equal(contextBounds({...building,bbl:null},[building]).taxBlock,null);
 });
 
@@ -83,6 +84,10 @@ test("selected block loads local assets, keeps property identity and includes me
     const elevations=context.terrain.elevationsM.filter((h):h is number=>h!==null);
     assert.ok(Math.max(...elevations)>Math.min(...elevations));
     assert.match(context.terrain.source,/USGS/);
+    assert.equal(context.terrain.raster?.verticalDatum,"NAVD88");
+    assert.equal(context.terrain.raster?.nominalSpacingM,10);
+    assert.ok(context.terrain.raster!.extent[0]<context.terrain.bounds[0]);
+    assert.ok(context.terrain.raster!.extent[2]>context.terrain.bounds[2]);
   } finally {globalThis.fetch=original;}
 });
 
