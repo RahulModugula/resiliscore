@@ -27,10 +27,10 @@ def quote_then_issue(submission_id: str, scenario_id: str):
 def test_s1_quote_then_auto_bind():
     quote, issued = quote_then_issue("SUB-S1", S1)
     ext = quote["ResiliScore_Ext"]
-    assert (ext["score"], ext["tier"]) == (765, "TIER_1_AUTO_BIND")
+    assert (ext["score"], ext["tier"]) == (823, "TIER_1_AUTO_BIND")
     assert quote["appliedRules"] == ["LA_REG_136"]
     assert quote["idmDocumentId"].startswith("IDM-")
-    assert quote["premium"]["totalPremium"] == 2604.0
+    assert quote["premium"]["totalPremium"] == 2982.0
     body = issued.json()
     assert issued.status_code == 200
     assert body["bindType"] == "AUTO_BIND"
@@ -83,7 +83,7 @@ def test_policy_numbers_are_deterministic():
 
 def test_quote_by_apn_matches_quote_by_scenario():
     by_apn = client.post("/v1/guidewire/submissions/SUB-A/quote", json={"apn_uid": "02200100041200"})
-    assert by_apn.json()["ResiliScore_Ext"]["score"] == 765
+    assert by_apn.json()["ResiliScore_Ext"]["score"] == 823
 
 
 @pytest.mark.parametrize(
@@ -111,7 +111,7 @@ def test_mcp_registers_all_tools():
 
 def test_get_parcel_resiliscore_returns_valid_data():
     out = mcp_server.get_parcel_resiliscore("1840 canyon crest dr, altadena, ca")
-    assert out["actuarial_breakdown"]["resili_score"] == 385
+    assert out["actuarial_breakdown"]["resili_score"] == 551
     with pytest.raises(ValueError):
         mcp_server.get_parcel_resiliscore("1 Nowhere St")
 
@@ -132,20 +132,20 @@ def test_query_usgs_freeboard():
         mcp_server.query_usgs_freeboard(0.0, 0.0)
 
 
-def test_simulate_mitigation_roi_s2_all_three_actions_gives_630():
+def test_simulate_mitigation_roi_s2_all_three_actions_gives_661():
     actions = ["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]
     out = mcp_server.simulate_mitigation_roi("58430120180000", actions)
-    assert out["new_score"] == 630
+    assert out["new_score"] == 661
     assert out["new_tier"] == "TIER_2_CONDITIONAL"
     assert out["net_capex_usd"] == 19500.0
-    assert out["annual_premium_savings_usd"] == pytest.approx(3071.96, abs=0.01)  # engine: premium before - after
+    assert out["annual_premium_savings_usd"] == pytest.approx(3359.26, abs=0.01)  # engine: premium before - after
 
 
 def test_simulate_mitigation_roi_edges():
     one = mcp_server.simulate_mitigation_roi("58430120180000", ["CA_ZONE0_1_CLEARANCE"])
-    assert (one["new_score"], one["new_tier"]) == (478, "TIER_3_DECLINE_ESCALATE")
+    assert (one["new_score"], one["new_tier"]) == (645, "TIER_2_CONDITIONAL")
     already = mcp_server.simulate_mitigation_roi("02200100041200", ["LA_FORTIFIED_ROOF"])
-    assert already["new_score"] == 765 and already["payback_years"] is None
+    assert already["new_score"] == 823 and already["payback_years"] is None
     with pytest.raises(ValueError):
         mcp_server.simulate_mitigation_roi("58430120180000", ["NOPE"])
 
@@ -156,4 +156,4 @@ def test_quote_and_mcp_use_the_same_engine():
         "/v1/guidewire/submissions/SUB-ENG/quote", json={"apn_uid": "58430120180000", "action_ids": actions}
     )
     roi = mcp_server.simulate_mitigation_roi("58430120180000", actions)
-    assert quoted.json()["ResiliScore_Ext"]["score"] == roi["new_score"] == 630
+    assert quoted.json()["ResiliScore_Ext"]["score"] == roi["new_score"] == 661

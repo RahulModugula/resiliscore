@@ -19,12 +19,14 @@ tract-wide figure. The credibility prior is the tract-wide sum, because it descr
 
 import json
 import math
+from collections import OrderedDict
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from typing import Literal
 
 from app.actuarial import constants
+from app.ingestion import nri
 from app.ingestion.rasters import distance_m
 from app.models.schemas import ParcelScoreResponse, PublicHazardLayer
 
@@ -49,7 +51,9 @@ class NriRates:
         if basis == "all":
             return eal / self.buildvalue_usd
         exposed = max((self.expb_usd.get(c, 0.0) for c in codes), default=0.0)
-        return eal / exposed if exposed > 0 else 0.0
+        if exposed <= 0:  # no exposed-value figure (or no exposure): fall back to the tract-wide building value
+            return eal / self.buildvalue_usd if eal > 0 else 0.0
+        return eal / exposed
 
     @property
     def tract_prior_lcr(self) -> float:
@@ -101,10 +105,36 @@ def _tracts() -> tuple[tuple[tuple[float, float], NriRates, tuple[str, ...]], ..
     return tuple(out)
 
 
+LIVE_TRACT_LIMIT = 1024
+_live_tracts: OrderedDict[str, NriRates] = OrderedDict()
+
+
+def nri_from_tract(tract: "nri.TractPrior", reference_hazard: PublicHazardLayer) -> NriRates:
+    """NriRates from the ingestion client's live tract figures (HAZARD codes IFLD, CFLD, WFIR, HRCN, SWND, HAIL).
+
+    No tract-median rain, terrain or fuel is ingested, so the parcel's own live hazard layer is the tract's
+    reference hazard: those inputs are then neutral relativities and the NRI rate sets the level."""
+    return NriRates(
+        tractfips=tract.tract_fips, buildvalue_usd=tract.buildvalue_usd, ealb_usd=dict(tract.ealb_usd),
+        expb_usd=dict(tract.expb_usd), version=tract.version, reference_hazard=reference_hazard,
+    )
+
+
+def register_live_tract(apn_uid: str, rates: NriRates) -> None:
+    """Remember a live tract for the parcel the pipeline just built, so `simulate` calibrates to its own tract."""
+    _live_tracts[apn_uid] = rates
+    _live_tracts.move_to_end(apn_uid)
+    while len(_live_tracts) > LIVE_TRACT_LIMIT:
+        _live_tracts.popitem(last=False)
+
+
 def nri_for_parcel(r: ParcelScoreResponse) -> NriRates:
-    """NRI figures for the parcel's tract. Until the ingestion lane's NRI client supplies the real tract, this is
-    the nearest reference tract (exact for the golden parcels): a REFERENCE_PARCEL stand-in, so any score
-    that uses it from afar is indicative only (see provenance)."""
+    """NRI figures for the parcel's tract: its own live tract when the pipeline registered one, otherwise the
+    nearest reference tract (exact for the golden parcels), a REFERENCE_PARCEL stand-in that makes any score
+    from afar indicative only."""
+    live = _live_tracts.get(r.parcel_identity.apn_uid)
+    if live is not None:
+        return live
     lng, lat = r.parcel_identity.centroid
     return min(_tracts(), key=lambda t: distance_m(lat, lng, t[0][1], t[0][0]))[1]
 

@@ -84,5 +84,10 @@ Findings to read with the table:
   0.05). S2 as found: $11,987 indicated vs $11,200 filed (v2-stale showed $31k). S1: $619 vs $2,982. S3: $46 vs
   $3,210. The expense and profit loads are placeholders (`validated: false`). The modeled mitigation credit uses
   the non-flood raw `n * s` basis and sits beside, not in place of, the filed statutory credit.
+* **Off-demo parcels use their own tract.** The pipeline hands the ingestion client's live NRI tract (EALB, EXPB,
+  BUILDVALUE) to `base_rates`, so a scored address is calibrated to its own tract and its prior is that tract's
+  sum. With no live tract the nearest reference tract is a stand-in and the score is `indicative_only`. No tract
+  median rain, terrain or fuel is ingested, so the parcel's own live hazard layer is the tract reference and those
+  inputs are neutral relativities.
 * The attribution rows are exact Shapley values over 8 factor groups plus one defined row, "in-hazard reference
   home vs tract-wide average"; there is no remainder row.

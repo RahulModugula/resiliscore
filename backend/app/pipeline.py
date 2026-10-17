@@ -13,6 +13,7 @@ import hashlib
 from shapely.geometry import Point, box
 
 from app import http
+from app.actuarial import base_rates
 from app.ingestion import rasters
 from app.ingestion.engine import PIN_RADIUS_M, HazardResult, SpatialIngestionEngine
 from app.ingestion.geocode import Geocode
@@ -122,6 +123,9 @@ async def build_parcel(
             "geometries": {"type": "FeatureCollection", "features": features},
         }
     )
+    if result.nri_tract is not None:
+        # Calibrate to this parcel's own tract, not the nearest reference tract.
+        base_rates.register_live_tract(identity.apn_uid, base_rates.nri_from_tract(result.nri_tract, result.layer))
     prior = result.tract_prior_lcr if result.tract_prior_lcr is not None else template.actuarial_breakdown.tract_prior_lcr
     return template.model_copy(
         update={
