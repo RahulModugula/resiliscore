@@ -1,0 +1,78 @@
+{
+  "fetched": "2026-10-17",
+  "source": "https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0/query",
+  "tracts": {
+    "red_hook_brooklyn": {
+      "point": [
+        -74.0089,
+        40.6745
+      ],
+      "attributes": {
+        "TRACTFIPS": "36047005302",
+        "NRI_VER": "December 2025",
+        "BUILDVALUE": 411786260,
+        "IFLD_EALB": 92521.3125,
+        "CFLD_EALB": 46632.23154,
+        "WFIR_EALB": 21.070487724943824,
+        "HAIL_EALB": 2130.628828475313,
+        "SWND_EALB": 398.3234495131422,
+        "HRCN_EALB": 32428.57401113169,
+        "IFLD_EXPB": 402778327.55750006,
+        "CFLD_EXPB": 392293343.87284946,
+        "WFIR_EXPB": 21070488.257228605,
+        "HAIL_EXPB": 411786260,
+        "SWND_EXPB": 411786260,
+        "HRCN_EXPB": 411786260,
+        "STCOFIPS": "36047"
+      }
+    },
+    "rockaway_queens": {
+      "point": [
+        -73.813,
+        40.587
+      ],
+      "attributes": {
+        "TRACTFIPS": "36081094203",
+        "NRI_VER": "December 2025",
+        "BUILDVALUE": 574504360,
+        "IFLD_EALB": 231490.77079999997,
+        "CFLD_EALB": 37305.538400000005,
+        "WFIR_EALB": 0,
+        "HAIL_EALB": 2972.5506710951095,
+        "SWND_EALB": 962.2698651854452,
+        "HRCN_EALB": 45212.831764036026,
+        "IFLD_EXPB": 574348938.7960999,
+        "CFLD_EXPB": 75110357.3542924,
+        "WFIR_EXPB": 0,
+        "HAIL_EXPB": 574504360,
+        "SWND_EXPB": 574504360,
+        "HRCN_EXPB": 574124026.4680598,
+        "STCOFIPS": "36081"
+      }
+    },
+    "midwood_brooklyn": {
+      "point": [
+        -73.961,
+        40.624
+      ],
+      "attributes": {
+        "TRACTFIPS": "36047053200",
+        "NRI_VER": "December 2025",
+        "BUILDVALUE": 496110322,
+        "IFLD_EALB": 141484.93889999998,
+        "CFLD_EALB": 0,
+        "WFIR_EALB": 0,
+        "HAIL_EALB": 2566.931047436281,
+        "SWND_EALB": 479.89063876925263,
+        "HRCN_EALB": 39069.17635805552,
+        "IFLD_EXPB": 496110314.8994,
+        "CFLD_EXPB": 0,
+        "WFIR_EXPB": 0,
+        "HAIL_EXPB": 496110322,
+        "SWND_EXPB": 496110322,
+        "HRCN_EXPB": 496110322,
+        "STCOFIPS": "36047"
+      }
+    }
+  }
+}

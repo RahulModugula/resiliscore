@@ -9,6 +9,9 @@ export const goldenScenarios = {
   SCENARIO_2_CA_WUI: parseParcel(fixtures.SCENARIO_2_CA_WUI),
   SCENARIO_3_ESCONDIDO_HITL: parseParcel(fixtures.SCENARIO_3_ESCONDIDO_HITL),
   SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED: parseParcel(fixtures.SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED),
+  NYC_RED_HOOK: parseParcel(fixtures.NYC_RED_HOOK),
+  NYC_HOLLIS: parseParcel(fixtures.NYC_HOLLIS),
+  NYC_ROCKAWAY: parseParcel(fixtures.NYC_ROCKAWAY),
 } satisfies GoldenScenarios;
 export const scenarios: { id: GoldenScenarioKey; title: string; location: string; summary: string }[] = [
   { id: "SCENARIO_1_LA_FLOOD", title: "Coastal flood", location: "Jefferson Parish, LA", summary: `${goldenScenarios.SCENARIO_1_LA_FLOOD.actuarial_breakdown.baseline_macro_score} → ${goldenScenarios.SCENARIO_1_LA_FLOOD.actuarial_breakdown.resili_score} · Verified freeboard` },

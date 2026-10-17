@@ -55,9 +55,10 @@ def reconcile(raw: dict) -> dict:
         "OpenFEMA": VINTAGES["OpenFEMA"],
     }
     # The golden parcels are the reference set, so every input is REFERENCE_PARCEL and the score is not indicative.
-    new["input_provenance"] = [
-        row.model_dump(mode="json") for row in provenance.build(ParcelScoreResponse.model_validate(new))
-    ]
+    if new.get("nyc") is None:  # the NYC goldens keep the per-source provenance the pipeline recorded
+        new["input_provenance"] = [
+            row.model_dump(mode="json") for row in provenance.build(ParcelScoreResponse.model_validate(new))
+        ]
     return new
 
 
