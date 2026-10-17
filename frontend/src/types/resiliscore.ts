@@ -318,6 +318,9 @@ export type GoldenScenarioKey =
   | "SCENARIO_1_LA_FLOOD"
   | "SCENARIO_2_CA_WUI"
   | "SCENARIO_3_ESCONDIDO_HITL"
-  | "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED";
+  | "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED"
+  | "NYC_RED_HOOK"
+  | "NYC_HOLLIS"
+  | "NYC_ROCKAWAY";
 
-export type GoldenScenarios = Record<GoldenScenarioKey, ParcelScoreResponse>;
+export type GoldenScenarios = Partial<Record<GoldenScenarioKey, ParcelScoreResponse>>;

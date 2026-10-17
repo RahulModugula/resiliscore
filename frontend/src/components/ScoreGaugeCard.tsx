@@ -3,9 +3,9 @@
 import { ArrowRight, Check, FileCheck2, ShieldCheck } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ParcelScoreResponse } from "@/types/resiliscore";
-import { bps, money, percent, tierLabel } from "@/lib/format";
+import { bps, money, percent, tierLabel, perilLabel } from "@/lib/format";
 
-export function ScoreGaugeCard({ parcel, simulated, onAction }: { parcel: ParcelScoreResponse; simulated: boolean; onAction: () => void }) {
+export function ScoreGaugeCard({ parcel, simulated, localProjection = false, onAction }: { parcel: ParcelScoreResponse; simulated: boolean; localProjection?: boolean; onAction: () => void }) {
   const a = parcel.actuarial_breakdown, p = parcel.private_verification_layer;
   const reduced = useReducedMotion();
   const conditional = a.underwriting_tier === "TIER_2_CONDITIONAL";
@@ -37,6 +37,8 @@ export function ScoreGaugeCard({ parcel, simulated, onAction }: { parcel: Parcel
     </div>
     <div className="prior-comparison"><span>Macro census-tract score <strong>{a.baseline_macro_score}</strong></span><span className={`delta ${delta >= 0 ? "success" : "error"}`}>{delta >= 0 ? "+" : ""}{delta} pts</span></div>
     <div className="score-financials"><div><span>Expected annual loss</span><strong>{money(a.expected_annual_loss_usd)}<small> / yr</small></strong></div><div><span>Parcel loss cost</span><strong>{bps(a.posterior_lcr)}</strong></div></div>
+    <dl className="peril-split" aria-label="Expected annual loss by peril">{a.peril_split.map(item => <div key={item.peril}><dt>{perilLabel(item.peril)}</dt><dd>{money(item.peril_aal_usd)} / yr</dd></div>)}</dl>
+    {localProjection && <p className="footnote">Offline projections retain the baseline peril allocation.</p>}
     <div className="premium-line"><span>Annual premium</span><span>{a.annual_base_premium_usd !== a.annual_discounted_premium_usd && <del>{money(a.annual_base_premium_usd)}</del>} <strong>{money(a.annual_discounted_premium_usd)}</strong></span></div>
     <button className={`primary-button ${tone}`} onClick={onAction} disabled={parcel.hitl_status.escalated}><ShieldCheck size={17} />{parcel.hitl_status.escalated ? "Binding paused for verification" : tier === 1 ? "Auto-bind in PolicyCenter" : tier === 2 ? "Issue 60-day conditional bind" : "Explore mitigation plan"}<ArrowRight size={16} /></button>
     <p className="cta-note">{tier === 1 ? `${percent(a.statutory_discount_pct)} statutory credit · Demo receipt` : tier === 2 ? "Action plan and review required · Demo only" : "Test physical improvements before underwriting."}</p>

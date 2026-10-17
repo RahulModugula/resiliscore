@@ -20,28 +20,32 @@ Assessment handoff uses session storage, with a six-hour expiry. Reloading withi
 
 ## Demo walkthrough
 
-Open `/assessment?demo=true` or choose **Open demo workspace**. Its `Live API` checkbox is off by default. Scores and action savings follow the current shared golden contract.
+Open `/assessment?demo=true` or choose **Open demo workspace**. Offline demo data comes from `golden_scenarios.json` and `golden_simulations.json`.
 
-1. Coastal flood compares parcel and tract risk. Inspect the freeboard diagram and generate a demo PolicyCenter receipt. The existing FORTIFIED roof credit is already included.
-2. Wildfire remediation lets you select unapplied actions, inspect investment and annual savings, generate a simulated receipt when eligible, and reset the plan.
-3. Verification guardrail pauses binding when the satellite change alert is enabled. Open the workbench, request smartphone verification, run the demo capture, and restore auto-bind. Alternatively, apply +35 bps structure loading to route to a conditional bind.
-4. Regulatory audit shows all 12 California factors, supplied model declarations and dataset vintages. Download the JSON dossier or sample consumer notice.
+1. Coastal flood compares the supplied parcel score with the tract score. Inspect the freeboard diagram and generate a demo PolicyCenter receipt. Existing verified improvements cannot earn another credit.
+2. Wildfire remediation lets you select actions, compare the combined score and premium, generate a conditional receipt, or reset the plan.
+3. Verification guardrail lets you enable the satellite change alert, run the demo smartphone capture, and restore eligibility. Alternatively, apply the demo structure loading for a conditional bind.
+4. NYC Red Hook, Hollis, and Rockaway select `NYC_RED_HOOK`, `NYC_HOLLIS`, and `NYC_ROCKAWAY`. Their addresses are 5 Luquer St in Brooklyn, 81-52 192 St in Queens, and 74-02 Beach Channel Dr in Queens. The pills pick up the shared golden payloads and action combinations automatically when those contracts land. Until then, offline selection shows an explicit unavailable state; Live API can request the scenario IDs.
+5. NYC Lot appears only when the response has a `nyc` block. Missing values say “No data”; reported zero counts say “None reported”. Nearby 311 reports use a 500 m radius and five-year window; catch basins use 150 m. FloodNet depth is in inches and ground elevation is in feet. PLUVIAL and SEWER_BACKUP appear as “Street/rain flooding” and “Sewer backup” in the peril breakdown.
+6. Regulatory audit shows supplied model declarations and dataset vintages. Download the JSON dossier or sample consumer notice.
 
-The address search matches the three demo addresses and APNs. Map overlays use the contract's GeoJSON and support pan, zoom, layer toggles, and feature inspection. The California basemaps use locally cached aerial imagery with provenance in `public/imagery/sources.json`. Louisiana uses an illustrative basemap because the imagery request failed. Synthetic parcel polygons are not surveyed to the imagery.
+Search matches demo titles, addresses, boroughs, and APNs. Select a demo match to retain its golden mitigation controls. Submit an address with Enter or the “Look up” button to enable Live API and request `{address}`. Address lookups show supplied mitigation rows without simulation checkboxes or plan totals. A failed lookup shows an error and retry control without presenting another parcel as the requested address.
+
+Map overlays use the contract's GeoJSON and support pan, zoom, layer toggles, and feature inspection. California basemaps use locally cached aerial imagery with provenance in `public/imagery/sources.json`. Other parcels use an illustrative basemap. Synthetic parcel polygons are not surveyed to imagery.
 
 ## Live API
 
-The UI posts to the following spec endpoints, validates responses against the canonical JSON Schema, and returns to local fixtures on a timeout, HTTP failure, network failure, or invalid payload. Abort signals and request keys prevent older responses from replacing a newly selected scenario or plan.
+The UI posts to the following spec endpoints, validates responses against the canonical JSON Schema, and falls back to the selected golden fixture on a timeout, HTTP failure, network failure, or invalid payload. Live addresses have no offline fallback. Abort signals and request keys prevent older responses from replacing a newly selected scenario or plan.
 
 | Endpoint | Request fields |
 | --- | --- |
-| `/v1/parcel/score` | `scenario_id` |
+| `/v1/parcel/score` | `scenario_id` or `address` |
 | `/v1/parcel/simulate-mitigation` | `apn_uid`, `action_ids` |
 | `/v1/hitl/verify-override` | `apn_uid`, `resolution`, `approved`, `verification_method`, `simulate` |
 
 The backend is developed separately. These requests follow the spec; live integration must be checked against the backend implementation as it lands. Guidewire receipts and mobile inspections are simulations in both modes. QR links open `/inspect?apn=...`; a phone needs a reachable app hostname. Captures stay on their page and do not synchronize between devices.
 
-Local demo mitigation projections add only unapplied action deltas from the contract. Existing verified actions cannot earn duplicate credits. These are demo counterfactuals; the live API supplies canonical model assessments. Structure loading assumes $250/sq ft for 240 sq ft, retains the golden score, adjusts loss cost and replacement value, and imposes conditional review.
+Offline mitigation projections read complete action-subset summaries from `golden_simulations.json`, keyed by sorted action IDs joined with `+`. Score, credibility, loss, premium, and net investment use those combined results rather than summed action deltas. Incremental savings compare the baseline premium with the projected premium. Offline peril amounts retain the baseline allocation, scaled to projected total loss, and are labeled accordingly. Unknown action IDs are ignored and duplicate selections count once. Structure loading keeps the existing demo assumptions of $250/sq ft for 240 sq ft and a conditional review.
 
 Audit declarations are supplied payload values. The UI does not invent individual channel precision weights, live derivatives, BISG results, or regulatory approval.
 

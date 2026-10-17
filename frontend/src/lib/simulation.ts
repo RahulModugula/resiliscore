@@ -1,29 +1,33 @@
-import type { ParcelScoreResponse, UnderwritingTier } from "@/types/resiliscore";
+import { goldenScenarios, getGoldenSimulation } from "@/data/goldenScenarios";
+import type { GoldenScenarioKey, ParcelScoreResponse, UnderwritingTier } from "@/types/resiliscore";
 
 export function tierForScore(score: number): UnderwritingTier {
   return score >= 720 ? "TIER_1_AUTO_BIND" : score >= 580 ? "TIER_2_CONDITIONAL" : "TIER_3_DECLINE_ESCALATE";
 }
 
-// Local demo counterfactuals use the contract's action deltas, not a new score curve.
-// Already verified actions are included in the baseline and cannot be double counted.
-export function simulateMitigations(base: ParcelScoreResponse, actionIds: string[]): ParcelScoreResponse {
+// Offline projections use the engine's complete action-subset summaries.
+export function simulateMitigations(base: ParcelScoreResponse, actionIds: string[], scenarioId?: GoldenScenarioKey): ParcelScoreResponse {
   const result = structuredClone(base);
   const actions = base.prescriptive_mitigations.filter(a => !a.currently_applied && actionIds.includes(a.action_id));
   if (actions.length === 0) return result;
+  const id = scenarioId ?? Object.entries(goldenScenarios).find(([, parcel]) => parcel?.request_id === base.request_id)?.[0];
+  const summary = id ? getGoldenSimulation(id, actions.map(a => a.action_id)) : undefined;
+  if (!summary) throw new Error("Offline simulation is unavailable for this action plan");
   const a = result.actuarial_breakdown;
-  const delta = actions.reduce((sum, item) => sum + item.lcr_delta_bps / 10000, 0);
-  a.resili_score = Math.min(850, a.resili_score + actions.reduce((sum, item) => sum + item.score_delta_pts, 0));
-  // Mitigation can remove parcel loss, but cannot erase the unverified tract prior.
-  const priorFloor = (1 - a.credibility_weight_z) * a.tract_prior_lcr;
-  a.posterior_lcr = Math.max(priorFloor, a.posterior_lcr + delta);
-  a.parcel_raw_lcr = Math.max(0, (a.posterior_lcr - (1 - a.credibility_weight_z) * a.tract_prior_lcr) / a.credibility_weight_z);
-  a.expected_annual_loss_usd = a.posterior_lcr * result.parcel_identity.rcv_usd;
-  // Preserve the supplied peril allocation while making its total agree with AAL.
+  Object.assign(a, {
+    resili_score: summary.resili_score, underwriting_tier: summary.underwriting_tier,
+    posterior_lcr: summary.posterior_lcr, credibility_weight_z: summary.credibility_weight_z,
+    expected_annual_loss_usd: summary.expected_annual_loss_usd,
+    statutory_discount_pct: summary.statutory_discount_pct,
+    annual_discounted_premium_usd: summary.annual_discounted_premium_usd,
+  });
+  a.parcel_raw_lcr = a.credibility_weight_z > 0
+    ? Math.max(0, (a.posterior_lcr - (1 - a.credibility_weight_z) * a.tract_prior_lcr) / a.credibility_weight_z)
+    : base.actuarial_breakdown.parcel_raw_lcr;
   const priorTotal = a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0);
   if (priorTotal > 0) a.peril_split.forEach(item => { item.peril_aal_usd *= a.expected_annual_loss_usd / priorTotal; });
-  a.annual_discounted_premium_usd = Math.max(0, a.annual_discounted_premium_usd - actions.reduce((sum, item) => sum + item.annual_premium_savings_usd, 0));
-  a.statutory_discount_pct = 100 * (1 - a.annual_discounted_premium_usd / a.annual_base_premium_usd);
-  a.underwriting_tier = tierForScore(a.resili_score);
+  result.hitl_status.trigger_code = summary.trigger_code;
+  result.hitl_status.escalated = summary.trigger_code !== "NONE";
   const p = result.private_verification_layer;
   const factors = result.regulatory_compliance.ca_2644_9_factors;
   for (const action of actions) {
@@ -57,9 +61,14 @@ export function applyStructureLoading(base: ParcelScoreResponse): ParcelScoreRes
   return result;
 }
 
-export function actionTotals(base: ParcelScoreResponse, ids: string[]) {
-  return base.prescriptive_mitigations.filter(a => !a.currently_applied && ids.includes(a.action_id)).reduce((total, a) => ({
+export function actionTotals(base: ParcelScoreResponse, ids: string[], projected = simulateMitigations(base, ids), scenarioId?: GoldenScenarioKey) {
+  const totals = base.prescriptive_mitigations.filter(a => !a.currently_applied && ids.includes(a.action_id)).reduce((total, a) => ({
     net: total.net + a.net_capex_usd, gross: total.gross + a.gross_capex_usd,
-    grants: total.grants + a.grant_subsidy_usd, savings: total.savings + a.annual_premium_savings_usd,
-  }), { net: 0, gross: 0, grants: 0, savings: 0 });
+    grants: total.grants + a.grant_subsidy_usd,
+  }), { net: 0, gross: 0, grants: 0 });
+  const id = scenarioId ?? Object.entries(goldenScenarios).find(([, parcel]) => parcel?.request_id === base.request_id)?.[0];
+  const selected = base.prescriptive_mitigations.filter(a => !a.currently_applied && ids.includes(a.action_id)).map(a => a.action_id);
+  const summary = id ? getGoldenSimulation(id, selected) : undefined;
+  const net = summary?.net_capex_usd ?? totals.net;
+  return { ...totals, net, gross: net + totals.grants, savings: base.actuarial_breakdown.annual_discounted_premium_usd - projected.actuarial_breakdown.annual_discounted_premium_usd };
 }

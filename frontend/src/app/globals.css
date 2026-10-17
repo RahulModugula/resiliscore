@@ -495,3 +495,16 @@ input::placeholder { color: var(--muted); opacity: 1; }
   .elevation-values div { display: flex; justify-content: space-between; gap: 8px; padding: 9px 0; }
   .elevation-values dd { margin: 0; white-space: nowrap; }
 }
+
+/* NYC evidence follows the workspace's existing data rows. */
+.lot-evidence { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; }
+.lot-evidence > div, .peril-split > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.lot-evidence dt, .peril-split dt { color: var(--muted); }
+.lot-evidence dd, .peril-split dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.peril-split { margin-bottom: 16px; }
+.parcel-empty { margin: 24px 0; }
+.parcel-empty p { color: var(--muted); margin-top: 8px; }
+@media (max-width: 650px) {
+  .lot-evidence { grid-template-columns: 1fr; }
+  .scenario-button small { overflow-wrap: anywhere; }
+}
