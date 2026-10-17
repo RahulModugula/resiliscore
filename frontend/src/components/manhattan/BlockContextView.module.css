@@ -1,0 +1,25 @@
+.panel { border: 1px solid var(--border); background: var(--surface); border-radius: 6px; overflow: hidden; }
+.heading { padding: 16px 20px; display:flex; justify-content:space-between; gap:16px; align-items:baseline; border-bottom:1px solid var(--border); }
+.heading h2 {font-size:16px;margin:0;font-weight:500;}
+.heading span {font-size:12px;color:var(--muted);}
+.scene {height:440px;position:relative;background:#13232b;}
+.reset {position:absolute;top:12px;right:12px;background:#182b32;color:#eaf1f3;border:1px solid #52717e;border-radius:4px;min-height:40px;padding:8px 12px;cursor:pointer;}
+.reset:hover {background:#28414c;}
+.reset:focus-visible {outline:2px solid #57d3df;outline-offset:3px;}
+.controls {position:absolute;bottom:10px;left:12px;color:#eaf1f3;background:#13232b;padding:4px 8px;font-size:11px;pointer-events:none;}
+.streetLabel {display:block;white-space:nowrap;color:#eaf1f3;background:#13232be8;border:1px solid #52717e;padding:3px 6px;font-size:10px;border-radius:3px;}
+.fallback {padding:24px;color:#eaf1f3;background:#13232b;margin:0;}
+.measurements {display:flex;flex-wrap:wrap;gap:16px 24px;padding:16px 20px;margin:0;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.measurements div {min-width:130px;}
+.measurements dt {color:var(--muted);font-size:12px;margin-bottom:4px;}
+.measurements dd {margin:0;font-size:15px;}
+.legend {display:flex;gap:8px;align-items:center;}
+.ramp {width:64px;height:8px;background:linear-gradient(90deg,#476b61,#b8bd83);border:1px solid #819b87;}
+.details {padding:12px 20px;font-size:12px;}
+.details summary {cursor:pointer;min-height:32px;display:list-item;line-height:32px;}
+.details ul {padding-left:18px;max-height:180px;overflow:auto;line-height:1.8;}
+.details p {color:var(--muted);line-height:1.6;margin:8px 0;}
+.details a {color:var(--accent);text-underline-offset:3px;}
+.status {padding:24px 20px;min-height:220px;}
+.status button {margin-top:12px;}
+@media(max-width:650px){.heading{padding:16px;display:block;}.heading span{display:block;margin-top:5px;}.scene{height:360px;}.measurements{padding:16px;gap:16px;}.measurements div{min-width:calc(50% - 16px);}.controls{font-size:10px;max-width:calc(100% - 24px);}.details{padding:12px 16px;}}

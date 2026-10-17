@@ -15,7 +15,7 @@ test("offline screening preserves selected property geometry and never fabricate
   const p = result.parcel;
   assert.equal(result.source, "local");
   assert.match(result.notice, /nonlocal FEMA NRI/);
-  assert.equal(p.parcel_identity.address, "BIN 1000001, Manhattan, NY");
+  assert.equal(p.parcel_identity.address, "Address unavailable for NYC source building 123456 BIN 1000001, Manhattan, NY");
   assert.equal(p.parcel_identity.state, "NY");
   assert.equal(p.parcel_identity.county_fips, "36061");
   assert.notEqual(p.parcel_identity.apn_uid, building.bbl);
@@ -60,7 +60,7 @@ test("live request sends selected NYC coordinates and outer footprint, with no g
   });
   const live = await assessManhattanProperty({ ...building, yearBuilt: 1920 });
   assert.equal(live.source, "live");
-  assert.deepEqual(request, { address: "BIN 1000001, Manhattan, NY", lat: 40.715, lng: -74.005, county_fips: "36061", state: "NY", footprint: building.footprint[0], year_built: 1920 });
+  assert.deepEqual(request, { address: "Address unavailable for NYC source building 123456 BIN 1000001, Manhattan, NY", lat: 40.715, lng: -74.005, county_fips: "36061", state: "NY", footprint: building.footprint[0], year_built: 1920 });
   assert.equal("scenario_id" in request, false);
 });
 
@@ -101,8 +101,9 @@ test("session handoff validates payloads, expires after six hours, and tolerates
   assert.equal(saveManhattanAssessment(building.id, result), false);
 });
 
-test("identifier labels use a mapped name or BIN without inventing a street address", () => {
-  assert.equal(propertyLabel(building), "BIN 1000001");
-  assert.equal(propertyLabel({ ...building, bin: null }), "Building 123456");
-  assert.equal(propertyLabel({ ...building, name: "Mapped landmark" }), "Mapped landmark");
+test("primary labels use mapped street addresses and leave missing addresses unknown", () => {
+  assert.equal(propertyLabel(building), "Address unavailable");
+  assert.equal(propertyLabel({ ...building, bin: null }), "Address unavailable");
+  assert.equal(propertyLabel({ ...building, name: "Mapped landmark" }), "Address unavailable");
+  assert.equal(propertyLabel({ ...building, address: "50 BROADWAY" }), "50 BROADWAY");
 });
