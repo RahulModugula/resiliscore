@@ -25,11 +25,12 @@ KEYS = [
 V2_OPTIONAL = {
     "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only",
 }
+V3_OPTIONAL = {"nyc"}
 
 
 def test_schema_is_valid_and_strict():
     Draft202012Validator.check_schema(SCHEMA)
-    assert sorted(SCHEMA["required"]) == sorted(set(SCHEMA["properties"]) - V2_OPTIONAL)
+    assert sorted(SCHEMA["required"]) == sorted(set(SCHEMA["properties"]) - V2_OPTIONAL - V3_OPTIONAL)
 
     def walk(node):
         if isinstance(node, dict):
