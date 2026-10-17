@@ -8,7 +8,9 @@ unless the caller sets them, and are marked DEFAULT. The base response is only a
 recomputes.
 """
 
+import asyncio
 import hashlib
+import re
 from typing import NamedTuple
 
 from shapely.geometry import Point, box
@@ -17,8 +19,11 @@ from app import http
 from app.actuarial import base_rates
 from app.actuarial.base_rates import NriRates
 from app.ingestion import rasters
-from app.ingestion.engine import PIN_RADIUS_M, HazardResult, SpatialIngestionEngine
+from app.ingestion.engine import PIN_RADIUS_M, SpatialIngestionEngine
 from app.ingestion.geocode import Geocode
+from app.ingestion.nyc import common as nyc_common
+from app.ingestion.nyc import geosearch
+from app.ingestion.nyc import layer as nyc_layer
 from app.models.schemas import (
     Ca26449Factors,
     HitlStatus,
@@ -55,6 +60,23 @@ def _caller_or_default(name: str, given: float | None, default: float, what: str
     return default, InputProvenance(field=name, value_source="DEFAULT", source_name=what, vintage=None)
 
 
+NYC_CACHES = nyc_common.DEFAULT_CACHES
+# Borough names, "nyc", or a NYC ZIP (100-104, 110-116): worth asking GeoSearch before the Census Geocoder.
+NYC_HINT = re.compile(
+    r"\b(brooklyn|queens|bronx|manhattan|staten island|nyc|new york(,)? ny)\b|"
+    r"\b(10[0-4]|11[1-46])\d\d(-\d{4})?\s*$",  # a trailing NYC ZIP only: "10001 Main St" is a street number
+    re.IGNORECASE,
+)
+
+
+async def _nyc(address: str, lat: float, lng: float, county_fips: str) -> nyc_layer.NycResult | None:
+    """The NYC layer for a point in the five boroughs; None elsewhere or when GeoSearch has no match."""
+    if not nyc_layer.is_nyc_county(county_fips):
+        return None
+    async with http.borrowed_client() as client:
+        return await nyc_layer.fetch_nyc(client, address, lat, lng, NYC_CACHES)
+
+
 class BuiltParcel(NamedTuple):
     """An unscored parcel and its own NRI tract (None when the live tract lookup failed)."""
 
@@ -69,7 +91,15 @@ async def build_parcel_for_address(
     rcv_usd: float | None = None,
     year_built: int | None = None,
 ) -> BuiltParcel:
-    """An address alone is enough: the Census Geocoder supplies the point and FIPS codes."""
+    """An address alone is enough: the Census Geocoder (or NYC GeoSearch for a NYC address) gives the point."""
+    if NYC_HINT.search(address):
+        async with http.borrowed_client() as client:
+            geo = await nyc_layer.resolve(client, address, None, None, NYC_CACHES)
+        if geo is not None:
+            return await build_parcel(
+                address, geo.lat, geo.lng, geosearch.BOROUGH_COUNTY.get(geo.borough, "36061"), "NY",
+                footprint=footprint, rcv_usd=rcv_usd, year_built=year_built,
+            )  # fmt: skip
     g: Geocode = await SpatialIngestionEngine().geocode(address)
     return await build_parcel(
         address, g.lat, g.lng, g.county_fips, g.state, tract_fips=g.tract_fips,
@@ -92,13 +122,21 @@ async def build_parcel(
     """Assemble an unscored response for the point; the caller runs `simulate` on it."""
     site = rasters.nearest_site(lat, lng, county_fips)
     template = site.response
-    result: HazardResult = await SpatialIngestionEngine().fetch(address, lat, lng, county_fips, state, tract_fips)
+    result, nyc = await asyncio.gather(
+        SpatialIngestionEngine().fetch(address, lat, lng, county_fips, state, tract_fips),
+        _nyc(address, lat, lng, county_fips),
+    )
     pinned = rasters.distance_m(lat, lng, site.lat, site.lng) <= PIN_RADIUS_M
     shared = http.get_client()
     if footprint:
         ring = footprint
         footprint_prov = InputProvenance(
             field="footprint", value_source="LIVE", source_name="Caller supplied", vintage=None
+        )
+    elif nyc is not None and nyc.footprint is not None:
+        ring = nyc.footprint.ring  # the city's building outline replaces OSM inside NYC
+        footprint_prov = InputProvenance(
+            field="footprint", value_source="LIVE", source_name=nyc_layer.SRC_FOOTPRINTS, vintage=None
         )
     else:
         ring, footprint_prov = await fetch_footprint(lat, lng, shared)
@@ -117,6 +155,9 @@ async def build_parcel(
     ]
     rcv, rcv_prov = _caller_or_default("rcv_usd", rcv_usd, DEFAULT_RCV_USD, "National default replacement cost")
     built, built_prov = _caller_or_default("year_built", year_built, DEFAULT_YEAR_BUILT, "National default year built")
+    if year_built is None and nyc is not None and nyc.layer.year_built:
+        built = float(nyc.layer.year_built)
+        built_prov = InputProvenance(field="year_built", value_source="LIVE", source_name=nyc_layer.SRC_PLUTO, vintage=None)
     identity = ParcelIdentity.model_validate(
         {
             "apn_uid": synthetic_apn(address),
@@ -154,9 +195,10 @@ async def build_parcel(
             "input_provenance": (
                 result.provenance if pinned else [*result.provenance, rcv_prov, built_prov]
             )
-            + [footprint_prov, *inspection.provenance],
+            + [footprint_prov, *inspection.provenance, *(nyc.provenance if nyc else [])],
             "indicative_only": result.indicative_only
             or any(p.value_source != "LIVE" for p in (footprint_prov, *inspection.provenance)),
+            "nyc": nyc.layer if nyc else None,
         }
     )
     return BuiltParcel(parcel, own_tract)
