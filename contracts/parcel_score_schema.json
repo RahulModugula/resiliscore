@@ -871,6 +871,12 @@
             "null"
           ]
         },
+        "residential_units_500m": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
         "catch_basins_150m": {
           "type": [
             "integer",
@@ -918,6 +924,7 @@
         "floodnet_max_depth_in",
         "sewer_backup_311_500m_5y",
         "street_flooding_311_500m_5y",
+        "residential_units_500m",
         "catch_basins_150m",
         "dob_open_violations",
         "dob_cellar_conversion_flag",
