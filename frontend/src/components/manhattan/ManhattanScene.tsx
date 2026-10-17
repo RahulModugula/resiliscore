@@ -65,7 +65,7 @@ function CameraRig({ bounds, reducedMotion, maxElevation }: { bounds: Bounds; re
     void control.setLookAt(...frame.position, ...frame.target, !reducedMotion);
     invalidate();
   }, [w, s, e, n, size.width, size.height, reducedMotion, maxElevation, invalidate]);
-  return <CameraControls ref={controls} makeDefault minPolarAngle={0.12} maxPolarAngle={Math.PI / 2.15} dollySpeed={0.8} draggingSmoothTime={0.08} />;
+  return <CameraControls ref={controls} makeDefault minPolarAngle={0.12} maxPolarAngle={Math.PI / 2.15} dollySpeed={1.6} draggingSmoothTime={0.08} />;
 }
 
 function NeighborhoodMesh({ neighborhood, terrain, selected, muted, underground, verticalScale }: {
