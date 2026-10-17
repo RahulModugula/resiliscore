@@ -92,3 +92,13 @@ test("a malformed address asset fails clearly before labels can crash",async()=>
   globalThis.fetch=async()=>new Response(JSON.stringify({"1000010001":42}));
   try {await assert.rejects(loadAddressIndex(),/address index is malformed/);} finally {globalThis.fetch=original;}
 });
+
+
+test("exceptionally large tax blocks use a clearly bounded local part",()=>{
+  const farSameBlock={...building,id:"far-campus",bbl:"1000010002",footprint:[[unprojectMeters([3000,3000]),unprojectMeters([3010,3000]),unprojectMeters([3010,3010]),unprojectMeters([3000,3010]),unprojectMeters([3000,3000])]]};
+  const result=contextBounds(building,[building,farSameBlock]);
+  assert.equal(result.taxBlock,"100001");
+  assert.equal(result.wholeBlock,false);
+  assert.ok(result.bounds[2]-result.bounds[0]<.01);
+  assert.ok(result.bounds[3]-result.bounds[1]<.01);
+});

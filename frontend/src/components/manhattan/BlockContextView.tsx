@@ -30,7 +30,7 @@ export function BlockContextView({property,onAddressResolved}:{property:{id:stri
   const streetNames=[...new Set(context.streets.map(s=>s.name))].sort();
   const groundText=elevation===null ? "Unknown" : `${elevation.toFixed(1)} m NAVD88`;
   return <section className={styles.panel} aria-label="Building block context">
-    <div className={styles.heading}><h2>{context.selected.address??"Address unavailable"}</h2><span>{context.taxBlock ? `Tax block ${Number(context.taxBlock.slice(1))} and adjoining streets` : "Approximate one-block vicinity"}</span></div>
+    <div className={styles.heading}><h2>{context.selected.address??"Address unavailable"}</h2><span>{context.taxBlock ? context.wholeBlock ? `Tax block ${Number(context.taxBlock.slice(1))} and adjoining streets` : `Local part of tax block ${Number(context.taxBlock.slice(1))}` : "Approximate one-block vicinity"}</span></div>
     <Scene context={context}/>
     <dl className={styles.measurements}>
       <div><dt>Selected ground elevation</dt><dd>{groundText}</dd></div>
@@ -42,7 +42,7 @@ export function BlockContextView({property,onAddressResolved}:{property:{id:stri
       <p>Streets: {streetNames.join(" · ")||"No street centerlines in this extent"}.</p>
       <ul aria-label="Surrounding building addresses">{context.buildings.map(building=><li key={building.id}>{building.id===context.selected.id ? "Selected: " : ""}{building.address??"Address unavailable"} · {building.bin ? `BIN ${building.bin}` : `Source ID ${building.id}`}</li>)}</ul>
       <p><a href="https://data.cityofnewyork.us/d/64uk-42ks" target="_blank" rel="noreferrer">NYC DCP PLUTO tax-lot addresses</a> join by exact BBL. Buildings on one lot may share its primary address. <a href="https://data.cityofnewyork.us/d/inkn-q76z" target="_blank" rel="noreferrer">NYC OTI street centerlines</a> use source widths when supplied and thin centerlines otherwise; ribbons do not establish curb boundaries. Only constructed at-grade segments are shown; bridges and tunnels are omitted.</p>
-      <p>Terrain source: {context.terrain.source}. Buildings: NYC OTI Building Footprints. {context.taxBlock ? "Extent includes this tax block and adjoining street frontage." : "No valid tax block is available; extent is an approximate 180-metre vicinity."}</p>
+      <p>Terrain source: {context.terrain.source}. Buildings: NYC OTI Building Footprints. {context.taxBlock ? context.wholeBlock ? "Extent includes this tax block and adjoining street frontage." : "This unusually large tax block is shown as a local 180-metre vicinity around the chosen footprint." : "No valid tax block is available; extent is an approximate 180-metre vicinity."}</p>
     </details>
   </section>;
 }

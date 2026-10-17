@@ -60,7 +60,7 @@ function Block({context}:{context:BlockContext}) {
 }
 export default function BlockContextScene({context}:{context:BlockContext}) {
   const [reset,setReset]=useState(0);
-  return <div className={styles.scene} aria-label="3D selected property and surrounding block with measured ground elevation">
+  return <div className={styles.scene} role="group" aria-label="3D selected property and surrounding block with measured ground elevation">
     <SceneBoundary><Canvas frameloop="demand" dpr={[1,1.5]} camera={{fov:38,near:1,far:30000}} fallback={<p className={styles.fallback}>3D rendering is unavailable. Use the address, street and elevation information below.</p>} gl={{antialias:true}}>
       <color attach="background" args={["#13232b"]}/><ambientLight intensity={1.1}/><directionalLight position={[2000,6000,1500]} intensity={2}/>
       <Block context={context}/><Camera context={context} reset={reset}/>

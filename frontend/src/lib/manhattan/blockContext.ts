@@ -10,6 +10,7 @@ export interface BlockContext {
   terrain: TerrainGrid;
   bounds: Bounds;
   taxBlock: string | null;
+  wholeBlock: boolean;
 }
 
 /** BBL is borough(1), block(5), lot(4). Never match an address by proximity. */
@@ -36,16 +37,20 @@ function intersects(a: Bounds, b: Bounds) { return a[0] <= b[2] && a[2] >= b[0] 
 function pointBounds(points: LngLat[]): Bounds {
   return [Math.min(...points.map(p => p[0])), Math.min(...points.map(p => p[1])), Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))];
 }
-export function contextBounds(selected: Building, buildings: Building[]): { bounds: Bounds; taxBlock: string | null } {
+export function contextBounds(selected: Building, buildings: Building[]): { bounds: Bounds; taxBlock: string | null; wholeBlock: boolean } {
   const taxBlock = taxBlockId(selected.bbl);
   const sameBlock = taxBlock ? buildings.filter(b => taxBlockId(b.bbl) === taxBlock) : [];
-  const points = sameBlock.length ? sameBlock.flatMap(b => b.footprint[0]) : [selected.center];
-  const projected = points.map(p => projectLngLat(p));
-  // Tax-block bounds plus the adjoining street frontage. Unknown BBL uses an explicit vicinity.
-  const margin = sameBlock.length ? 42 : 180;
-  const southwest = unprojectMeters([Math.min(...projected.map(p => p[0])) - margin, Math.min(...projected.map(p => p[1])) - margin]);
-  const northeast = unprojectMeters([Math.max(...projected.map(p => p[0])) + margin, Math.max(...projected.map(p => p[1])) + margin]);
-  return { bounds: [...southwest, ...northeast], taxBlock: sameBlock.length ? taxBlock : null };
+  const extent = (points: LngLat[]) => points.reduce<[number,number,number,number]>((b,p)=>{
+    const [x,y]=projectLngLat(p);return [Math.min(b[0],x),Math.min(b[1],y),Math.max(b[2],x),Math.max(b[3],y)];
+  },[Infinity,Infinity,-Infinity,-Infinity]);
+  const blockExtent=extent(sameBlock.length ? sameBlock.flatMap(b=>b.footprint[0]) : selected.footprint[0]);
+  // Exceptional park/campus tax blocks span kilometres. Keep the chosen property in a bounded local part.
+  const wholeBlock=sameBlock.length>0 && Math.max(blockExtent[2]-blockExtent[0],blockExtent[3]-blockExtent[1])<=1000;
+  const box=wholeBlock ? blockExtent : extent(selected.footprint[0]);
+  const margin=wholeBlock ? 42 : 180;
+  const southwest=unprojectMeters([box[0]-margin,box[1]-margin]);
+  const northeast=unprojectMeters([box[2]+margin,box[3]+margin]);
+  return {bounds:[...southwest,...northeast],taxBlock:sameBlock.length ? taxBlock : null,wholeBlock};
 }
 export function selectBlockBuildings(buildings: Building[], selected: Building, bounds: Bounds): Building[] {
   const nearby = buildings.filter(b => intersects(pointBounds(b.footprint[0]), bounds));
@@ -80,12 +85,12 @@ export async function loadBuildingContext(property: {id: string; neighborhoodId:
   if(!Array.isArray(detail?.buildings)) throw new Error("The local building detail is malformed");
   const selected=detail.buildings.find(b=>b.id===property.id);
   if(!selected) throw new Error("The selected building is missing from the local map");
-  const {bounds,taxBlock}=contextBounds(selected,overview.buildings);
+  const {bounds,taxBlock,wholeBlock}=contextBounds(selected,overview.buildings);
   // Overview retains every source footprint. Cross-neighborhood context therefore stays complete.
   const buildings=selectBlockBuildings(overview.buildings,selected,bounds).map(b=>({...b,address:resolveBuildingAddress(b,addresses)}));
   const resolved=buildings.find(b=>b.id===selected.id)!;
   // The 50m overview is too coarse at block scale. The common 10m DEM also covers NTA edges.
   const measured=await localJson<TerrainGrid>("/manhattan/terrain-10m.json",signal);
   const terrain=cropTerrain(measured,bounds);
-  return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock };
+  return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock,wholeBlock };
 }
