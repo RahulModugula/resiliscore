@@ -16,15 +16,22 @@ export function ScoreGaugeCard({ parcel, simulated, localProjection = false, onA
   const angle = -90 + (a.resili_score - 300) / 550 * 180;
   const radians = angle * Math.PI / 180;
   const marker = `M${160 + 116 * Math.sin(radians)} ${150 - 116 * Math.cos(radians)}L${160 + 135 * Math.sin(radians)} ${150 - 135 * Math.cos(radians)}`;
+  function evidence(field: string, present: boolean, supplied: string, missing = "Unknown") {
+    const source = parcel.input_provenance?.find(row => row.field === field || row.field.endsWith(`.${field}`))?.value_source;
+    if (!present || source === "UNAVAILABLE") return { status: source === "UNAVAILABLE" ? "Unknown" : missing, confirmed: false };
+    if (source === "DEFAULT") return { status: "Default input", confirmed: false };
+    if (source === "REFERENCE_PARCEL") return { status: "Reference data", confirmed: false };
+    return { status: supplied, confirmed: true };
+  }
   const channels = [
-    ["USGS 3DEP · Ground elevation", "Supplied"],
-    ["OpenFEMA · Elevation certificate", p.elev_cert_verified ? "Verified" : "Not verified"],
-    ["Aerial computer vision", `${Math.round(p.cv_confidence * 100)}% confidence`],
-    ["IBHS registry", p.ibhs_fortified_tier !== "NONE" ? `FORTIFIED ${p.ibhs_fortified_tier}` : p.ibhs_wph_tier !== "NONE" ? `WPH ${p.ibhs_wph_tier}` : "Not verified"],
-    ["Flo · Water shutoff", p.iot_shutoff_active ? "Active" : "Not active"],
+    { label: "USGS 3DEP · Ground elevation", ...evidence("usgs_lag_ft", parcel.public_hazard_layer.usgs_lag_ft !== null, "Supplied") },
+    { label: "OpenFEMA · Elevation certificate", ...evidence("elev_cert_verified", p.elev_cert_verified, "Verified", "Not verified") },
+    { label: "Aerial computer vision", ...evidence("cv_confidence", p.cv_confidence > 0, `${Math.round(p.cv_confidence * 100)}% confidence`) },
+    { label: "IBHS registry", ...evidence(p.ibhs_fortified_tier !== "NONE" ? "ibhs_fortified_tier" : "ibhs_wph_tier", p.ibhs_fortified_tier !== "NONE" || p.ibhs_wph_tier !== "NONE", p.ibhs_fortified_tier !== "NONE" ? `FORTIFIED ${p.ibhs_fortified_tier}` : `WPH ${p.ibhs_wph_tier}`, "Not verified") },
+    { label: "Flo · Water shutoff", ...evidence("iot_shutoff_active", p.iot_shutoff_active, "Active", "Not verified") },
   ];
   return <section className="score-panel panel">
-    <div className="panel-heading"><h2>Parcel SaveMyHome</h2><span className={`badge ${tone}`}>{simulated ? "Projected" : "Verified parcel"}</span></div>
+    <div className="panel-heading"><h2>Parcel SaveMyHome</h2><span className={`badge ${parcel.indicative_only ? "warning" : tone}`}>{simulated ? "Projected" : parcel.indicative_only ? "Indicative only" : "Model result"}</span></div>
     <div className={`gauge-wrap ${tone}`}>
       <svg viewBox="0 0 320 190" className="score-gauge" role="img" aria-label={`SaveMyHome ${a.resili_score} on a scale from 300 to 850`}>
         <path d="M35 150 A125 125 0 0 1 285 150" fill="none" stroke="var(--border)" strokeWidth="12" />
@@ -47,8 +54,8 @@ export function ScoreGaugeCard({ parcel, simulated, localProjection = false, onA
       <div className="credibility-track" role="meter" aria-label="Parcel credibility weight" aria-valuenow={a.credibility_weight_z * 100} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${a.credibility_weight_z * 100}%` }} /></div><div className="bar-labels"><span>{Math.round(a.credibility_weight_z * 100)}% parcel evidence</span><span>{Math.round((1-a.credibility_weight_z)*100)}% tract prior</span></div>
       <div className="formula">LCR<sub>post</sub> = Z × LCR<sub>parcel</sub> + (1 − Z) × μ<sub>tract</sub></div>
       <div className="formula-values"><span>Tract prior <strong>{bps(a.tract_prior_lcr)}</strong></span><span>Parcel raw <strong>{bps(a.parcel_raw_lcr)}</strong></span></div>
-      <ul className="evidence-list">{channels.map(([label,status]) => <li key={label}><span><FileCheck2 size={14} />{label}</span><span>{/Not |Estimate/.test(status) ? null : <Check size={12} />}{status}</span></li>)}</ul>
-      <p className="footnote">Channel statuses are supplied evidence. Individual precision weights are not included in this contract.</p>
+      <ul className="evidence-list">{channels.map(({ label, status, confirmed }) => <li key={label}><span><FileCheck2 size={14} />{label}</span><span>{confirmed && <Check size={12} />}{status}</span></li>)}</ul>
+      <p className="footnote">Unknown and default inputs do not establish verification. Reference data describes the demo parcel.</p>
     </div>
   </section>;
 }
