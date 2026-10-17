@@ -7,11 +7,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Building2, ChevronRight, CircleHelp, Layers3, LoaderCircle, MapPin, Mountain, RotateCcw, Search, ShieldCheck, X } from "lucide-react";
 import { assessManhattanProperty, propertyLabel, saveManhattanAssessment } from "@/lib/manhattan/assessment";
 import { loadManhattan, loadNeighborhood } from "@/lib/manhattan/data";
+import { loadAddressIndex, resolveBuildingAddress, type AddressIndex } from "@/lib/manhattan/blockContext";
 import type { Building, NeighborhoodDetail } from "@/lib/manhattan/types";
 import styles from "./ManhattanExplorer.module.css";
 
 const Scene = dynamic(() => import("./ManhattanScene"), { ssr: false, loading: () => <div className={styles.mapLoading}><LoaderCircle size={20} className={styles.spinner} /><span>Preparing the 3D map…</span></div> });
 type MapData = Awaited<ReturnType<typeof loadManhattan>>;
+
+function addressBuildings(buildings: Building[], index: AddressIndex) {
+  return buildings.map(building => ({ ...building, address: resolveBuildingAddress(building, index) }));
+}
 
 export default function ManhattanExplorer() {
   const router = useRouter();
@@ -32,6 +37,8 @@ export default function ManhattanExplorer() {
   const [pending, setPending] = useState<Building | null>(null);
   const [assessmentError, setAssessmentError] = useState("");
   const assessmentController = useRef<AbortController | null>(null);
+  const addressIndex = useRef<AddressIndex>({});
+  const [addressError, setAddressError] = useState(false);
   const neighborhood = data?.neighborhoods.find(item => item.id === neighborhoodId) ?? null;
   const activeDetail = detail?.neighborhoodId === neighborhoodId ? detail : null;
   const detailPending = !!neighborhoodId && !activeDetail && !detailError;
@@ -41,8 +48,14 @@ export default function ManhattanExplorer() {
   useEffect(() => {
     const controller = new AbortController();
     setLoadError("");
-    void loadManhattan(controller.signal).then(result => {
-      setData(result);
+    const addresses = loadAddressIndex(controller.signal).catch(error => {
+      if (controller.signal.aborted) throw error;
+      setAddressError(true);
+      return {};
+    });
+    void Promise.all([loadManhattan(controller.signal), addresses]).then(([result, index]) => {
+      addressIndex.current = index;
+      setData({ ...result, overview: { ...result.overview, buildings: addressBuildings(result.overview.buildings, index) } });
       const requested = new URLSearchParams(window.location.search).get("neighborhood");
       if (result.neighborhoods.some(item => item.id === requested)) setNeighborhoodId(requested);
     }).catch(error => { if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : "Map data could not be loaded"); });
@@ -53,7 +66,7 @@ export default function ManhattanExplorer() {
     if (!data || !neighborhoodId) return;
     const controller = new AbortController();
     setDetailError("");
-    void loadNeighborhood(data.manifest, neighborhoodId, controller.signal).then(setDetail)
+    void loadNeighborhood(data.manifest, neighborhoodId, controller.signal).then(result => setDetail({ ...result, buildings: addressBuildings(result.buildings, addressIndex.current) }))
       .catch(error => { if (!controller.signal.aborted) setDetailError(error instanceof Error ? error.message : "Neighborhood detail could not be loaded"); });
     return () => controller.abort();
   }, [data, neighborhoodId, detailRetry]);
@@ -108,6 +121,7 @@ export default function ManhattanExplorer() {
         </div>
         <label className={styles.search}><Search size={17} /><span className={styles.srOnly}>{neighborhood ? "Find a property by name, BIN, or BBL" : "Find a neighborhood"}</span><input type="search" value={query} placeholder={neighborhood ? "Search name, BIN, or BBL" : "Find a neighborhood"} onChange={event => { setQuery(event.target.value); setLimit(60); }} /></label>
         <div className={styles.listHeading}><span>{neighborhood ? "Mapped buildings" : "Neighborhoods & park areas"}</span><span>{neighborhood ? activeDetail ? matchingBuildings.length.toLocaleString() : "…" : visibleNeighborhoods.length || "…"}</span></div>
+        {addressError && <p className={styles.addressNotice} role="status">Street addresses could not be loaded. Unresolved addresses remain unknown.</p>}
         <div className={styles.list} aria-busy={(!data && !loadError) || detailPending}>
           {loadError ? <div className={styles.listMessage} role="alert"><p>{loadError}</p><button className="secondary-button" onClick={() => setRetry(value => value + 1)}>Reload map data</button></div>
             : !data ? <p className={styles.listMessage} role="status">Loading Manhattan data…</p>

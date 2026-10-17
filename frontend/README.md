@@ -12,6 +12,7 @@ Open http://localhost:3000. Optionally copy `.env.example` to `.env.local` to ch
 ## Manhattan walkthrough
 
 1. Click a neighborhood boundary or choose a neighborhood from the searchable directory. The camera focuses that area and loads its detailed footprints, parks, and terrain context.
+   **Terrain relief** fades buildings to reveal the measured USGS 3DEP ground surface. **1× actual** retains real ground elevations; **3× relief** explicitly exaggerates ground heights for inspection. This viewing scale does not change building heights or assessment inputs.
 2. Toggle **Underground drainage** to make buildings and ground transparent. Cyan points are NYC DEP storm drains. Amber lines are historical Open Sewer Atlas interceptors and force mains. These lines are partial and unofficial; their depths are unknown and the vertical offset is schematic. Connections between drains and pipes are not inferred.
 3. Click a building or choose it from the property directory. The app requests the actual parcel risk API with its NYC coordinates, footprint, and known construction year. If the API is unavailable, it opens clearly labeled, cached screening from the canonical risk engine using national defaults and a nonlocal NRI reference tract. This screening does not rank geographic risk and supplies no quote or binding authority.
 4. **Back to Manhattan map** returns to the selected neighborhood. **Island view** resets the camera and directory. The same directory supports keyboard use and remains available without WebGL.
