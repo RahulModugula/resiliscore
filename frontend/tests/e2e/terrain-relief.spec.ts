@@ -33,6 +33,7 @@ test("terrain controls fit a phone and remain keyboard accessible without WebGL"
     });
   });
   await page.goto("/");
+  await page.getByRole("button", { name: "Map layers", exact: true }).click();
   const terrain = page.getByRole("checkbox", { name: "Terrain relief", exact: true });
   await terrain.focus();
   await page.keyboard.press("Space");
@@ -41,5 +42,8 @@ test("terrain controls fit a phone and remain keyboard accessible without WebGL"
   await actual.focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("radio", { name: "3× relief", exact: true })).toBeChecked();
+  await page.getByRole("button", { name: /Close map layers/ }).click();
+  await expect(terrain).toBeHidden();
+  await expect(page.getByRole("button", { name: /Map layers.*Terrain 3×/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

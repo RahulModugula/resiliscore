@@ -37,6 +37,7 @@
 .reset { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-size: 11px; pointer-events: auto; }
 .reset:hover { background: var(--surface-hover); }
 .layerControls { position: absolute; top: 84px; right: 24px; width: 260px; max-height: calc(100% - 180px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) var(--bg); }
+.mobileLayers { display: none; }
 .layerToggle { display: flex; align-items: center; gap: 9px; padding: 10px 13px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text); cursor: pointer; font-size: 12px; }
 .layerToggle input { margin-left: auto; width: 16px; min-height: 24px; }
 .layerToggle + .layerToggle { margin-top: 6px; }
@@ -108,6 +109,11 @@
   .breadcrumb { font-size: 10px; max-width: 80%; padding: 3px 8px; }
   .reset { min-width: 38px; padding: 8px; }
   .layerControls { top: 70px; right: 12px; width: 226px; }
+  .mobileLayers { width: 100%; display: block; text-align: left; padding: 10px 12px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-size: 12px; }
+  .mobileLayers > span { display: flex; align-items: center; gap: 8px; }
+  .mobileLayers small { display: block; margin-top: 5px; color: var(--accent); font-size: 10px; }
+  .layerSettings { display: none; }
+  .layersExpanded { display: block; padding-top: 6px; }
   .layerToggle { font-size: 11px; padding: 7px 10px; }
   .mapBottom { bottom: 12px; left: 12px; right: 12px; gap: 7px; }
   .instructions { font-size: 9px; max-width: 100%; }
