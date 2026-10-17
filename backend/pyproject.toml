@@ -14,7 +14,11 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = [
+    "jsonschema>=4.26.0",
+    "pytest>=8",
+    "ruff>=0.6",
+]
 
 [tool.ruff]
 line-length = 110

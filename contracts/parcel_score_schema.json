@@ -1,0 +1,629 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resiliscore.example/contracts/parcel_score_schema.json",
+  "title": "ParcelScoreResponse",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "processing_time_ms": {
+      "type": "number"
+    },
+    "parcel_identity": {
+      "$ref": "#/$defs/ParcelIdentity"
+    },
+    "public_hazard_layer": {
+      "$ref": "#/$defs/PublicHazardLayer"
+    },
+    "private_verification_layer": {
+      "$ref": "#/$defs/PrivateVerificationLayer"
+    },
+    "actuarial_breakdown": {
+      "$ref": "#/$defs/ActuarialBreakdown"
+    },
+    "prescriptive_mitigations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Mitigation"
+      }
+    },
+    "hitl_status": {
+      "$ref": "#/$defs/HitlStatus"
+    },
+    "regulatory_compliance": {
+      "$ref": "#/$defs/RegulatoryCompliance"
+    }
+  },
+  "required": [
+    "request_id",
+    "processing_time_ms",
+    "parcel_identity",
+    "public_hazard_layer",
+    "private_verification_layer",
+    "actuarial_breakdown",
+    "prescriptive_mitigations",
+    "hitl_status",
+    "regulatory_compliance"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Polygon": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 4
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "additionalProperties": false
+    },
+    "Feature": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "geometry": {
+          "$ref": "#/$defs/Polygon"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "parcel_polygon",
+                "building_footprint",
+                "zone_0_ring_0_5ft",
+                "zone_1_ring_5_30ft",
+                "zone_2_ring_30_100ft",
+                "cv_detection"
+              ]
+            },
+            "label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "geometry",
+        "properties"
+      ],
+      "additionalProperties": false
+    },
+    "FeatureCollection": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "FeatureCollection"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Feature"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "features"
+      ],
+      "additionalProperties": false
+    },
+    "ParcelIdentity": {
+      "type": "object",
+      "properties": {
+        "apn_uid": {
+          "type": "string",
+          "pattern": "^[0-9]{14}$"
+        },
+        "address": {
+          "type": "string"
+        },
+        "county_fips": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "LA",
+            "CA",
+            "FL"
+          ]
+        },
+        "h3_res11": {
+          "type": "string"
+        },
+        "h3_res13": {
+          "type": "string"
+        },
+        "rcv_usd": {
+          "type": "number"
+        },
+        "year_built": {
+          "type": "integer"
+        },
+        "centroid": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "geometries": {
+          "$ref": "#/$defs/FeatureCollection"
+        }
+      },
+      "required": [
+        "apn_uid",
+        "address",
+        "county_fips",
+        "state",
+        "h3_res11",
+        "h3_res13",
+        "rcv_usd",
+        "year_built",
+        "centroid",
+        "geometries"
+      ],
+      "additionalProperties": false
+    },
+    "PublicHazardLayer": {
+      "type": "object",
+      "properties": {
+        "fema_flood_zone": {
+          "type": "string"
+        },
+        "bfe_ft_navd88": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "usgs_lag_ft": {
+          "type": "number"
+        },
+        "est_ffe_ft": {
+          "type": "number"
+        },
+        "freeboard_delta_h_ft": {
+          "type": "number"
+        },
+        "hand_rel_elev_ft": {
+          "type": "number"
+        },
+        "twi_index": {
+          "type": "number"
+        },
+        "noaa_atlas15_p24h_100yr_in": {
+          "type": "number"
+        },
+        "atlas15_cmip6_mult": {
+          "type": "number"
+        },
+        "landfire_fbfm40_code": {
+          "type": "string"
+        },
+        "slope_deg": {
+          "type": "number"
+        },
+        "wui_class": {
+          "type": "string"
+        },
+        "openfema_tract_claim_count": {
+          "type": "integer"
+        },
+        "openfema_tract_mean_lcr": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "fema_flood_zone",
+        "bfe_ft_navd88",
+        "usgs_lag_ft",
+        "est_ffe_ft",
+        "freeboard_delta_h_ft",
+        "hand_rel_elev_ft",
+        "twi_index",
+        "noaa_atlas15_p24h_100yr_in",
+        "atlas15_cmip6_mult",
+        "landfire_fbfm40_code",
+        "slope_deg",
+        "wui_class",
+        "openfema_tract_claim_count",
+        "openfema_tract_mean_lcr"
+      ],
+      "additionalProperties": false
+    },
+    "PrivateVerificationLayer": {
+      "type": "object",
+      "properties": {
+        "cv_roof_class": {
+          "type": "string",
+          "enum": [
+            "CLASS_A_FORTIFIED",
+            "CLASS_A_IMPACT_4",
+            "CLASS_A_ASPHALT",
+            "WOOD_SHAKE_UNRATED"
+          ]
+        },
+        "cv_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cv_overhang_ft": {
+          "type": "number"
+        },
+        "cv_zone0_clear": {
+          "type": "boolean"
+        },
+        "cv_zone1_no_shed": {
+          "type": "boolean"
+        },
+        "cv_enclosed_eaves": {
+          "type": "boolean"
+        },
+        "cv_ember_vents": {
+          "type": "boolean"
+        },
+        "elev_cert_verified": {
+          "type": "boolean"
+        },
+        "ibhs_fortified_tier": {
+          "type": "string",
+          "enum": [
+            "ROOF",
+            "SILVER",
+            "GOLD",
+            "NONE"
+          ]
+        },
+        "ibhs_wph_tier": {
+          "type": "string",
+          "enum": [
+            "BASE",
+            "PLUS",
+            "NONE"
+          ]
+        },
+        "iot_shutoff_active": {
+          "type": "boolean"
+        },
+        "unpermitted_footprint_delta_sqft": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "cv_roof_class",
+        "cv_confidence",
+        "cv_overhang_ft",
+        "cv_zone0_clear",
+        "cv_zone1_no_shed",
+        "cv_enclosed_eaves",
+        "cv_ember_vents",
+        "elev_cert_verified",
+        "ibhs_fortified_tier",
+        "ibhs_wph_tier",
+        "iot_shutoff_active",
+        "unpermitted_footprint_delta_sqft"
+      ],
+      "additionalProperties": false
+    },
+    "PerilSplit": {
+      "type": "object",
+      "properties": {
+        "peril": {
+          "type": "string",
+          "enum": [
+            "FLOOD",
+            "WILDFIRE",
+            "WIND_HAIL"
+          ]
+        },
+        "zip_immunity_pi": {
+          "type": "number"
+        },
+        "expected_freq_n": {
+          "type": "number"
+        },
+        "expected_sev_s": {
+          "type": "number"
+        },
+        "peril_aal_usd": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "peril",
+        "zip_immunity_pi",
+        "expected_freq_n",
+        "expected_sev_s",
+        "peril_aal_usd"
+      ],
+      "additionalProperties": false
+    },
+    "ActuarialBreakdown": {
+      "type": "object",
+      "properties": {
+        "tract_prior_lcr": {
+          "type": "number"
+        },
+        "parcel_raw_lcr": {
+          "type": "number"
+        },
+        "credibility_weight_z": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "posterior_lcr": {
+          "type": "number"
+        },
+        "expected_annual_loss_usd": {
+          "type": "number"
+        },
+        "peril_split": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PerilSplit"
+          }
+        },
+        "resili_score": {
+          "type": "integer",
+          "minimum": 300,
+          "maximum": 850
+        },
+        "baseline_macro_score": {
+          "type": "integer",
+          "minimum": 300,
+          "maximum": 850
+        },
+        "underwriting_tier": {
+          "type": "string",
+          "enum": [
+            "TIER_1_AUTO_BIND",
+            "TIER_2_CONDITIONAL",
+            "TIER_3_DECLINE_ESCALATE"
+          ]
+        },
+        "statutory_discount_pct": {
+          "type": "number"
+        },
+        "annual_base_premium_usd": {
+          "type": "number"
+        },
+        "annual_discounted_premium_usd": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "tract_prior_lcr",
+        "parcel_raw_lcr",
+        "credibility_weight_z",
+        "posterior_lcr",
+        "expected_annual_loss_usd",
+        "peril_split",
+        "resili_score",
+        "baseline_macro_score",
+        "underwriting_tier",
+        "statutory_discount_pct",
+        "annual_base_premium_usd",
+        "annual_discounted_premium_usd"
+      ],
+      "additionalProperties": false
+    },
+    "Mitigation": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "peril": {
+          "type": "string"
+        },
+        "statutory_authority": {
+          "type": "string"
+        },
+        "gross_capex_usd": {
+          "type": "number"
+        },
+        "grant_subsidy_usd": {
+          "type": "number"
+        },
+        "net_capex_usd": {
+          "type": "number"
+        },
+        "lcr_delta_bps": {
+          "type": "number"
+        },
+        "score_delta_pts": {
+          "type": "integer"
+        },
+        "annual_premium_savings_usd": {
+          "type": "number"
+        },
+        "payback_years": {
+          "type": "number"
+        },
+        "resale_value_bump_pct": {
+          "type": "number"
+        },
+        "currently_applied": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "action_id",
+        "title",
+        "peril",
+        "statutory_authority",
+        "gross_capex_usd",
+        "grant_subsidy_usd",
+        "net_capex_usd",
+        "lcr_delta_bps",
+        "score_delta_pts",
+        "annual_premium_savings_usd",
+        "payback_years",
+        "resale_value_bump_pct",
+        "currently_applied"
+      ],
+      "additionalProperties": false
+    },
+    "HitlStatus": {
+      "type": "object",
+      "properties": {
+        "escalated": {
+          "type": "boolean"
+        },
+        "trigger_code": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+            "HITL_TRIGGER_02_UNPERMITTED_ADDITION",
+            "HITL_TRIGGER_03_HIGH_TIV",
+            "HITL_TRIGGER_04_BOUNDARY_CONFLICT"
+          ]
+        },
+        "trigger_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recommended_underwriter_action": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "escalated",
+        "trigger_code",
+        "trigger_reason",
+        "recommended_underwriter_action"
+      ],
+      "additionalProperties": false
+    },
+    "Ca26449Factors": {
+      "type": "object",
+      "properties": {
+        "cat_a_fire_risk_reduction_community": {
+          "type": "boolean"
+        },
+        "cat_a_firewise_usa": {
+          "type": "boolean"
+        },
+        "cat_a_shelter_in_place": {
+          "type": "boolean"
+        },
+        "cat_b1_under_deck_clearing": {
+          "type": "boolean"
+        },
+        "cat_b1_zone0_clear_0_5ft": {
+          "type": "boolean"
+        },
+        "cat_b1_no_sheds_within_30ft": {
+          "type": "boolean"
+        },
+        "cat_b1_prc_4291_compliance": {
+          "type": "boolean"
+        },
+        "cat_b2_class_a_roof": {
+          "type": "boolean"
+        },
+        "cat_b2_enclosed_eaves": {
+          "type": "boolean"
+        },
+        "cat_b2_ember_vents": {
+          "type": "boolean"
+        },
+        "cat_b2_multi_pane_windows": {
+          "type": "boolean"
+        },
+        "cat_b2_vertical_siding_clearance_6in": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cat_a_fire_risk_reduction_community",
+        "cat_a_firewise_usa",
+        "cat_a_shelter_in_place",
+        "cat_b1_under_deck_clearing",
+        "cat_b1_zone0_clear_0_5ft",
+        "cat_b1_no_sheds_within_30ft",
+        "cat_b1_prc_4291_compliance",
+        "cat_b2_class_a_roof",
+        "cat_b2_enclosed_eaves",
+        "cat_b2_ember_vents",
+        "cat_b2_multi_pane_windows",
+        "cat_b2_vertical_siding_clearance_6in"
+      ],
+      "additionalProperties": false
+    },
+    "RegulatoryCompliance": {
+      "type": "object",
+      "properties": {
+        "monotonicity_verified": {
+          "type": "boolean"
+        },
+        "ny_dfs_cl7_ecdis_free": {
+          "type": "boolean"
+        },
+        "ca_2644_9_factors": {
+          "$ref": "#/$defs/Ca26449Factors"
+        },
+        "dataset_vintages": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "monotonicity_verified",
+        "ny_dfs_cl7_ecdis_free",
+        "ca_2644_9_factors",
+        "dataset_vintages"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
