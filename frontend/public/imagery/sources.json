@@ -1,0 +1,24 @@
+{
+  "58430120180000.jpg": {
+    "source": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-118.14409552395352%2C34.19155555555555%2C-118.14230447604646%2C34.19244444444445&bboxSR=4326&imageSR=4326&size=1200%2C720&format=jpg&f=image&adjustAspectRatio=false",
+    "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+    "bbox": [
+      -118.14409552395352,
+      34.19155555555555,
+      -118.14230447604646,
+      34.19244444444445
+    ],
+    "note": "Cached imagery at fixture centroid. Golden parcel boundaries are synthetic and are not surveyed to imagery."
+  },
+  "23312045070000.jpg": {
+    "source": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-117.0869845265918%2C33.128455555555554%2C-117.0852154734082%2C33.12934444444445&bboxSR=4326&imageSR=4326&size=1200%2C720&format=jpg&f=image&adjustAspectRatio=false",
+    "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+    "bbox": [
+      -117.0869845265918,
+      33.128455555555554,
+      -117.0852154734082,
+      33.12934444444445
+    ],
+    "note": "Cached imagery at fixture centroid. Golden parcel boundaries are synthetic and are not surveyed to imagery."
+  }
+}
