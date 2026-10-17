@@ -25,7 +25,7 @@ function Camera({context,reset}:{context:BlockContext;reset:number}) {
     void controls.current?.setLookAt(...frame.position,...frame.target,false);
     invalidate();
   },[context,size.width,size.height,reset,invalidate]);
-  return <CameraControls ref={controls} makeDefault minDistance={25} maxDistance={6000} minPolarAngle={.05} maxPolarAngle={Math.PI/2.08}/>;
+  return <CameraControls ref={controls} makeDefault dollySpeed={2} minDistance={25} maxDistance={6000} minPolarAngle={.05} maxPolarAngle={Math.PI/2.08}/>;
 }
 function Block({context}:{context:BlockContext}) {
   const geometries=useMemo(()=>{
