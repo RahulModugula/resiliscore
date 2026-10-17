@@ -493,8 +493,8 @@ def test_unknown_address_is_404_not_a_golden_fallback(monkeypatch):
 def test_simulate_keeps_provenance_and_indicative_flag(monkeypatch):
     up = Upstreams()
     monkeypatch.setattr(http, "_client", up.client())
-    built = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
-    out = simulate(built, [])
+    built, tract_nri = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
+    out = simulate(built, [], nri=tract_nri)
     assert out.indicative_only is True and len(out.input_provenance) >= 15
 
 
@@ -570,9 +570,9 @@ def test_off_demo_parcel_is_calibrated_to_its_own_tract_nri_rate(monkeypatch):
 
     up = Upstreams()
     monkeypatch.setattr(http, "_client", up.client())
-    built = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
+    built, tract_nri = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
     tract = nri.parse_nri(json.loads(fixture("nri_austin.json")))
-    rates, prior = base_rates.context_for(built)
+    rates, prior = base_rates.context_for(built, tract_nri)
     ealb, expb = tract.ealb_usd, tract.expb_usd
     assert rates.flood == pytest.approx((ealb["IFLD"] + ealb["CFLD"]) / expb["IFLD"])
     assert rates.wildfire == 0.0  # NRI reports none for this tract
@@ -581,5 +581,5 @@ def test_off_demo_parcel_is_calibrated_to_its_own_tract_nri_rate(monkeypatch):
     # Not the nearest reference tract's figures.
     ref_rates, ref_prior = base_rates.context_for(rasters.nearest_site(AUSTIN["lat"], AUSTIN["lng"]).response)
     assert rates.wind != ref_rates.wind and prior != ref_prior
-    out = simulate(built, [])
+    out = simulate(built, [], nri=tract_nri)
     assert out.actuarial_breakdown.tract_prior_lcr == pytest.approx(tract.total_rate)

@@ -255,6 +255,10 @@ REGISTRY: dict[str, Const] = {
         "Lower bound on a target loss rate (0.01 bp) so the closed-form intercept stays finite where NRI reports "
         "zero expected loss (for example wildfire in the Escondido tract).",
     ),
+    "nri.intercept_clamp": Const(
+        (-40.0, 40.0), JUDGEMENT, _D, False,
+        "Bounds on a solved log-frequency intercept (finite, not tight: a hillside parcel with near-certain zero-inflation legitimately needs about 26). A malformed tract cannot produce an unbounded rate.",
+    ),
     "nri.reference_year_built": Const(
         1985, JUDGEMENT, _D, False,
         "Tract-typical construction year of the reference home (pre-2002 code era). No tract median year-built "
@@ -270,6 +274,11 @@ REGISTRY: dict[str, Const] = {
     ),
     "mc.freeboard_missing_cv_mult": Const(
         1.5, JUDGEMENT, _D, False, "Flood parameter-uncertainty CV multiplier when freeboard is unavailable."
+    ),
+    "mc.max_events_per_peril": Const(
+        20, JUDGEMENT, _D, False,
+        "Cap on simulated events per peril per year. A clamp against malformed rates: 20 events a year is far "
+        "beyond any modelled peril.",
     ),
     "mc.copula_rho_gulf": Const(
         0.5, JUDGEMENT, _D, False, "Gaussian copula correlation between flood and wind drivers in Gulf states."

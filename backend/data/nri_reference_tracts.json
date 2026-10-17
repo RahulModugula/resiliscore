@@ -191,5 +191,5 @@
       }
     }
   ],
-  "reference_hazard_note": "Hazard-layer values of the reference parcel in each tract (contracts/golden_scenarios.json). They stand in for tract-typical rain, terrain and fuel when the intercept is solved; the parcel's own values are then relativities. Not NRI data. Replace with tract medians when the ingestion lane supplies them."
+  "reference_hazard_note": "Hazard-layer values of the reference parcel in each tract (contracts/golden_scenarios.json). They stand in for tract-typical rain, terrain and fuel when the intercept is solved; the parcel's own values are then relativities. Not NRI data. Replace with tract medians when the NRI ingestion client supplies them."
 }

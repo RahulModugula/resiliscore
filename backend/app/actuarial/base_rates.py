@@ -14,12 +14,12 @@ the loss rate among exposed buildings, EALB / EXPB. The tract-wide EALB / BUILDV
 that have no exposure (S2 wildfire: 3.9 bps tract-wide, 84 bps among exposed). `basis="all"` gives the
 tract-wide figure. The credibility prior is the tract-wide sum, because it describes a typical home in the tract.
 
-`base_rates_for(nri_rates)` is the seam: the ingestion lane's NRI client will build `NriRates` for any tract.
+`base_rates_for(nri_rates)` is the seam: the NRI ingestion client builds `NriRates` for any tract and the caller
+passes it to `simulate` explicitly.
 """
 
 import json
 import math
-from collections import OrderedDict
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
@@ -85,7 +85,8 @@ def base_rates_for(nri: NriRates, basis: Literal["exposed", "all"] = "exposed") 
 def intercept_for(rate: float, reference_loss_without_intercept: float) -> float:
     """Closed form: the intercept a that makes AAL_ref = exp(a) * reference_loss_without_intercept equal `rate`."""
     floor = constants.get("nri.rate_floor")
-    return math.log(max(rate, floor) / reference_loss_without_intercept)
+    lo, hi = constants.get("nri.intercept_clamp")
+    return min(hi, max(lo, math.log(max(rate, floor) / reference_loss_without_intercept)))
 
 
 @cache
@@ -105,8 +106,7 @@ def _tracts() -> tuple[tuple[tuple[float, float], NriRates, tuple[str, ...]], ..
     return tuple(out)
 
 
-LIVE_TRACT_LIMIT = 1024
-_live_tracts: OrderedDict[str, NriRates] = OrderedDict()
+REFERENCE_MATCH_M = 100.0  # a parcel this close to a reference tract point is that reference parcel
 
 
 def nri_from_tract(tract: "nri.TractPrior", reference_hazard: PublicHazardLayer) -> NriRates:
@@ -120,26 +120,24 @@ def nri_from_tract(tract: "nri.TractPrior", reference_hazard: PublicHazardLayer)
     )
 
 
-def register_live_tract(apn_uid: str, rates: NriRates) -> None:
-    """Remember a live tract for the parcel the pipeline just built, so `simulate` calibrates to its own tract."""
-    _live_tracts[apn_uid] = rates
-    _live_tracts.move_to_end(apn_uid)
-    while len(_live_tracts) > LIVE_TRACT_LIMIT:
-        _live_tracts.popitem(last=False)
-
-
-def nri_for_parcel(r: ParcelScoreResponse) -> NriRates:
-    """NRI figures for the parcel's tract: its own live tract when the pipeline registered one, otherwise the
-    nearest reference tract (exact for the golden parcels), a REFERENCE_PARCEL stand-in that makes any score
-    from afar indicative only."""
-    live = _live_tracts.get(r.parcel_identity.apn_uid)
-    if live is not None:
-        return live
+def nearest_reference(r: ParcelScoreResponse) -> tuple[NriRates, bool]:
+    """The nearest reference tract and whether the parcel IS that reference parcel (within 100 m)."""
     lng, lat = r.parcel_identity.centroid
-    return min(_tracts(), key=lambda t: distance_m(lat, lng, t[0][1], t[0][0]))[1]
+    best = min(_tracts(), key=lambda t: distance_m(lat, lng, t[0][1], t[0][0]))
+    return best[1], distance_m(lat, lng, best[0][1], best[0][0]) <= REFERENCE_MATCH_M
 
 
-def context_for(r: ParcelScoreResponse) -> tuple[BaseRates, float]:
-    """(base rates, tract prior LCR) from NRI for the parcel's tract."""
-    nri = nri_for_parcel(r)
-    return base_rates_for(nri), nri.tract_prior_lcr
+def resolve(r: ParcelScoreResponse, nri: NriRates | None) -> tuple[NriRates, bool]:
+    """(tract figures, stand_in). An explicit `nri` is always used as given. With none, the nearest reference
+    tract is a stand-in unless the parcel is the reference parcel itself; a stand-in makes the score
+    indicative only. Nothing is read from any other request."""
+    if nri is not None:
+        return nri, False
+    tract, exact = nearest_reference(r)
+    return tract, not exact
+
+
+def context_for(r: ParcelScoreResponse, nri: NriRates | None = None) -> tuple[BaseRates, float]:
+    """(base rates, tract prior LCR) for the parcel's tract: `nri` when given, else the nearest reference tract."""
+    tract = resolve(r, nri)[0]
+    return base_rates_for(tract), tract.tract_prior_lcr

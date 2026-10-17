@@ -9,11 +9,13 @@ recomputes.
 """
 
 import hashlib
+from typing import NamedTuple
 
 from shapely.geometry import Point, box
 
 from app import http
 from app.actuarial import base_rates
+from app.actuarial.base_rates import NriRates
 from app.ingestion import rasters
 from app.ingestion.engine import PIN_RADIUS_M, HazardResult, SpatialIngestionEngine
 from app.ingestion.geocode import Geocode
@@ -53,13 +55,20 @@ def _caller_or_default(name: str, given: float | None, default: float, what: str
     return default, InputProvenance(field=name, value_source="DEFAULT", source_name=what, vintage=None)
 
 
+class BuiltParcel(NamedTuple):
+    """An unscored parcel and its own NRI tract (None when the live tract lookup failed)."""
+
+    parcel: ParcelScoreResponse
+    nri: NriRates | None
+
+
 async def build_parcel_for_address(
     address: str,
     *,
     footprint: list[list[float]] | None = None,
     rcv_usd: float | None = None,
     year_built: int | None = None,
-) -> ParcelScoreResponse:
+) -> BuiltParcel:
     """An address alone is enough: the Census Geocoder supplies the point and FIPS codes."""
     g: Geocode = await SpatialIngestionEngine().geocode(address)
     return await build_parcel(
@@ -79,7 +88,7 @@ async def build_parcel(
     footprint: list[list[float]] | None = None,
     rcv_usd: float | None = None,
     year_built: int | None = None,
-) -> ParcelScoreResponse:
+) -> BuiltParcel:
     """Assemble an unscored response for the point; the caller runs `simulate` on it."""
     site = rasters.nearest_site(lat, lng, county_fips)
     template = site.response
@@ -123,11 +132,10 @@ async def build_parcel(
             "geometries": {"type": "FeatureCollection", "features": features},
         }
     )
-    if result.nri_tract is not None:
-        # Calibrate to this parcel's own tract, not the nearest reference tract.
-        base_rates.register_live_tract(identity.apn_uid, base_rates.nri_from_tract(result.nri_tract, result.layer))
+    # Calibrate to this parcel's own tract, not the nearest reference tract: returned to the caller, never stored.
+    own_tract = base_rates.nri_from_tract(result.nri_tract, result.layer) if result.nri_tract is not None else None
     prior = result.tract_prior_lcr if result.tract_prior_lcr is not None else template.actuarial_breakdown.tract_prior_lcr
-    return template.model_copy(
+    parcel = template.model_copy(
         update={
             "parcel_identity": identity,
             "public_hazard_layer": result.layer,
@@ -151,3 +159,4 @@ async def build_parcel(
             or any(p.value_source != "LIVE" for p in (footprint_prov, *inspection.provenance)),
         }
     )
+    return BuiltParcel(parcel, own_tract)

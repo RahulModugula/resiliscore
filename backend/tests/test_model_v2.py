@@ -203,10 +203,102 @@ def test_changing_the_nri_rate_moves_the_base_rate_proportionally(peril):
         assert (b.n * b.s) / (a.n * a.s) == pytest.approx(factor, rel=1e-9)
 
 
-def test_far_parcels_fall_back_to_the_nearest_reference_tract():
-    r = golden(S1)
-    far = r.model_copy(update={"parcel_identity": r.parcel_identity.model_copy(update={"centroid": (-97.0, 32.0)})})
-    assert br.nri_for_parcel(far).tractfips in {t for t, _ in TRACTS}
+def _far(r):
+    return r.model_copy(update={"parcel_identity": r.parcel_identity.model_copy(update={"centroid": (-97.0, 32.0)})})
+
+
+def test_without_a_tract_a_far_parcel_uses_a_flagged_stand_in():
+    far = _far(golden(S1))
+    tract, stand_in = br.resolve(far, None)
+    assert tract.tractfips in {t for t, _ in TRACTS} and stand_in is True
+    out = simulate(far, [])
+    assert out.indicative_only is True
+    rows = [p for p in out.input_provenance if p.field == "actuarial_breakdown.base_rates"]
+    assert len(rows) == 1 and "stand-in" in rows[0].source_name
+    assert len(simulate(out, []).input_provenance) == len(out.input_provenance)  # re-simulating adds no duplicate
+
+
+def test_a_golden_parcel_is_its_own_reference_and_is_not_indicative():
+    out = simulate(golden(S1), [])
+    assert out.indicative_only is False
+    assert br.resolve(golden(S1), None)[1] is False
+    assert all("stand-in" not in p.source_name for p in out.input_provenance)
+
+
+def test_same_address_different_tracts_score_independently():
+    base = golden(S2)
+    a, b = _nri("06037460200"), _nri("06073020214")
+    first = simulate(base, [], nri=a)
+    other = simulate(base, [], nri=b)
+    again = simulate(base, [], nri=a)
+    assert first.actuarial_breakdown.resili_score != other.actuarial_breakdown.resili_score
+    assert first.actuarial_breakdown.resili_score == again.actuarial_breakdown.resili_score
+    assert first.actuarial_breakdown.tract_prior_lcr == pytest.approx(a.tract_prior_lcr)
+    assert other.actuarial_breakdown.tract_prior_lcr == pytest.approx(b.tract_prior_lcr)
+
+
+def test_nri_none_never_reads_another_parcels_data():
+    s1 = golden(S1)
+    before = simulate(s1, []).actuarial_breakdown.resili_score
+    simulate(s1, [], nri=_nri("06073020214"))  # a different tract for the same parcel
+    assert simulate(s1, []).actuarial_breakdown.resili_score == before == 823
+
+
+def test_no_function_in_the_actuarial_package_mutates_module_level_state():
+    mutators = {"append", "extend", "add", "update", "setdefault", "pop", "popitem", "clear", "move_to_end"}
+    offenders = []
+    for path in sorted(APP.glob("*.py")):
+        tree = ast.parse(path.read_text())
+        containers = set()
+        for node in tree.body:
+            if isinstance(node, ast.Assign | ast.AnnAssign) and isinstance(
+                node.value, ast.Dict | ast.List | ast.Set | ast.Call
+            ):
+                targets = [node.target] if isinstance(node, ast.AnnAssign) else node.targets
+                containers |= {t.id for t in targets if isinstance(t, ast.Name)}
+        for fn in (n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)):
+            if fn.name == "_register_nri_tracts":  # builds the registry once, at import
+                continue
+            for node in ast.walk(fn):
+                if isinstance(node, ast.Global):
+                    offenders.append((path.name, fn.name, "global"))
+                if (
+                    isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id in containers
+                    and node.func.attr in mutators
+                ):
+                    offenders.append((path.name, fn.name, node.func.attr))
+                if (
+                    isinstance(node, ast.Subscript)
+                    and isinstance(node.ctx, ast.Store)
+                    and isinstance(node.value, ast.Name)
+                    and node.value.id in containers
+                ):
+                    offenders.append((path.name, fn.name, "item assignment"))
+    assert not offenders, offenders
+
+
+def test_an_extreme_nri_rate_cannot_blow_up_the_simulation():
+    s1 = golden(S1)
+    t = _nri("22051028900")
+    wild = br.NriRates(
+        tractfips="9", buildvalue_usd=1e9, ealb_usd={**t.ealb_usd, "IFLD": 1e18, "HRCN": 1e18},
+        expb_usd={**t.expb_usd, "IFLD": 1e9, "HRCN": 1e9}, reference_hazard=t.reference_hazard,
+    )
+    start = time.perf_counter()
+    out = simulate(s1, [], nri=wild)
+    assert time.perf_counter() - start < 5.0
+    u = out.uncertainty
+    assert math.isfinite(u.loss_1_in_250_usd) and u.loss_1_in_250_usd <= s1.parcel_identity.rcv_usd
+    assert 300 <= out.actuarial_breakdown.resili_score <= 850
+
+
+def test_poisson_event_count_is_capped():
+    huge = cm.PerilTerm("FLOOD", 0.0, 1e9, 0.1, None, cm.SevParams(0.1, 0.0, 1.0, 1.0, 1.0))
+    mc = uncertainty.simulate_losses([huge], state="LA", rcv_usd=1e5, tract_prior_lcr=0.001, z=0.9, draws=2_000)
+    assert math.isfinite(mc.loss_1_in_250_usd) and mc.loss_1_in_250_usd <= 1e5
 
 
 # --- property tests ---

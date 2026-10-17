@@ -61,7 +61,7 @@ def build(
         "parcel_identity.year_built", "LIVE" if year_supplied else "DEFAULT",
         "caller-supplied" if year_supplied else "nearest reference parcel", None,
     ))
-    nri = "FEMA National Risk Index building loss rates (reference tract stand-in)"
+    nri = "FEMA National Risk Index building loss rates (reference tract for this golden parcel)"
     for field, what in (
         ("actuarial_breakdown.tract_prior_lcr", "tract-wide sum of NRI building loss rates"),
         ("actuarial_breakdown.base_rates", "per-peril exposed-building loss rates behind the frequency intercepts"),

@@ -90,7 +90,8 @@ def simulate_losses(
     scores = score_continuous_array(post_draw)
 
     annual = np.zeros(n_draws)
-    counts = rng.poisson(lam)
+    cap = int(c("mc.max_events_per_peril"))
+    counts = np.minimum(rng.poisson(np.minimum(lam, cap)), cap)
     for k, t in enumerate(terms):
         n_max = int(counts[:, k].max())
         if n_max == 0 or t.sev is None:

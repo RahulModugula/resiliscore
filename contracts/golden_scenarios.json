@@ -634,13 +634,13 @@
       {
         "field": "actuarial_breakdown.tract_prior_lcr",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): tract-wide sum of NRI building loss rates",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
         "vintage": "v1.20 (December 2025)"
       },
       {
         "field": "actuarial_breakdown.base_rates",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): per-peril exposed-building loss rates behind the frequency intercepts",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
         "vintage": "v1.20 (December 2025)"
       }
     ]
@@ -1353,13 +1353,13 @@
       {
         "field": "actuarial_breakdown.tract_prior_lcr",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): tract-wide sum of NRI building loss rates",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
         "vintage": "v1.20 (December 2025)"
       },
       {
         "field": "actuarial_breakdown.base_rates",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): per-peril exposed-building loss rates behind the frequency intercepts",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
         "vintage": "v1.20 (December 2025)"
       }
     ]
@@ -2042,13 +2042,13 @@
       {
         "field": "actuarial_breakdown.tract_prior_lcr",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): tract-wide sum of NRI building loss rates",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
         "vintage": "v1.20 (December 2025)"
       },
       {
         "field": "actuarial_breakdown.base_rates",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): per-peril exposed-building loss rates behind the frequency intercepts",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
         "vintage": "v1.20 (December 2025)"
       }
     ]
@@ -2765,13 +2765,13 @@
       {
         "field": "actuarial_breakdown.tract_prior_lcr",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): tract-wide sum of NRI building loss rates",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
         "vintage": "v1.20 (December 2025)"
       },
       {
         "field": "actuarial_breakdown.base_rates",
         "value_source": "REFERENCE_PARCEL",
-        "source_name": "FEMA National Risk Index building loss rates (reference tract stand-in): per-peril exposed-building loss rates behind the frequency intercepts",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
         "vintage": "v1.20 (December 2025)"
       }
     ]

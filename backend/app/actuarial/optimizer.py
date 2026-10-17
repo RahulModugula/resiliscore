@@ -12,12 +12,13 @@ from dataclasses import asdict, dataclass, replace
 
 from app.actuarial import attribution, compliance, insurance, uncertainty
 from app.actuarial import compound_model as cm
-from app.actuarial.base_rates import context_for
+from app.actuarial.base_rates import NriRates, base_rates_for, context_for, resolve
 from app.actuarial.constants import get as c
 from app.actuarial.credibility import Credibility, credibility, posterior_lcr
 from app.actuarial.score_map import score, tier
 from app.models.schemas import (
     ActuarialBreakdown,
+    InputProvenance,
     Mitigation,
     ParcelScoreResponse,
     PrivateVerificationLayer,
@@ -57,34 +58,36 @@ def _firewise(r: ParcelScoreResponse) -> bool:
     return r.regulatory_compliance.ca_2644_9_factors.cat_a_firewise_usa
 
 
-def _ctx(r: ParcelScoreResponse) -> dict:
+def _ctx(r: ParcelScoreResponse, nri: NriRates | None = None) -> dict:
     return {"state": r.parcel_identity.state, "year_built": r.parcel_identity.year_built,
-            "firewise": _firewise(r), "base_rates": context_for(r)[0]}
+            "firewise": _firewise(r), "base_rates": context_for(r, nri)[0]}
 
 
-def evaluate(r: ParcelScoreResponse, v: PrivateVerificationLayer, *, z: float | None = None) -> Evaluation:
+def evaluate(
+    r: ParcelScoreResponse, v: PrivateVerificationLayer, *, z: float | None = None, nri: NriRates | None = None
+) -> Evaluation:
     """Full chain for response `r`'s parcel under verification state `v`.
 
     `z` pins the credibility weight (default: the weight `v`'s evidence earns), so a caller can isolate the
     physical effect of a change from the evidence it would add."""
-    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r))
+    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri))
     raw = sum(t.n * t.s for t in terms)
     cred = credibility(v)
     if z is not None:
         cred = replace(cred, z=z)
-    post = posterior_lcr(raw, context_for(r)[1], cred.z)
+    post = posterior_lcr(raw, context_for(r, nri)[1], cred.z)
     s = score(post)
     return Evaluation(raw, cred, post, s, tier(s), terms)
 
 
-def premium_discount(r: ParcelScoreResponse, v: PrivateVerificationLayer) -> float:
+def premium_discount(r: ParcelScoreResponse, v: PrivateVerificationLayer, nri: NriRates | None = None) -> float:
     """Blended statutory discount on the homeowners premium (flood is NFIP, so it is excluded).
 
     Peril shares come from the mitigation-free AAL split so the base premium stays fixed as actions toggle.
     """
     bare = {
         t.peril: t.n * t.s
-        for t in cm.peril_terms(r.public_hazard_layer, v, **_ctx(r), mitigations=cm.Mitigations())
+        for t in cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri), mitigations=cm.Mitigations())
         if t.peril != "FLOOD"
     }
     total = sum(bare.values())
@@ -216,13 +219,15 @@ def _select(v: PrivateVerificationLayer, action_ids: list[str]) -> PrivateVerifi
     return v
 
 
-def _mitigation_row(r: ParcelScoreResponse, a: Action, v: PrivateVerificationLayer, base_premium: float) -> Mitigation:
+def _mitigation_row(
+    r: ParcelScoreResponse, a: Action, v: PrivateVerificationLayer, base_premium: float, nri: NriRates
+) -> Mitigation:
     on, off = a.with_(v), a.without(v)
     # A row is the physical effect of the action alone: both sides use the as-found credibility weight.
     # Evidence (more channels, a higher Z) is a separate effect and shows in simulate()'s headline score.
     z = credibility(v).z
-    e_on, e_off = evaluate(r, on, z=z), evaluate(r, off, z=z)
-    savings = base_premium * (premium_discount(r, on) - premium_discount(r, off))
+    e_on, e_off = evaluate(r, on, z=z, nri=nri), evaluate(r, off, z=z, nri=nri)
+    savings = base_premium * (premium_discount(r, on, nri) - premium_discount(r, off, nri))
     grant = min(a.gross_capex_usd, LA_AL_FORTIFIED_GRANT_USD) if r.parcel_identity.state in a.grant_states else 0.0
     net = a.gross_capex_usd - grant
     return Mitigation(
@@ -252,20 +257,39 @@ def _factors(r: ParcelScoreResponse, v: PrivateVerificationLayer):
         "cat_b2_ember_vents": v.cv_ember_vents,
     })
 
+STAND_IN_FIELD = "actuarial_breakdown.base_rates"
 
-def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScoreResponse:
-    """Re-score `response` with `action_ids` applied (canonical ids or spec aliases)."""
+
+def _with_stand_in_row(rows: list[InputProvenance], tract: NriRates) -> list[InputProvenance]:
+    """Say that the base rates and prior come from the nearest reference tract, not the parcel's own."""
+    row = InputProvenance(
+        field=STAND_IN_FIELD, value_source="REFERENCE_PARCEL", vintage=tract.version,
+        source_name=f"FEMA NRI reference tract {tract.tractfips} used as a stand-in: no tract was supplied for this parcel",
+    )
+    return [x for x in rows if x.field != STAND_IN_FIELD] + [row]
+
+
+def simulate(
+    response: ParcelScoreResponse, action_ids: list[str], nri: NriRates | None = None
+) -> ParcelScoreResponse:
+    """Re-score `response` with `action_ids` applied (canonical ids or spec aliases).
+
+    `nri` is the parcel's own NRI tract (from the ingestion client). With none, the nearest reference tract is a
+    stand-in unless the parcel is that reference parcel, and the result is `indicative_only` with a provenance row
+    saying so. The tract is resolved once here; nothing is read from any other request.
+    """
     t0 = time.perf_counter()
     r = response
+    tract, stand_in = resolve(r, nri)
     v = _select(r.private_verification_layer, action_ids)
-    ev = evaluate(r, v)
-    prior = context_for(r)[1]
+    ev = evaluate(r, v, nri=tract)
+    prior = tract.tract_prior_lcr
     base_premium = r.actuarial_breakdown.annual_base_premium_usd
-    discount = premium_discount(r, v)
+    discount = premium_discount(r, v, tract)
     jac = compliance.numerical_jacobian(
-        r.public_hazard_layer, v, **_ctx(r), tract_prior_lcr=prior, z=ev.credibility.z
+        r.public_hazard_layer, v, **_ctx(r, tract), tract_prior_lcr=prior, z=ev.credibility.z
     )
-    rows = [_mitigation_row(r, a, v, base_premium) for a in ACTIONS if a.applicable(r, v)]
+    rows = [_mitigation_row(r, a, v, base_premium, tract) for a in ACTIONS if a.applicable(r, v)]
     scale = ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0
     rcv = r.parcel_identity.rcv_usd
     freeboard_missing = r.public_hazard_layer.freeboard_delta_h_ft is None and "FLOOD" in {t.peril for t in ev.terms}
@@ -275,7 +299,7 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
     )
     build = insurance.premium_build(
         ev.terms,
-        bare_terms=cm.peril_terms(r.public_hazard_layer, v, **_ctx(r), mitigations=cm.Mitigations()),
+        bare_terms=cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, tract), mitigations=cm.Mitigations()),
         expected_loss_usd=ev.posterior_lcr * rcv, scale=scale, rcv_usd=rcv, filed_credit_pct=discount * 100,
     )
     breakdown = ActuarialBreakdown(
@@ -289,7 +313,7 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
             v,
             r.parcel_identity.rcv_usd,
             scale=ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0,
-            **_ctx(r),
+            **_ctx(r, tract),
         ),
         resili_score=ev.score,
         baseline_macro_score=score(prior),
@@ -303,9 +327,10 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
         "actuarial_breakdown": breakdown,
         "prescriptive_mitigations": rows,
         "uncertainty": Uncertainty(**asdict(mc)),
-        "indicative_only": r.indicative_only or freeboard_missing,
+        "indicative_only": r.indicative_only or freeboard_missing or stand_in,
+        "input_provenance": _with_stand_in_row(r.input_provenance, tract) if stand_in else r.input_provenance,
         "premium_build": build,
-        "factor_contributions": attribution.contributions(r, v, base_rates=context_for(r)[0], prior=prior),
+        "factor_contributions": attribution.contributions(r, v, base_rates=base_rates_for(tract), prior=prior),
         "hitl_status": compliance.hitl_status(
             rcv_usd=r.parcel_identity.rcv_usd,
             cv_confidence=v.cv_confidence,

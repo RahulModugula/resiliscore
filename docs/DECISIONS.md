@@ -48,7 +48,7 @@ score, and no coefficient fitted to a golden output remains except the credibili
 pre-v2 build to hit the spec's published Z; flagged `internal:calibration` in the registry). The credibility prior
 is the tract-wide sum of NRI building loss rates (`EALB / BUILDVALUE`); OpenFEMA stays as a context row. NRI v1.20
 (`NRI_VER` field: December 2025), fetched 2026-10-17 for the three golden tracts into
-`backend/data/nri_reference_tracts.json`; `base_rates_for(nri_rates)` is the seam for the ingestion lane's client.
+`backend/data/nri_reference_tracts.json`; `base_rates_for(nri_rates)` is the seam for the NRI ingestion client.
 
 Exposed-building basis (accepted by the coordinator): the target uses `EALB / EXPB`, not `EALB / BUILDVALUE`. The
 engine only runs a peril where the parcel is in that hazard, and the tract-wide denominator dilutes it with
@@ -84,10 +84,10 @@ Findings to read with the table:
   0.05). S2 as found: $11,987 indicated vs $11,200 filed (v2-stale showed $31k). S1: $619 vs $2,982. S3: $46 vs
   $3,210. The expense and profit loads are placeholders (`validated: false`). The modeled mitigation credit uses
   the non-flood raw `n * s` basis and sits beside, not in place of, the filed statutory credit.
-* **Off-demo parcels use their own tract.** The pipeline hands the ingestion client's live NRI tract (EALB, EXPB,
-  BUILDVALUE) to `base_rates`, so a scored address is calibrated to its own tract and its prior is that tract's
-  sum. With no live tract the nearest reference tract is a stand-in and the score is `indicative_only`. No tract
-  median rain, terrain or fuel is ingested, so the parcel's own live hazard layer is the tract reference and those
-  inputs are neutral relativities.
+* **Off-demo parcels use their own tract.** `build_parcel` returns the live NRI tract (EALB, EXPB, BUILDVALUE) with
+  the parcel and the caller passes it to `simulate(..., nri=...)`; nothing is stored between requests. With no
+  tract the nearest reference tract is a stand-in unless the parcel is the reference parcel itself, and the result
+  is `indicative_only` with a provenance row saying so. No tract median rain, terrain or fuel is ingested, so the
+  parcel's own live hazard layer is the tract reference and those inputs are neutral relativities.
 * The attribution rows are exact Shapley values over 8 factor groups plus one defined row, "in-hazard reference
   home vs tract-wide average"; there is no remainder row.
