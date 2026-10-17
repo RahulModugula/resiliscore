@@ -470,7 +470,7 @@
     ],
     "verdict": "keep Hazus"
   },
-  "generated_at": "2026-10-17T19:20:59Z",
+  "generated_at": "2026-10-17T19:22:08Z",
   "model_card": {
     "constants_calibration": 1,
     "constants_total": 72,
@@ -543,7 +543,7 @@
       }
     ]
   },
-  "model_commit": "511c546",
+  "model_commit": "21d8e03",
   "schema_version": "1.0",
   "status": "COMPLETE",
   "wildfire": {

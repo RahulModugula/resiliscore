@@ -16,7 +16,7 @@ async function openOfflineDemo(page: Page) {
     if (/\/v1\//.test(request.url())) apiRequests.push(request.url());
   });
   await page.route(apiPattern, route => route.abort("connectionrefused"));
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
   return apiRequests;
 }
@@ -116,7 +116,7 @@ for (const failure of ["unavailable", "invalid contract"] as const) {
     await page.route(apiPattern, route => failure === "unavailable"
       ? route.abort("connectionrefused")
       : route.fulfill({ json: { score: 765 } }));
-    await page.goto("/");
+    await page.goto("/assessment?demo=true");
     await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
     await expect(page.getByRole("status")).toContainText("Showing the local demo. All controls remain available.");
     await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
@@ -134,7 +134,7 @@ test("a failed live reconnect discards the previous live response and shows the 
   await page.route(apiPattern, route => available
     ? route.fulfill({ json: liveParcel })
     : route.abort("connectionrefused"));
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   const liveToggle = page.getByRole("checkbox", { name: "Live API", exact: true });
   await liveToggle.check();
   await expect(page.getByRole("status")).toContainText("Live API response validated");
@@ -169,7 +169,7 @@ test("a late live response cannot overwrite a newly selected scenario", async ({
       await route.fulfill({ json: fixtures.SCENARIO_2_CA_WUI });
     }
   });
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
   await started;
   await page.getByRole("button", { name: /Wildfire remediation/ }).click();

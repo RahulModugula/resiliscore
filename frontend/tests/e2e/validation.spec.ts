@@ -8,7 +8,7 @@ test("offline validation shows source data, all fires, verdicts, and an export w
   const requests: string[] = [];
   page.on("request", request => { if (request.url().includes("/v1/")) requests.push(request.url()); });
   await page.route("**/v1/**", route => route.abort("connectionrefused"));
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
   const workspace = page.getByRole("tabpanel");
   await expect(workspace.getByText(report.wildfire!.verdict, { exact: true })).toBeVisible();
@@ -41,7 +41,7 @@ test("the real backend serves the same report and the browser adopts its live fl
   expect(response.ok()).toBe(true);
   const liveReport = await response.json();
   expect(liveReport).toEqual(report);
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
   const liveResponse = page.waitForResponse(response => response.url().endsWith("/v1/model/validation"));
   await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
@@ -56,7 +56,7 @@ test("the real backend serves the same report and the browser adopts its live fl
 
 test("live flood renders uncertainty, signed bias, zero values, and keyboard caveats", async ({ page }) => {
   await page.route("**/v1/**", route => route.fulfill({ json: route.request().url().endsWith("/model/validation") ? { ...report, flood, status: "COMPLETE" } : parcel.SCENARIO_1_LA_FLOOD }));
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
   await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
   await expect(page.getByRole("status")).toContainText("Live validation report checked");
@@ -87,7 +87,7 @@ test("live flood renders uncertainty, signed bias, zero values, and keyboard cav
 
 test("a fully pending report does not display invented metrics", async ({ page }) => {
   await page.route("**/v1/**", route => route.fulfill({ json: route.request().url().endsWith("/model/validation") ? { ...report, status: "PENDING", flood: null, wildfire: null, benchmarks: [] } : parcel.SCENARIO_1_LA_FLOOD }));
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
   await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
   await expect(page.getByRole("status")).toContainText("Live validation report checked");
@@ -99,7 +99,7 @@ test("a fully pending report does not display invented metrics", async ({ page }
 for (const failure of ["unavailable", "invalid"] as const) {
   test(`validation API ${failure} retains the offline report`, async ({ page }) => {
     await page.route("**/v1/**", route => failure === "unavailable" ? route.abort("connectionrefused") : route.fulfill({ json: {} }));
-    await page.goto("/");
+    await page.goto("/assessment?demo=true");
     await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
     await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
     await expect(page.getByRole("status")).toContainText("Showing the bundled validation report.");
@@ -109,7 +109,7 @@ for (const failure of ["unavailable", "invalid"] as const) {
 
 test("four-tab keyboard navigation and narrow layouts remain usable", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/assessment?demo=true");
   await page.getByRole("tab", { name: "Underwriting copilot", exact: true }).focus();
   await page.keyboard.press("End");
   const validation = page.getByRole("tab", { name: "Model Validation", exact: true });

@@ -1,0 +1,651 @@
+{
+  "defaultYearBuilt": 1990,
+  "engineFiles": [
+    "backend/app/actuarial/__init__.py",
+    "backend/app/actuarial/attribution.py",
+    "backend/app/actuarial/base_rates.py",
+    "backend/app/actuarial/compliance.py",
+    "backend/app/actuarial/compound_model.py",
+    "backend/app/actuarial/constants.py",
+    "backend/app/actuarial/credibility.py",
+    "backend/app/actuarial/insurance.py",
+    "backend/app/actuarial/optimizer.py",
+    "backend/app/actuarial/score_map.py",
+    "backend/app/actuarial/uncertainty.py",
+    "backend/app/ingestion/rasters.py",
+    "backend/app/ingestion/engine.py",
+    "backend/app/pipeline.py",
+    "backend/data/nri_reference_tracts.json"
+  ],
+  "engineSha256": "63164c39ed25b7b63406db0568e6ac5d4095446f4cdd1a60a7e2c5d345756e7f",
+  "method": "Canonical backend optimizer.simulate, NY state, national-default hazards, no property verification, default $350,000 RCV, nearest reference NRI stand-in. No live geographic hazard lookup. Model assumes a LiDAR weight even though local evidence is absent. Not a production underwriting model or filed quote.",
+  "screens": {
+    "post2002": {
+      "actuarial_breakdown": {
+        "annual_base_premium_usd": 0.0,
+        "annual_discounted_premium_usd": 0.0,
+        "baseline_macro_score": 692,
+        "credibility_weight_z": 0.4286,
+        "expected_annual_loss_usd": 1126.49,
+        "parcel_raw_lcr": 0.002443,
+        "peril_split": [
+          {
+            "expected_freq_n": 0.01377,
+            "expected_sev_s": 81779.5,
+            "peril": "WIND_HAIL",
+            "peril_aal_usd": 1126.49,
+            "zip_immunity_pi": 0.4013
+          }
+        ],
+        "posterior_lcr": 0.003219,
+        "resili_score": 719,
+        "statutory_discount_pct": 0.0,
+        "tract_prior_lcr": 0.0038003750792206035,
+        "underwriting_tier": "TIER_2_CONDITIONAL"
+      },
+      "evidence_log": [],
+      "factor_contributions": [
+        {
+          "factor": "Construction era",
+          "input_value": 2002.0,
+          "score_points": 17.0433,
+          "source": "parcel identity"
+        },
+        {
+          "factor": "In-hazard reference home vs tract-wide average",
+          "input_value": null,
+          "score_points": 9.2334,
+          "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+        }
+      ],
+      "hitl_status": {
+        "escalated": true,
+        "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+        "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+        "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+      },
+      "indicative_only": true,
+      "input_provenance": [
+        {
+          "field": "fema_flood_zone",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "bfe_ft_navd88",
+          "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+          "value_source": "UNAVAILABLE",
+          "vintage": "live"
+        },
+        {
+          "field": "usgs_lag_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "est_ffe_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "freeboard_delta_h_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "noaa_atlas15_p24h_100yr_in",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "atlas15_cmip6_mult",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "landfire_fbfm40_code",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "hand_rel_elev_ft",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "twi_index",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "slope_deg",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "wui_class",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "wrc_burn_probability",
+          "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+          "value_source": "UNAVAILABLE",
+          "vintage": "RDS-2020-0016-2"
+        },
+        {
+          "field": "openfema_tract_claim_count",
+          "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+          "value_source": "UNAVAILABLE",
+          "vintage": "NfipClaims_NfipPolicies_v3"
+        },
+        {
+          "field": "openfema_tract_mean_lcr",
+          "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+          "value_source": "UNAVAILABLE",
+          "vintage": "NfipClaims_NfipPolicies_v3"
+        },
+        {
+          "field": "tract_prior_lcr",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "rcv_usd",
+          "source_name": "backend.app.pipeline.DEFAULT_RCV_USD; not a NYC valuation",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "year_built",
+          "source_name": "Construction era cache representative; runtime selects pre/post 2002 using mapped year or default 1990",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "private_verification_layer",
+          "source_name": "No property verification supplied; false means unknown or not established",
+          "value_source": "UNAVAILABLE",
+          "vintage": null
+        },
+        {
+          "field": "credibility.lidar_1m",
+          "source_name": "Canonical engine assumes LiDAR weight 0.6 even without measured elevation; not verified evidence",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "actuarial_breakdown.base_rates",
+          "source_name": "FEMA NRI reference tract 22051028900 used as a stand-in: no tract was supplied for this parcel",
+          "value_source": "REFERENCE_PARCEL",
+          "vintage": "v1.20"
+        }
+      ],
+      "parcel_identity": {
+        "address": "Offline NY default-input model screen",
+        "apn_uid": "00000000000000",
+        "centroid": [
+          -74.0,
+          40.75
+        ],
+        "county_fips": "36061",
+        "geometries": {
+          "features": [
+            {
+              "geometry": {
+                "coordinates": [
+                  [
+                    [
+                      -74.0001,
+                      40.7499
+                    ],
+                    [
+                      -73.9999,
+                      40.7499
+                    ],
+                    [
+                      -73.9999,
+                      40.7501
+                    ],
+                    [
+                      -74.0001,
+                      40.7501
+                    ],
+                    [
+                      -74.0001,
+                      40.7499
+                    ]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "properties": {
+                "kind": "building_footprint",
+                "label": "Placeholder replaced by selected NYC building"
+              },
+              "type": "Feature"
+            }
+          ],
+          "type": "FeatureCollection"
+        },
+        "h3_res11": "",
+        "h3_res13": "",
+        "rcv_usd": 350000.0,
+        "state": "NY",
+        "year_built": 2002
+      },
+      "premium_build": {
+        "deductible_usd": 3500.0,
+        "expected_loss_usd": 1126.49,
+        "expense_load_pct": 30.0,
+        "filed_mitigation_credit_pct": 0.0,
+        "indicated_premium_usd": 1635.24,
+        "modeled_mitigation_credit_pct": 0.0,
+        "net_expected_loss_usd": 1062.9,
+        "profit_load_pct": 5.0
+      },
+      "prescriptive_mitigations": [
+        {
+          "action_id": "HAIL_CLASS4_ROOF",
+          "annual_premium_savings_usd": 0.0,
+          "currently_applied": false,
+          "grant_subsidy_usd": 0.0,
+          "gross_capex_usd": 9000.0,
+          "lcr_delta_bps": -3.14,
+          "net_capex_usd": 9000.0,
+          "payback_years": 99.0,
+          "peril": "WIND_HAIL",
+          "resale_value_bump_pct": 0.8,
+          "score_delta_pts": 16,
+          "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+          "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+        }
+      ],
+      "private_verification_layer": {
+        "cv_confidence": 0.0,
+        "cv_ember_vents": false,
+        "cv_enclosed_eaves": false,
+        "cv_overhang_ft": 0.0,
+        "cv_roof_class": "WOOD_SHAKE_UNRATED",
+        "cv_zone0_clear": false,
+        "cv_zone1_no_shed": false,
+        "elev_cert_verified": false,
+        "ibhs_fortified_tier": "NONE",
+        "ibhs_wph_tier": "NONE",
+        "iot_shutoff_active": false,
+        "unpermitted_footprint_delta_sqft": 0.0
+      },
+      "processing_time_ms": 0,
+      "public_hazard_layer": {
+        "atlas15_cmip6_mult": 1.1,
+        "bfe_ft_navd88": null,
+        "est_ffe_ft": null,
+        "fema_flood_zone": "D",
+        "freeboard_delta_h_ft": null,
+        "hand_rel_elev_ft": 5.0,
+        "landfire_fbfm40_code": "NB1",
+        "noaa_atlas15_p24h_100yr_in": 8.0,
+        "openfema_tract_claim_count": 0,
+        "openfema_tract_mean_lcr": 0.0,
+        "slope_deg": 5.0,
+        "twi_index": 8.0,
+        "usgs_lag_ft": null,
+        "wrc_burn_probability": null,
+        "wui_class": "NON_WUI"
+      },
+      "regulatory_compliance": {
+        "ca_2644_9_factors": {
+          "cat_a_fire_risk_reduction_community": false,
+          "cat_a_firewise_usa": false,
+          "cat_a_shelter_in_place": false,
+          "cat_b1_no_sheds_within_30ft": false,
+          "cat_b1_prc_4291_compliance": false,
+          "cat_b1_under_deck_clearing": false,
+          "cat_b1_zone0_clear_0_5ft": false,
+          "cat_b2_class_a_roof": false,
+          "cat_b2_ember_vents": false,
+          "cat_b2_enclosed_eaves": false,
+          "cat_b2_multi_pane_windows": false,
+          "cat_b2_vertical_siding_clearance_6in": false
+        },
+        "dataset_vintages": {},
+        "monotonicity_verified": true,
+        "ny_dfs_cl7_ecdis_free": true
+      },
+      "request_id": "00000000-0000-4000-8000-000000000001",
+      "uncertainty": {
+        "aal_p05_usd": 911.92,
+        "aal_p50_usd": 1085.8,
+        "aal_p95_usd": 1470.11,
+        "loss_1_in_100_usd": 12057.27,
+        "loss_1_in_250_usd": 23539.54,
+        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0143",
+        "score_p05": 676.5,
+        "score_p95": 752.0
+      }
+    },
+    "pre2002": {
+      "actuarial_breakdown": {
+        "annual_base_premium_usd": 0.0,
+        "annual_discounted_premium_usd": 0.0,
+        "baseline_macro_score": 692,
+        "credibility_weight_z": 0.4286,
+        "expected_annual_loss_usd": 1254.69,
+        "parcel_raw_lcr": 0.003297,
+        "peril_split": [
+          {
+            "expected_freq_n": 0.01859,
+            "expected_sev_s": 67478.17,
+            "peril": "WIND_HAIL",
+            "peril_aal_usd": 1254.69,
+            "zip_immunity_pi": 0.4013
+          }
+        ],
+        "posterior_lcr": 0.003585,
+        "resili_score": 702,
+        "statutory_discount_pct": 0.0,
+        "tract_prior_lcr": 0.0038003750792206035,
+        "underwriting_tier": "TIER_2_CONDITIONAL"
+      },
+      "evidence_log": [],
+      "factor_contributions": [
+        {
+          "factor": "In-hazard reference home vs tract-wide average",
+          "input_value": null,
+          "score_points": 9.2334,
+          "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+        }
+      ],
+      "hitl_status": {
+        "escalated": true,
+        "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+        "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+        "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+      },
+      "indicative_only": true,
+      "input_provenance": [
+        {
+          "field": "fema_flood_zone",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "bfe_ft_navd88",
+          "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+          "value_source": "UNAVAILABLE",
+          "vintage": "live"
+        },
+        {
+          "field": "usgs_lag_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "est_ffe_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "freeboard_delta_h_ft",
+          "source_name": "USGS 3DEP EPQS",
+          "value_source": "UNAVAILABLE",
+          "vintage": "EPQS_current"
+        },
+        {
+          "field": "noaa_atlas15_p24h_100yr_in",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "atlas15_cmip6_mult",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "landfire_fbfm40_code",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "hand_rel_elev_ft",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "twi_index",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "slope_deg",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "wui_class",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "wrc_burn_probability",
+          "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+          "value_source": "UNAVAILABLE",
+          "vintage": "RDS-2020-0016-2"
+        },
+        {
+          "field": "openfema_tract_claim_count",
+          "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+          "value_source": "UNAVAILABLE",
+          "vintage": "NfipClaims_NfipPolicies_v3"
+        },
+        {
+          "field": "openfema_tract_mean_lcr",
+          "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+          "value_source": "UNAVAILABLE",
+          "vintage": "NfipClaims_NfipPolicies_v3"
+        },
+        {
+          "field": "tract_prior_lcr",
+          "source_name": "National default (no live source)",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "rcv_usd",
+          "source_name": "backend.app.pipeline.DEFAULT_RCV_USD; not a NYC valuation",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "year_built",
+          "source_name": "Construction era cache representative; runtime selects pre/post 2002 using mapped year or default 1990",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "private_verification_layer",
+          "source_name": "No property verification supplied; false means unknown or not established",
+          "value_source": "UNAVAILABLE",
+          "vintage": null
+        },
+        {
+          "field": "credibility.lidar_1m",
+          "source_name": "Canonical engine assumes LiDAR weight 0.6 even without measured elevation; not verified evidence",
+          "value_source": "DEFAULT",
+          "vintage": null
+        },
+        {
+          "field": "actuarial_breakdown.base_rates",
+          "source_name": "FEMA NRI reference tract 22051028900 used as a stand-in: no tract was supplied for this parcel",
+          "value_source": "REFERENCE_PARCEL",
+          "vintage": "v1.20"
+        }
+      ],
+      "parcel_identity": {
+        "address": "Offline NY default-input model screen",
+        "apn_uid": "00000000000000",
+        "centroid": [
+          -74.0,
+          40.75
+        ],
+        "county_fips": "36061",
+        "geometries": {
+          "features": [
+            {
+              "geometry": {
+                "coordinates": [
+                  [
+                    [
+                      -74.0001,
+                      40.7499
+                    ],
+                    [
+                      -73.9999,
+                      40.7499
+                    ],
+                    [
+                      -73.9999,
+                      40.7501
+                    ],
+                    [
+                      -74.0001,
+                      40.7501
+                    ],
+                    [
+                      -74.0001,
+                      40.7499
+                    ]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "properties": {
+                "kind": "building_footprint",
+                "label": "Placeholder replaced by selected NYC building"
+              },
+              "type": "Feature"
+            }
+          ],
+          "type": "FeatureCollection"
+        },
+        "h3_res11": "",
+        "h3_res13": "",
+        "rcv_usd": 350000.0,
+        "state": "NY",
+        "year_built": 2001
+      },
+      "premium_build": {
+        "deductible_usd": 3500.0,
+        "expected_loss_usd": 1254.69,
+        "expense_load_pct": 30.0,
+        "filed_mitigation_credit_pct": 0.0,
+        "indicated_premium_usd": 1821.33,
+        "modeled_mitigation_credit_pct": 0.0,
+        "net_expected_loss_usd": 1183.86,
+        "profit_load_pct": 5.0
+      },
+      "prescriptive_mitigations": [
+        {
+          "action_id": "HAIL_CLASS4_ROOF",
+          "annual_premium_savings_usd": 0.0,
+          "currently_applied": false,
+          "grant_subsidy_usd": 0.0,
+          "gross_capex_usd": 9000.0,
+          "lcr_delta_bps": -4.24,
+          "net_capex_usd": 9000.0,
+          "payback_years": 99.0,
+          "peril": "WIND_HAIL",
+          "resale_value_bump_pct": 0.8,
+          "score_delta_pts": 19,
+          "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+          "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+        }
+      ],
+      "private_verification_layer": {
+        "cv_confidence": 0.0,
+        "cv_ember_vents": false,
+        "cv_enclosed_eaves": false,
+        "cv_overhang_ft": 0.0,
+        "cv_roof_class": "WOOD_SHAKE_UNRATED",
+        "cv_zone0_clear": false,
+        "cv_zone1_no_shed": false,
+        "elev_cert_verified": false,
+        "ibhs_fortified_tier": "NONE",
+        "ibhs_wph_tier": "NONE",
+        "iot_shutoff_active": false,
+        "unpermitted_footprint_delta_sqft": 0.0
+      },
+      "processing_time_ms": 0,
+      "public_hazard_layer": {
+        "atlas15_cmip6_mult": 1.1,
+        "bfe_ft_navd88": null,
+        "est_ffe_ft": null,
+        "fema_flood_zone": "D",
+        "freeboard_delta_h_ft": null,
+        "hand_rel_elev_ft": 5.0,
+        "landfire_fbfm40_code": "NB1",
+        "noaa_atlas15_p24h_100yr_in": 8.0,
+        "openfema_tract_claim_count": 0,
+        "openfema_tract_mean_lcr": 0.0,
+        "slope_deg": 5.0,
+        "twi_index": 8.0,
+        "usgs_lag_ft": null,
+        "wrc_burn_probability": null,
+        "wui_class": "NON_WUI"
+      },
+      "regulatory_compliance": {
+        "ca_2644_9_factors": {
+          "cat_a_fire_risk_reduction_community": false,
+          "cat_a_firewise_usa": false,
+          "cat_a_shelter_in_place": false,
+          "cat_b1_no_sheds_within_30ft": false,
+          "cat_b1_prc_4291_compliance": false,
+          "cat_b1_under_deck_clearing": false,
+          "cat_b1_zone0_clear_0_5ft": false,
+          "cat_b2_class_a_roof": false,
+          "cat_b2_ember_vents": false,
+          "cat_b2_enclosed_eaves": false,
+          "cat_b2_multi_pane_windows": false,
+          "cat_b2_vertical_siding_clearance_6in": false
+        },
+        "dataset_vintages": {},
+        "monotonicity_verified": true,
+        "ny_dfs_cl7_ecdis_free": true
+      },
+      "request_id": "00000000-0000-4000-8000-000000000001",
+      "uncertainty": {
+        "aal_p05_usd": 965.05,
+        "aal_p50_usd": 1199.75,
+        "aal_p95_usd": 1718.52,
+        "loss_1_in_100_usd": 18472.47,
+        "loss_1_in_250_usd": 40971.78,
+        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0190",
+        "score_p05": 651.8,
+        "score_p95": 743.1
+      }
+    }
+  },
+  "yearCutoff": 2002
+}
