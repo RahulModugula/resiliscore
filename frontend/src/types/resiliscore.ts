@@ -1,6 +1,59 @@
 // Mirrors contracts/parcel_score_schema.json and backend/app/models/schemas.py. Change all three together.
 
-export type State = "LA" | "CA" | "FL";
+// USPS codes: 50 states + DC + PR.
+export type State =
+  | "AL"
+  | "AK"
+  | "AZ"
+  | "AR"
+  | "CA"
+  | "CO"
+  | "CT"
+  | "DE"
+  | "DC"
+  | "FL"
+  | "GA"
+  | "HI"
+  | "ID"
+  | "IL"
+  | "IN"
+  | "IA"
+  | "KS"
+  | "KY"
+  | "LA"
+  | "ME"
+  | "MD"
+  | "MA"
+  | "MI"
+  | "MN"
+  | "MS"
+  | "MO"
+  | "MT"
+  | "NE"
+  | "NV"
+  | "NH"
+  | "NJ"
+  | "NM"
+  | "NY"
+  | "NC"
+  | "ND"
+  | "OH"
+  | "OK"
+  | "OR"
+  | "PA"
+  | "PR"
+  | "RI"
+  | "SC"
+  | "SD"
+  | "TN"
+  | "TX"
+  | "UT"
+  | "VT"
+  | "VA"
+  | "WA"
+  | "WV"
+  | "WI"
+  | "WY";
 export type Peril = "FLOOD" | "WILDFIRE" | "WIND_HAIL";
 export type RoofClass = "CLASS_A_FORTIFIED" | "CLASS_A_IMPACT_4" | "CLASS_A_ASPHALT" | "WOOD_SHAKE_UNRATED";
 export type FortifiedTier = "ROOF" | "SILVER" | "GOLD" | "NONE";
@@ -71,6 +124,7 @@ export interface PublicHazardLayer {
   wui_class: string;
   openfema_tract_claim_count: number;
   openfema_tract_mean_lcr: number;
+  wrc_burn_probability: number | null;
 }
 
 export interface PrivateVerificationLayer {
