@@ -20,7 +20,7 @@ from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 
-from app.integrations.guidewire_mock import find_scenario, load_scenarios
+from app.fixtures import by_address, by_apn, load_golden
 from app.models.schemas import ParcelScoreResponse, UnderwritingTier
 
 mcp = MCPServer("resiliscore")  # `FastMCP` was renamed `MCPServer` in mcp 2.x (locked at 2.3.0)
@@ -39,16 +39,11 @@ def band(score: int) -> UnderwritingTier:
     return "TIER_3_DECLINE_ESCALATE"
 
 
-def _normalise(address: str) -> str:
-    return " ".join(address.lower().replace(",", " ").split())
-
-
-def _by_address(address: str) -> ParcelScoreResponse:
-    wanted = _normalise(address)
-    for scenario in load_scenarios().values():
-        if wanted and wanted in _normalise(scenario.parcel_identity.address):
-            return scenario
-    raise ValueError(f"no golden parcel matches address {address!r}")
+def _parcel(apn_uid: str) -> ParcelScoreResponse:
+    parcel = by_apn(apn_uid)
+    if parcel is None:
+        raise ValueError(f"unknown apn_uid {apn_uid!r}")
+    return parcel
 
 
 @mcp.tool()
@@ -58,9 +53,13 @@ def get_parcel_resiliscore(address: str) -> dict[str, Any]:
     Returns the full ParcelScoreResponse: score, tier (TIER_1_AUTO_BIND 720+, TIER_2_CONDITIONAL 580-719,
     TIER_3_DECLINE_ESCALATE below 580), credibility weight, annual loss, premium, ranked mitigations and
     any human-review flag. Use this first; pass the returned apn_uid to the other tools. The address must
-    match a known demo parcel (for example "412 Bayou Rd"); otherwise the call errors.
+    match a known demo parcel exactly, ignoring case (for example "412 Bayou Rd, Jefferson Parish, LA");
+    otherwise the call errors.
     """
-    return _by_address(address).model_dump(mode="json")
+    parcel = by_address(address)
+    if parcel is None:
+        raise ValueError(f"no golden parcel matches address {address!r}")
+    return parcel.model_dump(mode="json")
 
 
 @mcp.tool()
@@ -71,7 +70,7 @@ def verify_zone0_clearance(apn_uid: str) -> dict[str, Any]:
     confidence, the Zone 1 shed check, and `needs_human_review`, true when confidence is below 0.85 or the
     parcel is escalated, in which case ask for a mobile self-inspection instead of trusting the result.
     """
-    _, scenario = find_scenario(apn_uid=apn_uid)
+    scenario = _parcel(apn_uid)
     pvl = scenario.private_verification_layer
     return {
         "apn_uid": apn_uid,
@@ -91,7 +90,7 @@ def query_usgs_freeboard(lat: float, lng: float) -> dict[str, Any]:
     resolve; others error. Returns the matched apn_uid so it can be passed to other tools.
     """
     best: tuple[float, ParcelScoreResponse] | None = None
-    for scenario in load_scenarios().values():
+    for scenario in load_golden().values():
         lng0, lat0 = scenario.parcel_identity.centroid
         dist = max(abs(lat - lat0), abs(lng - lng0))
         if dist <= MAX_MATCH_DEG and (best is None or dist < best[0]):
@@ -118,7 +117,7 @@ def simulate_mitigation_roi(apn_uid: str, actions: list[str]) -> dict[str, Any]:
     "CA_ZONE0_1_CLEARANCE"). Already-applied actions add nothing; unknown ids error. Returns the new
     score (capped 300-850) and tier, net capex, annual premium savings and simple payback in years.
     """
-    _, scenario = find_scenario(apn_uid=apn_uid)
+    scenario = _parcel(apn_uid)
     catalog = {m.action_id: m for m in scenario.prescriptive_mitigations}
     unknown = sorted(set(actions) - catalog.keys())
     if unknown:

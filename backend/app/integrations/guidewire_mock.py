@@ -5,45 +5,20 @@ Serves the golden scenarios as a PolicyCenter-style quote and issue flow. No net
 """
 
 import hashlib
-import json
-from functools import lru_cache
-from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from app.fixtures import by_apn, by_scenario
 from app.models.schemas import ParcelScoreResponse
 
-GOLDEN_PATH = Path(__file__).resolve().parents[3] / "contracts" / "golden_scenarios.json"
 CONDITIONAL_BIND_DAYS = 60
 
 router = APIRouter(prefix="/v1/guidewire")
 
-# submission_id -> scenario key, filled by /quote and read by /issue.
-_submissions: dict[str, str] = {}
-
-
-@lru_cache(maxsize=1)
-def load_scenarios() -> dict[str, ParcelScoreResponse]:
-    """Golden scenarios validated against the contract models, keyed by scenario id."""
-    raw = json.loads(GOLDEN_PATH.read_text())
-    return {key: ParcelScoreResponse.model_validate(value) for key, value in raw.items()}
-
-
-def find_scenario(
-    *, scenario_id: str | None = None, apn_uid: str | None = None
-) -> tuple[str, ParcelScoreResponse]:
-    """Look a scenario up by key or APN; the first scenario with an APN wins (the unescalated one)."""
-    scenarios = load_scenarios()
-    if scenario_id is not None:
-        if scenario_id not in scenarios:
-            raise LookupError(f"unknown scenario_id {scenario_id!r}")
-        return scenario_id, scenarios[scenario_id]
-    for key, scenario in scenarios.items():
-        if scenario.parcel_identity.apn_uid == apn_uid:
-            return key, scenario
-    raise LookupError(f"unknown apn_uid {apn_uid!r}")
+# submission_id -> quoted parcel, filled by /quote and read by /issue.
+_submissions: dict[str, ParcelScoreResponse] = {}
 
 
 class QuoteRequest(BaseModel):
@@ -88,11 +63,11 @@ def policy_number(submission_id: str, state: str) -> str:
     return f"RS-{state}-{int(_digest(submission_id, 'policy'), 16) % 10**8:08d}"
 
 
-def _quote_payload(submission_id: str, key: str, score: ParcelScoreResponse) -> dict[str, Any]:
+def _quote_payload(submission_id: str, score: ParcelScoreResponse) -> dict[str, Any]:
     ab = score.actuarial_breakdown
     return {
         "submissionId": submission_id,
-        "scenarioId": key,
+        "apnUid": score.parcel_identity.apn_uid,
         "status": "Quoted",
         "ResiliScore_Ext": {
             "score": ab.resili_score,
@@ -115,12 +90,11 @@ def _quote_payload(submission_id: str, key: str, score: ParcelScoreResponse) -> 
 @router.post("/submissions/{submission_id}/quote")
 def quote(submission_id: str, body: QuoteRequest) -> dict[str, Any]:
     """PricingCenter BYOM quote for a golden parcel."""
-    try:
-        key, score = find_scenario(scenario_id=body.scenario_id, apn_uid=body.apn_uid)
-    except LookupError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    _submissions[submission_id] = key
-    return _quote_payload(submission_id, key, score)
+    score = by_scenario(body.scenario_id) if body.scenario_id is not None else by_apn(body.apn_uid or "")
+    if score is None:
+        raise HTTPException(status_code=404, detail="no golden scenario matches")
+    _submissions[submission_id] = score
+    return _quote_payload(submission_id, score)
 
 
 def issue_decision(score: ParcelScoreResponse, submission_id: str) -> tuple[int, dict[str, Any]]:
@@ -160,11 +134,11 @@ def issue_decision(score: ParcelScoreResponse, submission_id: str) -> tuple[int,
 @router.post("/submissions/{submission_id}/issue")
 def issue(submission_id: str) -> dict[str, Any]:
     """Issue the quoted submission. Tier 3 and HITL-escalated parcels return 409 with a referral."""
-    key = _submissions.get(submission_id)
-    if key is None:
+    score = _submissions.get(submission_id)
+    if score is None:
         raise HTTPException(status_code=404, detail=f"submission {submission_id!r} has no quote")
-    status, payload = issue_decision(load_scenarios()[key], submission_id)
-    payload = {"submissionId": submission_id, "scenarioId": key, **payload}
+    status, payload = issue_decision(score, submission_id)
+    payload = {"submissionId": submission_id, "apnUid": score.parcel_identity.apn_uid, **payload}
     if status == 409:
         raise HTTPException(status_code=409, detail=payload)
     return payload

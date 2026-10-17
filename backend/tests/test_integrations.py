@@ -5,8 +5,9 @@ import re
 import pytest
 from fastapi.testclient import TestClient
 
+from app.fixtures import by_scenario
 from app.integrations import mcp_server
-from app.integrations.guidewire_mock import issue_decision, load_scenarios, policy_number
+from app.integrations.guidewire_mock import issue_decision, policy_number
 from app.main import app
 
 S1 = "SCENARIO_1_LA_FLOOD"
@@ -60,7 +61,7 @@ def test_escalated_hitl_parcel_is_referred_despite_tier_1():
 
 
 def test_tier_2_gets_conditional_bind_with_60_day_plan():
-    s2 = load_scenarios()[S2]
+    s2 = by_scenario(S2)
     tier2 = s2.model_copy(
         update={"actuarial_breakdown": s2.actuarial_breakdown.model_copy(
             update={"resili_score": 630, "underwriting_tier": "TIER_2_CONDITIONAL"})}
@@ -110,7 +111,7 @@ def test_mcp_registers_four_tools():
 
 
 def test_get_parcel_resiliscore_returns_valid_data():
-    out = mcp_server.get_parcel_resiliscore("1840 Canyon Crest Dr")
+    out = mcp_server.get_parcel_resiliscore("1840 canyon crest dr, altadena, ca")
     assert out["actuarial_breakdown"]["resili_score"] == 385
     with pytest.raises(ValueError):
         mcp_server.get_parcel_resiliscore("1 Nowhere St")

@@ -6,9 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, model_validator
 
 from app.fixtures import by_address, by_apn, by_scenario
-from app.models.schemas import HitlStatus, ParcelScoreResponse, UnderwritingTier
-
 from app.integrations.guidewire_mock import router as guidewire_router
+from app.models.schemas import HitlStatus, ParcelScoreResponse, UnderwritingTier
 
 app = FastAPI(title="ResiliScore API", version="0.1.0")
 app.add_middleware(
