@@ -236,6 +236,7 @@ export interface NycLayer {
   floodnet_max_depth_in: number | null;
   sewer_backup_311_500m_5y: number | null;
   street_flooding_311_500m_5y: number | null;
+  residential_units_500m: number | null; // sum of PLUTO unitsres within 500 m
   catch_basins_150m: number | null;
   dob_open_violations: number | null;
   dob_cellar_conversion_flag: boolean | null;
