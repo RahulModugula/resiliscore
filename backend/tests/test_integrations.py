@@ -28,7 +28,7 @@ def test_s1_quote_then_auto_bind():
     quote, issued = quote_then_issue("SUB-S1", S1)
     ext = quote["ResiliScore_Ext"]
     assert (ext["score"], ext["tier"]) == (765, "TIER_1_AUTO_BIND")
-    assert quote["appliedRules"] == ["LA_FORTIFIED_ROOF_CREDIT"]
+    assert quote["appliedRules"] == ["LA_REG_136"]
     assert quote["idmDocumentId"].startswith("IDM-")
     assert quote["premium"]["totalPremium"] == 2604.0
     body = issued.json()
@@ -48,8 +48,7 @@ def test_s2_issue_is_referred_with_409():
 
 def test_s3_quote_then_bind_with_california_rules():
     quote, issued = quote_then_issue("SUB-S3", S3)
-    assert "CA_CCR_2644_9_CAT_B1_B2" in quote["appliedRules"]
-    assert "CA_CCR_2644_9_CAT_A" in quote["appliedRules"]
+    assert quote["appliedRules"] == ["CA_CCR_2644_9"]
     assert issued.status_code == 200
     assert re.fullmatch(r"RS-CA-\d{8}", issued.json()["policyNumber"])
 
