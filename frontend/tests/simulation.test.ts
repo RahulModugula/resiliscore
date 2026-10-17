@@ -80,6 +80,9 @@ test("structure review increases RCV and loss cost, and releases only a conditio
   closeTo(result.actuarial_breakdown.posterior_lcr, baseline.actuarial_breakdown.posterior_lcr + 35 / 10000);
   closeTo(result.actuarial_breakdown.expected_annual_loss_usd, 4134);
   assert.equal(result.actuarial_breakdown.underwriting_tier, "TIER_2_CONDITIONAL");
+  const a = result.actuarial_breakdown;
+  closeTo(a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0), a.expected_annual_loss_usd);
+  closeTo(a.credibility_weight_z * a.parcel_raw_lcr + (1 - a.credibility_weight_z) * a.tract_prior_lcr, a.posterior_lcr);
   assert.equal(result.hitl_status.escalated, false);
   assert.match(result.hitl_status.recommended_underwriter_action ?? "", /permit review within 60 days/i);
   assert.equal(result.private_verification_layer.unpermitted_footprint_delta_sqft, 240);

@@ -120,6 +120,27 @@ for (const failure of ["unavailable", "invalid contract"] as const) {
   });
 }
 
+test("a failed live reconnect discards the previous live response and shows the local parcel", async ({ page }) => {
+  let available = true;
+  const liveParcel = structuredClone(fixtures.SCENARIO_1_LA_FLOOD);
+  liveParcel.actuarial_breakdown.resili_score = 800;
+  await page.route(apiPattern, route => available
+    ? route.fulfill({ json: liveParcel })
+    : route.abort("connectionrefused"));
+  await page.goto("/");
+  const liveToggle = page.getByRole("checkbox", { name: "Live API", exact: true });
+  await liveToggle.check();
+  await expect(page.getByRole("status")).toContainText("Live API response validated");
+  await expect(page.getByTestId("score")).toHaveText("800");
+  await liveToggle.uncheck();
+  await expect(page.getByTestId("score")).toHaveText("765");
+  available = false;
+  await liveToggle.check();
+  await expect(page.getByRole("status")).toContainText("Showing the local demo");
+  await expect(page.getByTestId("score")).toHaveText("765");
+  await expect(page.getByText("Golden demo parcel", { exact: true })).toBeVisible();
+});
+
 test("a late live response cannot overwrite a newly selected scenario", async ({ page }) => {
   let releaseFirst!: () => void;
   let firstStarted!: () => void;
