@@ -33,7 +33,7 @@ export default function ManhattanExplorer() {
   const neighborhood = data?.neighborhoods.find(item => item.id === neighborhoodId) ?? null;
   const activeDetail = detail?.neighborhoodId === neighborhoodId ? detail : null;
   const detailPending = !!neighborhoodId && !activeDetail && !detailError;
-  const ready = useCallback(() => setSceneReady(true), []);
+  const ready = useCallback(() => { setSceneReady(true); setSceneError(""); }, []);
   const failScene = useCallback((message: string) => setSceneError(message), []);
 
   useEffect(() => {
@@ -110,7 +110,7 @@ export default function ManhattanExplorer() {
                     {matchingBuildings.length > limit && <button className={styles.more} onClick={() => setLimit(value => value + 60)}>Show more properties</button>}
                   </> : <>
                     {!visibleNeighborhoods.length && <p className={styles.listMessage}>No neighborhoods match this search.</p>}
-                    <ul aria-label="Neighborhoods">{visibleNeighborhoods.map(item => <li key={item.id}><button className={styles.listButton} onClick={() => selectNeighborhood(item.id)}><span><strong>{item.name}</strong><small>{item.type === "1" ? "Park area" : "Neighborhood area"}</small></span><ChevronRight size={16} /></button></li>)}</ul>
+                    <ul aria-label="Neighborhoods">{visibleNeighborhoods.map(item => <li key={item.id}><button className={styles.listButton} onClick={() => selectNeighborhood(item.id)}><span><strong>{item.name}</strong><small>{item.type === "9" ? "Park or special-use area" : "Neighborhood area"}</small></span><ChevronRight size={16} /></button></li>)}</ul>
                   </>}
         </div>
         <div className={styles.directoryFoot}><MapPin size={14} /><span>NYC mapped footprints, not surveyed parcel boundaries</span></div>
