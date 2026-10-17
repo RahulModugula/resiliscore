@@ -57,7 +57,9 @@ export function selectContextStreets(streets: ContextStreet[], bounds: Bounds) {
 }
 /** Crop the original measured raster. Do not flatten, extrapolate or fill missing samples. */
 export function cropTerrain(terrain: TerrainGrid, bounds: Bounds): TerrainGrid {
+  if(!terrain || !Array.isArray(terrain.bounds) || terrain.bounds.length!==4 || !terrain.bounds.every(Number.isFinite) || !Number.isInteger(terrain.width) || terrain.width<2 || !Number.isInteger(terrain.height) || terrain.height<2 || !Array.isArray(terrain.elevationsM) || terrain.elevationsM.length!==terrain.width*terrain.height) throw new Error("The local measured elevation grid is malformed");
   const [w,s,e,n] = terrain.bounds;
+  if(e<=w || n<=s) throw new Error("The local measured elevation bounds are malformed");
   const dx = (e-w)/(terrain.width-1), dy=(n-s)/(terrain.height-1);
   const x0=Math.max(0,Math.floor((bounds[0]-w)/dx)), x1=Math.min(terrain.width-1,Math.ceil((bounds[2]-w)/dx));
   const y0=Math.max(0,Math.floor((bounds[1]-s)/dy)), y1=Math.min(terrain.height-1,Math.ceil((bounds[3]-s)/dy));
