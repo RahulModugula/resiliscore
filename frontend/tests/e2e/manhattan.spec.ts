@@ -41,12 +41,12 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     await page.getByRole("button", { name: new RegExp(district) }).click();
     const property = page.getByRole("button", { name: /^Assess / }).first();
     await property.waitFor();
-    const name = (await property.getAttribute("aria-label"))!.replace(/^Assess /, "");
+    const name = (await property.locator("strong").innerText()).trim();
     await property.click();
     await expect(page).toHaveURL(/\/assessment\?property=/);
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
     await expect(page.getByText("Offline model screening", { exact: true }).first()).toBeVisible();
-    await expect(page.getByRole("status")).toContainText(/national.default/);
+    await expect(page.getByRole("status").filter({ hasText: "Offline model screening." })).toContainText(/national.default/);
     await expect(page.getByRole("button", { name: /bind.*PolicyCenter|Issue.*bind/ })).toHaveCount(0);
     await page.reload();
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
