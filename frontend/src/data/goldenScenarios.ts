@@ -9,6 +9,9 @@ export const goldenScenarios = {
   SCENARIO_2_CA_WUI: parseParcel(fixtures.SCENARIO_2_CA_WUI),
   SCENARIO_3_ESCONDIDO_HITL: parseParcel(fixtures.SCENARIO_3_ESCONDIDO_HITL),
   SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED: parseParcel(fixtures.SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED),
+  NYC_RED_HOOK: parseParcel(fixtures.NYC_RED_HOOK),
+  NYC_HOLLIS: parseParcel(fixtures.NYC_HOLLIS),
+  NYC_ROCKAWAY: parseParcel(fixtures.NYC_ROCKAWAY),
 } satisfies GoldenScenarios;
 const floodScores = goldenScenarios.SCENARIO_1_LA_FLOOD.actuarial_breakdown;
 const wildfire = goldenScenarios.SCENARIO_2_CA_WUI;

@@ -189,6 +189,189 @@
         "openfema_tract_mean_lcr": 0.0012,
         "wrc_burn_probability": null
       }
+    },
+    {
+      "tractfips": "36047005900",
+      "stcofips": "36047",
+      "scenario_ids": [
+        "NYC_RED_HOOK"
+      ],
+      "point_lng_lat": [
+        -74.005208,
+        40.679144
+      ],
+      "buildvalue_usd": 662866819.0,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 242312.8969,
+          "expb_usd": 662866801.9129,
+          "afreq": 0.0
+        },
+        "CFLD": {
+          "ealb_usd": 32128.707549999992,
+          "expb_usd": 632683714.0563402,
+          "afreq": 0.0
+        },
+        "WFIR": {
+          "ealb_usd": 0.0,
+          "expb_usd": 0.0,
+          "afreq": 0.0
+        },
+        "HAIL": {
+          "ealb_usd": 3429.7480912627,
+          "expb_usd": 662866819.0,
+          "afreq": 0.0
+        },
+        "SWND": {
+          "ealb_usd": 641.1952529763224,
+          "expb_usd": 662866819.0,
+          "afreq": 0.0
+        },
+        "HRCN": {
+          "ealb_usd": 52201.41506141216,
+          "expb_usd": 662866819.0,
+          "afreq": 0.0
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "X",
+        "bfe_ft_navd88": null,
+        "usgs_lag_ft": 12.040654109054199,
+        "est_ffe_ft": 14.040654109054199,
+        "freeboard_delta_h_ft": null,
+        "hand_rel_elev_ft": 5.0,
+        "twi_index": 8.0,
+        "noaa_atlas15_p24h_100yr_in": 8.65,
+        "atlas15_cmip6_mult": 1.1,
+        "landfire_fbfm40_code": "NB1",
+        "slope_deg": 5.0,
+        "wui_class": "NON_WUI",
+        "openfema_tract_claim_count": 4715,
+        "openfema_tract_mean_lcr": 0.0,
+        "wrc_burn_probability": null
+      }
+    },
+    {
+      "tractfips": "36081127700",
+      "stcofips": "36081",
+      "scenario_ids": [
+        "NYC_HOLLIS"
+      ],
+      "point_lng_lat": [
+        -73.777233,
+        40.726722
+      ],
+      "buildvalue_usd": 963660374.0,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 672577.4231,
+          "expb_usd": 963660347.7254001,
+          "afreq": 0.0
+        },
+        "CFLD": {
+          "ealb_usd": 0.0,
+          "expb_usd": 0.0,
+          "afreq": 0.0
+        },
+        "WFIR": {
+          "ealb_usd": 0.0,
+          "expb_usd": 0.0,
+          "afreq": 0.0
+        },
+        "HAIL": {
+          "ealb_usd": 4986.088089514047,
+          "expb_usd": 963660374.0,
+          "afreq": 0.0
+        },
+        "SWND": {
+          "ealb_usd": 1614.0893275107178,
+          "expb_usd": 963660374.0,
+          "afreq": 0.0
+        },
+        "HRCN": {
+          "ealb_usd": 75889.20438692077,
+          "expb_usd": 963660374.0,
+          "afreq": 0.0
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "X",
+        "bfe_ft_navd88": null,
+        "usgs_lag_ft": 96.42393565774432,
+        "est_ffe_ft": 98.42393565774432,
+        "freeboard_delta_h_ft": null,
+        "hand_rel_elev_ft": 5.0,
+        "twi_index": 8.0,
+        "noaa_atlas15_p24h_100yr_in": 8.25,
+        "atlas15_cmip6_mult": 1.1,
+        "landfire_fbfm40_code": "NB1",
+        "slope_deg": 5.0,
+        "wui_class": "NON_WUI",
+        "openfema_tract_claim_count": 10739,
+        "openfema_tract_mean_lcr": 0.0,
+        "wrc_burn_probability": null
+      }
+    },
+    {
+      "tractfips": "36081094202",
+      "stcofips": "36081",
+      "scenario_ids": [
+        "NYC_ROCKAWAY"
+      ],
+      "point_lng_lat": [
+        -73.802387,
+        40.590961
+      ],
+      "buildvalue_usd": 669868258.0,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 300454.39650000003,
+          "expb_usd": 663389153.4739,
+          "afreq": 0.0
+        },
+        "CFLD": {
+          "ealb_usd": 270280.14199999993,
+          "expb_usd": 416313241.8871355,
+          "afreq": 0.0
+        },
+        "WFIR": {
+          "ealb_usd": 0.0,
+          "expb_usd": 0.0,
+          "afreq": 0.0
+        },
+        "HAIL": {
+          "ealb_usd": 3465.974366072529,
+          "expb_usd": 669868258.0,
+          "afreq": 0.0
+        },
+        "SWND": {
+          "ealb_usd": 1122.0002802334432,
+          "expb_usd": 669868258.0,
+          "afreq": 0.0
+        },
+        "HRCN": {
+          "ealb_usd": 52644.54317450229,
+          "expb_usd": 668493786.3803204,
+          "afreq": 0.0
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "X",
+        "bfe_ft_navd88": null,
+        "usgs_lag_ft": 6.6273812160132,
+        "est_ffe_ft": 8.6273812160132,
+        "freeboard_delta_h_ft": null,
+        "hand_rel_elev_ft": 5.0,
+        "twi_index": 8.0,
+        "noaa_atlas15_p24h_100yr_in": 8.13,
+        "atlas15_cmip6_mult": 1.1,
+        "landfire_fbfm40_code": "NB1",
+        "slope_deg": 5.0,
+        "wui_class": "NON_WUI",
+        "openfema_tract_claim_count": 10739,
+        "openfema_tract_mean_lcr": 0.0,
+        "wrc_burn_probability": null
+      }
     }
   ],
   "reference_hazard_note": "Hazard-layer values of the reference parcel in each tract (contracts/golden_scenarios.json). They stand in for tract-typical rain, terrain and fuel when the intercept is solved; the parcel's own values are then relativities. Not NRI data. Replace with tract medians when the NRI ingestion client supplies them."

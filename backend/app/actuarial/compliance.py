@@ -7,6 +7,7 @@ from dataclasses import replace
 from pydantic import BaseModel
 
 from app.actuarial import compound_model as cm
+from app.actuarial import nyc
 from app.actuarial.base_rates import BaseRates
 from app.actuarial.credibility import posterior_lcr
 from app.actuarial.score_map import score_continuous
@@ -89,12 +90,12 @@ def reference_jacobian() -> dict[str, float]:
         hazard, verification, state="LA", year_built=1990, firewise=False, tract_prior_lcr=0.02, z=0.6,
         # any positive rates: the proof is level-free
         base_rates=BaseRates(flood=0.001, wildfire=0.004, wind=0.001, pluvial=0.002, sewer=0.001),
-        nyc_layer=NycLayer(
-            bbl="reference", basement_type="FULL",
+        nyc_layer=nyc.blank_layer(
+            basement_type="FULL",
             dep_stormwater=[
-                DepStormwater(scenario="1.77", flood_class="NUISANCE"),
-                DepStormwater(scenario="2.13", flood_class="NUISANCE"),
-                DepStormwater(scenario="3.66", flood_class="DEEP_CONTIGUOUS"),
+                DepStormwater(scenario="LIMITED_CURRENT", flood_class="NUISANCE"),
+                DepStormwater(scenario="MODERATE_CURRENT", flood_class="NUISANCE"),
+                DepStormwater(scenario="EXTREME_2080", flood_class="DEEP_CONTIGUOUS"),
             ],
             floodnet_events_500m_5y=5, sewer_backup_311_500m_5y=60, catch_basins_150m=5, residential_units_500m=3000,
             dob_cellar_conversion_flag=True, sandy_inundated=True,

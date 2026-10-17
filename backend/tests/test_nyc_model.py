@@ -17,7 +17,7 @@ from app.ingestion import nri
 from app.models.schemas import DepStormwater, NycLayer
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "nri_nyc_tracts.json").read_text())
-SCENARIOS = ("1.77", "2.13", "3.66")
+SCENARIOS = ("LIMITED_CURRENT", "MODERATE_CURRENT", "EXTREME_2080")
 ALL_NYC = [a.action_id for a in ACTIONS if a.nyc_dose]
 
 
@@ -43,7 +43,7 @@ def layer(kind="PARTIAL", dep="NUISANCE", **kw) -> NycLayer:
         "sewer_backup_311_500m_5y": 60, "catch_basins_150m": 14, "residential_units_500m": 3650,
         "dob_cellar_conversion_flag": False, "sandy_inundated": False, "floodnet_events_500m_5y": 0,
     }
-    return NycLayer(bbl="3000000001", basement_type=kind, dep_stormwater=scenarios, **{**fields, **kw})
+    return nyc.blank_layer(bbl="3000000001", basement_type=kind, dep_stormwater=scenarios, **{**fields, **kw})
 
 
 def run(nyc_layer, ids=()):
@@ -73,25 +73,34 @@ def test_exceedance_follows_the_noaa_table_and_falls_with_intensity():
     assert nyc.annual_exceedance(1.0) == pytest.approx(1.0) and nyc.annual_exceedance(9.0) == pytest.approx(0.001)
 
 
-def test_dep_labels_are_parsed_by_rate_or_name_and_class_text():
+def test_dep_scenarios_map_to_their_rainfall_rates_and_classes_to_depths():
     rows = [
-        DepStormwater(scenario="Limited Flood (1.77 in/hr) Current Sea Levels", flood_class="1-Nuisance Flooding"),
-        DepStormwater(scenario="Moderate Flood 2050 SLR", flood_class="2-Deep and Contiguous Flooding"),
-        DepStormwater(scenario="Extreme", flood_class="DEEP_CONTIGUOUS"),
-        DepStormwater(scenario="unrecognised", flood_class="DEEP_CONTIGUOUS"),
+        DepStormwater(scenario="LIMITED_CURRENT", flood_class="NUISANCE"),
+        DepStormwater(scenario="MODERATE_2050", flood_class="DEEP_CONTIGUOUS"),
+        DepStormwater(scenario="EXTREME_2080", flood_class="DEEP_CONTIGUOUS"),
     ]
     ladder = nyc.scenario_ladder(layer(dep=None).model_copy(update={"dep_stormwater": rows}))
-    depths = [d for _, d in ladder]
-    assert depths == [constants.get("nyc.dep_class_depth_ft")[k] for k in ("NUISANCE", "DEEP_CONTIGUOUS", "DEEP_CONTIGUOUS")]
+    depths = constants.get("nyc.dep_class_depth_ft")
+    assert [d for _, d in ladder] == [depths["NUISANCE"], depths["DEEP_CONTIGUOUS"], depths["DEEP_CONTIGUOUS"]]
 
 
 def test_the_deeper_of_two_moderate_maps_wins():
     rows = [
-        DepStormwater(scenario="Moderate current 2.13", flood_class="NUISANCE"),
-        DepStormwater(scenario="Moderate 2050 2.13", flood_class="DEEP_CONTIGUOUS"),
+        DepStormwater(scenario="MODERATE_CURRENT", flood_class="NUISANCE"),
+        DepStormwater(scenario="MODERATE_2050", flood_class="DEEP_CONTIGUOUS"),
     ]
     ladder = nyc.scenario_ladder(layer(dep=None).model_copy(update={"dep_stormwater": rows}))
     assert ladder[1][1] == constants.get("nyc.dep_class_depth_ft")["DEEP_CONTIGUOUS"] and ladder[0][1] == 0.0
+
+
+def test_unavailable_and_none_classes_carry_no_depth_and_all_unavailable_is_missing_data():
+    rows = [DepStormwater(scenario="LIMITED_CURRENT", flood_class="UNAVAILABLE"),
+            DepStormwater(scenario="MODERATE_CURRENT", flood_class="NONE")]
+    only = layer("PARTIAL", None).model_copy(update={"dep_stormwater": rows[:1]})
+    assert nyc.data_missing(only) is True
+    mixed = layer("PARTIAL", None).model_copy(update={"dep_stormwater": rows})
+    assert nyc.data_missing(mixed) is False  # one known scenario is enough; Limited is unavailable by design
+    assert all(d == 0.0 for _, d in nyc.scenario_ladder(mixed))
 
 
 # --- the NRI tract total stays consistent ---
@@ -254,9 +263,9 @@ def test_a_nyc_retrofit_has_no_effect_on_the_filed_statutory_discount():
 
 def test_unknown_basement_or_missing_dep_data_is_indicative_and_widens_the_band():
     known = run(layer("PARTIAL", "NUISANCE"))
-    unknown = run(layer(None, "NUISANCE"))
+    unknown = run(layer("UNKNOWN", "NUISANCE"))
     assert known.indicative_only is False and unknown.indicative_only is True
-    assert nyc.basement_kind(layer(None))[0] == constants.get("nyc.basement_unknown_default")
+    assert nyc.basement_kind(layer("UNKNOWN"))[0] == constants.get("nyc.basement_unknown_default")
     assert run(layer("PARTIAL", None)).indicative_only is True
     width = lambda o: o.uncertainty.aal_p95_usd - o.uncertainty.aal_p05_usd
     same_kind = run(layer("PARTIAL", "NUISANCE").model_copy(update={"basement_type": "weird"}))
@@ -307,3 +316,74 @@ def test_the_evaluate_helper_accepts_installed_retrofits():
     base = evaluate(r, v, nri=TRACT).raw_lcr
     assert evaluate(r, v, nri=TRACT, installed=frozenset({"dry_floodproofing"})).raw_lcr < base
     assert replace(cm.Mitigations(), backwater_valve=1.0).backwater_valve == 1.0
+
+
+# --- the three NYC golden parcels (built from the recorded fixtures through the engine) ---
+S2_ACTIONS = ["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]
+NYC_GOLDEN = {"NYC_RED_HOOK": "3005130048", "NYC_HOLLIS": "4072730030", "NYC_ROCKAWAY": "4160790031"}
+NYC_PINS = {"NYC_RED_HOOK": (835, 122.04), "NYC_HOLLIS": (829, 205.46), "NYC_ROCKAWAY": (821, 398.16)}
+
+
+@pytest.mark.parametrize("key", NYC_GOLDEN)
+def test_nyc_golden_parcel_scores_are_pinned_and_use_the_real_layer(key):
+    g = load_golden()[key]
+    a = g.actuarial_breakdown
+    assert g.nyc is not None and g.nyc.bbl == NYC_GOLDEN[key] and g.parcel_identity.apn_uid == NYC_GOLDEN[key] + "0000"
+    assert (a.resili_score, a.expected_annual_loss_usd) == (NYC_PINS[key][0], pytest.approx(NYC_PINS[key][1], abs=0.01))
+    perils = {p.peril for p in a.peril_split}
+    assert "SEWER_BACKUP" in perils and "PLUVIAL" in perils
+    assert g.indicative_only is False and g.nyc.residential_units_500m
+
+
+def test_the_existing_golden_scores_are_unchanged_by_the_nyc_model():
+    g = load_golden()
+    assert [g[k].actuarial_breakdown.resili_score for k in
+            ("SCENARIO_1_LA_FLOOD", "SCENARIO_2_CA_WUI", "SCENARIO_3_ESCONDIDO_HITL", "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED")] == [
+        823, 551, 850, 850]
+    assert simulate(g["SCENARIO_2_CA_WUI"], S2_ACTIONS).actuarial_breakdown.resili_score == 661
+    assert all(g[k].nyc is None for k in ("SCENARIO_1_LA_FLOOD", "SCENARIO_2_CA_WUI", "SCENARIO_3_ESCONDIDO_HITL"))
+
+
+@pytest.mark.parametrize("key", NYC_GOLDEN)
+def test_nyc_golden_toggles_lower_the_modeled_loss_offline(key):
+    g = load_golden()[key]
+    rows = {m.action_id for m in g.prescriptive_mitigations}
+    assert {"NYC_BACKWATER_VALVE", "NYC_ELEVATED_MECHANICALS", "NYC_SUMP_PUMP_BATTERY", "NYC_DRY_FLOODPROOFING"} <= rows
+    assert all(m.score_delta_pts >= 0 for m in g.prescriptive_mitigations)
+    base = g.actuarial_breakdown.expected_annual_loss_usd
+    fitted = simulate(g, ["NYC_BACKWATER_VALVE", "NYC_ELEVATED_MECHANICALS"]).actuarial_breakdown
+    assert fitted.expected_annual_loss_usd < base and fitted.resili_score >= g.actuarial_breakdown.resili_score
+
+
+def test_rockaway_is_coastal_exposed_and_has_flood_vents_the_others_do_not():
+    g = load_golden()
+    assert g["NYC_ROCKAWAY"].nyc.sandy_inundated is True
+    assert "FLOOD" in {p.peril for p in g["NYC_ROCKAWAY"].actuarial_breakdown.peril_split}
+    assert "NYC_FLOOD_VENTS" in {m.action_id for m in g["NYC_ROCKAWAY"].prescriptive_mitigations}
+    assert "NYC_FLOOD_VENTS" not in {m.action_id for m in g["NYC_RED_HOOK"].prescriptive_mitigations}
+
+
+def test_nyc_golden_simulations_cover_the_nyc_subsets():
+    import json
+
+    from app.fixtures import SIMULATIONS_PATH
+
+    sims = json.loads(SIMULATIONS_PATH.read_text())
+    table = sims["NYC_HOLLIS"]
+    assert "" in table and "NYC_BACKWATER_VALVE" in table
+    assert table["NYC_BACKWATER_VALVE"]["expected_annual_loss_usd"] < table[""]["expected_annual_loss_usd"]
+
+
+def test_the_score_endpoint_serves_the_nyc_scenarios():
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+
+    with TestClient(app) as client:
+        body = client.post("/v1/parcel/score", json={"scenario_id": "NYC_RED_HOOK"}).json()
+        out = client.post(
+            "/v1/parcel/simulate-mitigation",
+            json={"apn_uid": "30051300480000", "action_ids": ["NYC_BACKWATER_VALVE"]},
+        ).json()
+    assert body["nyc"]["bbl"] == "3005130048" and body["actuarial_breakdown"]["resili_score"] == 835
+    assert out["actuarial_breakdown"]["expected_annual_loss_usd"] < body["actuarial_breakdown"]["expected_annual_loss_usd"]

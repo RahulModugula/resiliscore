@@ -2775,5 +2775,2775 @@
         "vintage": "v1.20 (December 2025)"
       }
     ]
+  },
+  "NYC_RED_HOOK": {
+    "request_id": "02a75dfe-4f2a-5ec7-a2f3-e1aeb1b6b59f",
+    "processing_time_ms": 3412.6,
+    "parcel_identity": {
+      "apn_uid": "30051300480000",
+      "address": "5 Luquer Street, Brooklyn, NY",
+      "county_fips": "36047",
+      "state": "NY",
+      "h3_res11": "",
+      "h3_res13": "",
+      "rcv_usd": 350000.0,
+      "year_built": 1920,
+      "centroid": [
+        -74.005208,
+        40.679144
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -74.005276385777,
+                    40.679137950917
+                  ],
+                  [
+                    -74.005248140158,
+                    40.67919272421
+                  ],
+                  [
+                    -74.005163382415,
+                    40.679167392068
+                  ],
+                  [
+                    -74.005165994932,
+                    40.679162325656
+                  ],
+                  [
+                    -74.005137168279,
+                    40.679153709022
+                  ],
+                  [
+                    -74.005161384621,
+                    40.679106747902
+                  ],
+                  [
+                    -74.005189337113,
+                    40.679115102519
+                  ],
+                  [
+                    -74.005198817377,
+                    40.679096718085
+                  ],
+                  [
+                    -74.005199459565,
+                    40.679095473544
+                  ],
+                  [
+                    -74.00523748423,
+                    40.679106838114
+                  ],
+                  [
+                    -74.005237057287,
+                    40.679107666607
+                  ],
+                  [
+                    -74.00522877744,
+                    40.679123721359
+                  ],
+                  [
+                    -74.005276385777,
+                    40.679137950917
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -74.0052585,
+                    40.6792105
+                  ],
+                  [
+                    -74.00514,
+                    40.679175
+                  ],
+                  [
+                    -74.0051426,
+                    40.67917
+                  ],
+                  [
+                    -74.0051137,
+                    40.6791614
+                  ],
+                  [
+                    -74.005151,
+                    40.679089
+                  ],
+                  [
+                    -74.005179,
+                    40.6790974
+                  ],
+                  [
+                    -74.0051819,
+                    40.6790918
+                  ],
+                  [
+                    -74.0051891,
+                    40.6790777
+                  ],
+                  [
+                    -74.0052609,
+                    40.6790992
+                  ],
+                  [
+                    -74.005254,
+                    40.6791126
+                  ],
+                  [
+                    -74.0052522,
+                    40.6791161
+                  ],
+                  [
+                    -74.0052998,
+                    40.6791303
+                  ],
+                  [
+                    -74.0052585,
+                    40.6792105
+                  ]
+                ],
+                [
+                  [
+                    -74.0052288,
+                    40.6791237
+                  ],
+                  [
+                    -74.0052371,
+                    40.6791077
+                  ],
+                  [
+                    -74.0052375,
+                    40.6791068
+                  ],
+                  [
+                    -74.0051995,
+                    40.6790955
+                  ],
+                  [
+                    -74.0051988,
+                    40.6790967
+                  ],
+                  [
+                    -74.0051893,
+                    40.6791151
+                  ],
+                  [
+                    -74.0051614,
+                    40.6791067
+                  ],
+                  [
+                    -74.0051372,
+                    40.6791537
+                  ],
+                  [
+                    -74.005166,
+                    40.6791623
+                  ],
+                  [
+                    -74.0051634,
+                    40.6791674
+                  ],
+                  [
+                    -74.0052481,
+                    40.6791927
+                  ],
+                  [
+                    -74.0052764,
+                    40.679138
+                  ],
+                  [
+                    -74.0052288,
+                    40.6791237
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -74.0053102,
+                    40.6792992
+                  ],
+                  [
+                    -74.0050228,
+                    40.6792133
+                  ],
+                  [
+                    -74.0050254,
+                    40.6792082
+                  ],
+                  [
+                    -74.0049966,
+                    40.6791996
+                  ],
+                  [
+                    -74.0050993,
+                    40.6790003
+                  ],
+                  [
+                    -74.0051273,
+                    40.6790087
+                  ],
+                  [
+                    -74.0051374,
+                    40.678989
+                  ],
+                  [
+                    -74.0053781,
+                    40.6790609
+                  ],
+                  [
+                    -74.0053694,
+                    40.6790778
+                  ],
+                  [
+                    -74.005417,
+                    40.6790921
+                  ],
+                  [
+                    -74.0053102,
+                    40.6792992
+                  ]
+                ],
+                [
+                  [
+                    -74.0052522,
+                    40.6791161
+                  ],
+                  [
+                    -74.005254,
+                    40.6791126
+                  ],
+                  [
+                    -74.0052609,
+                    40.6790992
+                  ],
+                  [
+                    -74.0051891,
+                    40.6790777
+                  ],
+                  [
+                    -74.0051819,
+                    40.6790918
+                  ],
+                  [
+                    -74.005179,
+                    40.6790974
+                  ],
+                  [
+                    -74.005151,
+                    40.679089
+                  ],
+                  [
+                    -74.0051137,
+                    40.6791614
+                  ],
+                  [
+                    -74.0051426,
+                    40.67917
+                  ],
+                  [
+                    -74.00514,
+                    40.679175
+                  ],
+                  [
+                    -74.0052585,
+                    40.6792105
+                  ],
+                  [
+                    -74.0052998,
+                    40.6791303
+                  ],
+                  [
+                    -74.0052522,
+                    40.6791161
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -74.0054549,
+                    40.6795476
+                  ],
+                  [
+                    -74.0046947,
+                    40.6793204
+                  ],
+                  [
+                    -74.0046974,
+                    40.6793153
+                  ],
+                  [
+                    -74.0046685,
+                    40.6793067
+                  ],
+                  [
+                    -74.0049546,
+                    40.6787519
+                  ],
+                  [
+                    -74.0049826,
+                    40.6787603
+                  ],
+                  [
+                    -74.0049927,
+                    40.6787407
+                  ],
+                  [
+                    -74.0057061,
+                    40.6789538
+                  ],
+                  [
+                    -74.0056974,
+                    40.6789707
+                  ],
+                  [
+                    -74.005745,
+                    40.678985
+                  ],
+                  [
+                    -74.0054549,
+                    40.6795476
+                  ]
+                ],
+                [
+                  [
+                    -74.0053694,
+                    40.6790778
+                  ],
+                  [
+                    -74.0053781,
+                    40.6790609
+                  ],
+                  [
+                    -74.0051374,
+                    40.678989
+                  ],
+                  [
+                    -74.0051273,
+                    40.6790087
+                  ],
+                  [
+                    -74.0050993,
+                    40.6790003
+                  ],
+                  [
+                    -74.0049966,
+                    40.6791996
+                  ],
+                  [
+                    -74.0050254,
+                    40.6792082
+                  ],
+                  [
+                    -74.0050228,
+                    40.6792133
+                  ],
+                  [
+                    -74.0053102,
+                    40.6792992
+                  ],
+                  [
+                    -74.005417,
+                    40.6790921
+                  ],
+                  [
+                    -74.0053694,
+                    40.6790778
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 12.040654109054199,
+      "est_ffe_ft": 14.040654109054199,
+      "freeboard_delta_h_ft": null,
+      "hand_rel_elev_ft": 5.0,
+      "twi_index": 8.0,
+      "noaa_atlas15_p24h_100yr_in": 8.65,
+      "atlas15_cmip6_mult": 1.1,
+      "landfire_fbfm40_code": "NB1",
+      "slope_deg": 5.0,
+      "wui_class": "NON_WUI",
+      "openfema_tract_claim_count": 4715,
+      "openfema_tract_mean_lcr": 0.0,
+      "wrc_burn_probability": null
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "WOOD_SHAKE_UNRATED",
+      "cv_confidence": 0.0,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": false,
+      "cv_zone1_no_shed": false,
+      "cv_enclosed_eaves": false,
+      "cv_ember_vents": false,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "NONE",
+      "iot_shutoff_active": false,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.0004989146437508605,
+      "parcel_raw_lcr": 0.000148,
+      "credibility_weight_z": 0.4286,
+      "posterior_lcr": 0.000349,
+      "expected_annual_loss_usd": 122.04,
+      "peril_split": [
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.4013,
+          "expected_freq_n": 0.00048,
+          "expected_sev_s": 145858.23,
+          "peril_aal_usd": 69.82
+        },
+        {
+          "peril": "PLUVIAL",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.0,
+          "expected_sev_s": 0.0,
+          "peril_aal_usd": 0.0
+        },
+        {
+          "peril": "SEWER_BACKUP",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.00075,
+          "expected_sev_s": 69606.96,
+          "peril_aal_usd": 52.22
+        }
+      ],
+      "resili_score": 835,
+      "baseline_macro_score": 831,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 0.0,
+      "annual_base_premium_usd": 4200.0,
+      "annual_discounted_premium_usd": 4200.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.11,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 520.8,
+        "payback_years": 17.28,
+        "resale_value_bump_pct": 0.8,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_BACKWATER_VALVE",
+        "title": "Backwater valve on the house sewer lateral",
+        "peril": "SEWER_BACKUP",
+        "statutory_authority": "NYC DEP sewer backup mitigation (backwater valves)",
+        "gross_capex_usd": 3500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3500.0,
+        "lcr_delta_bps": -0.23,
+        "score_delta_pts": 1,
+        "annual_premium_savings_usd": 12.45,
+        "payback_years": 281.05,
+        "resale_value_bump_pct": 0.3,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_SUMP_PUMP_BATTERY",
+        "title": "Sump pump with battery backup",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 2500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 2500.0,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.2,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_DRY_FLOODPROOFING",
+        "title": "Dry floodproofing: sealed walls and shields to a 3 ft stage",
+        "peril": "PLUVIAL",
+        "statutory_authority": "FEMA P-936 (dry floodproofing)",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.5,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_ELEVATED_MECHANICALS",
+        "title": "Elevate boiler, water heater and electrical service",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.04,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 2.2,
+        "payback_years": 4095.34,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": false
+      }
+    ],
+    "hitl_status": {
+      "escalated": true,
+      "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+      "trigger_reason": "Aerial CV confidence 0.00 is below 0.85.",
+      "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits."
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": false,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": false,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
+        "cat_b2_class_a_roof": false,
+        "cat_b2_enclosed_eaves": false,
+        "cat_b2_ember_vents": false,
+        "cat_b2_multi_pane_windows": false,
+        "cat_b2_vertical_siding_clearance_6in": false
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "EPQS_current",
+        "NOAA_PFDS": "Atlas14",
+        "OpenFEMA": "NfipClaims_v3",
+        "LANDFIRE": "LF2025_FBFM40",
+        "FEMA_NFHL": "live",
+        "FEMA_NRI": "December 2025",
+        "CENSUS_GEOCODER": "Public_AR_Current"
+      }
+    },
+    "input_provenance": [
+      {
+        "field": "fema_flood_zone",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "bfe_ft_navd88",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "usgs_lag_ft",
+        "value_source": "LIVE",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "EPQS_current"
+      },
+      {
+        "field": "est_ffe_ft",
+        "value_source": "DEFAULT",
+        "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+        "vintage": null
+      },
+      {
+        "field": "freeboard_delta_h_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "noaa_atlas15_p24h_100yr_in",
+        "value_source": "LIVE",
+        "source_name": "NOAA PFDS Atlas 14",
+        "vintage": "Atlas14"
+      },
+      {
+        "field": "atlas15_cmip6_mult",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "landfire_fbfm40_code",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "hand_rel_elev_ft",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "twi_index",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "slope_deg",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wui_class",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wrc_burn_probability",
+        "value_source": "UNAVAILABLE",
+        "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+        "vintage": "RDS-2020-0016-2"
+      },
+      {
+        "field": "openfema_tract_claim_count",
+        "value_source": "LIVE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "openfema_tract_mean_lcr",
+        "value_source": "UNAVAILABLE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "tract_prior_lcr",
+        "value_source": "LIVE",
+        "source_name": "FEMA National Risk Index",
+        "vintage": "December 2025"
+      },
+      {
+        "field": "rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "National default replacement cost",
+        "vintage": null
+      },
+      {
+        "field": "year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "footprint",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "cv_roof_class",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_confidence",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_overhang_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone0_clear",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone1_no_shed",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "unpermitted_footprint_delta_sqft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bbl",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.borough",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bin",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bldg_class",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.num_floors",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_code",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_type",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.ground_elevation_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.roof_height_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dep_stormwater",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP Stormwater Flood Maps (LIMITED_CURRENT: no queryable layer)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_events_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "FloodNet NYC (aq7i-eu5q, kb2e-tjy3)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_max_depth_in",
+        "value_source": "LIVE",
+        "source_name": "FloodNet NYC (aq7i-eu5q, kb2e-tjy3)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sewer_backup_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.street_flooding_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.residential_units_500m",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.catch_basins_150m",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP catch basins (2w2g-fk3i)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_open_violations",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_cellar_conversion_flag",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.evacuation_zone",
+        "value_source": "LIVE",
+        "source_name": "NYC Hurricane Evacuation Zones (epne-qv9x)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sandy_inundated",
+        "value_source": "LIVE",
+        "source_name": "NYC Sandy Inundation Zone (5xsi-dfpx)",
+        "vintage": null
+      }
+    ],
+    "factor_contributions": [
+      {
+        "factor": "NYC site (DEP class, basement, 311, FloodNet, Sandy)",
+        "input_value": "3005130048",
+        "score_points": 3.2131,
+        "source": "NYC layer"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": 1.1252,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 110.05,
+      "aal_p50_usd": 119.9,
+      "aal_p95_usd": 140.74,
+      "score_p05": 833.1,
+      "score_p95": 836.1,
+      "loss_1_in_100_usd": 99.78,
+      "loss_1_in_250_usd": 99.78,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0019"
+    },
+    "premium_build": {
+      "expected_loss_usd": 122.04,
+      "deductible_usd": 3500.0,
+      "net_expected_loss_usd": 111.92,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 172.19,
+      "modeled_mitigation_credit_pct": 0.0,
+      "filed_mitigation_credit_pct": 0.0
+    },
+    "evidence_log": [],
+    "indicative_only": false,
+    "nyc": {
+      "bbl": "3005130048",
+      "bin": "3008282",
+      "borough": "Brooklyn",
+      "bldg_class": "A9",
+      "year_built": 1920,
+      "num_floors": 2.0,
+      "basement_code": "2",
+      "basement_type": "PARTIAL",
+      "ground_elevation_ft": 10.0,
+      "roof_height_ft": 23.4025517,
+      "dep_stormwater": [
+        {
+          "scenario": "LIMITED_CURRENT",
+          "flood_class": "UNAVAILABLE"
+        },
+        {
+          "scenario": "MODERATE_CURRENT",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "MODERATE_2050",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "EXTREME_2080",
+          "flood_class": "NONE"
+        }
+      ],
+      "floodnet_events_500m_5y": 3,
+      "floodnet_max_depth_in": 2.01,
+      "sewer_backup_311_500m_5y": 78,
+      "street_flooding_311_500m_5y": 46,
+      "residential_units_500m": 5257,
+      "catch_basins_150m": 25,
+      "dob_open_violations": 0,
+      "dob_cellar_conversion_flag": false,
+      "sandy_inundated": false,
+      "evacuation_zone": "2"
+    }
+  },
+  "NYC_HOLLIS": {
+    "request_id": "dcc746ce-4716-5be3-a1ab-1ca6444b3f8f",
+    "processing_time_ms": 3412.6,
+    "parcel_identity": {
+      "apn_uid": "40727300300000",
+      "address": "81-52 192 Street, Queens, NY",
+      "county_fips": "36081",
+      "state": "NY",
+      "h3_res11": "",
+      "h3_res13": "",
+      "rcv_usd": 350000.0,
+      "year_built": 1940,
+      "centroid": [
+        -73.777233,
+        40.726722
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.777148223005,
+                    40.726710844498
+                  ],
+                  [
+                    -73.777310910751,
+                    40.726665650975
+                  ],
+                  [
+                    -73.777335015788,
+                    40.726715871418
+                  ],
+                  [
+                    -73.777269714614,
+                    40.726734012007
+                  ],
+                  [
+                    -73.777278027825,
+                    40.726751331425
+                  ],
+                  [
+                    -73.777180641123,
+                    40.7267783853
+                  ],
+                  [
+                    -73.777148223005,
+                    40.726710844498
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.7773218,
+                    40.7266481
+                  ],
+                  [
+                    -73.7773582,
+                    40.7267239
+                  ],
+                  [
+                    -73.7772929,
+                    40.7267421
+                  ],
+                  [
+                    -73.7773012,
+                    40.7267594
+                  ],
+                  [
+                    -73.7771697,
+                    40.7267959
+                  ],
+                  [
+                    -73.777125,
+                    40.7267028
+                  ],
+                  [
+                    -73.7773218,
+                    40.7266481
+                  ]
+                ],
+                [
+                  [
+                    -73.7771806,
+                    40.7267784
+                  ],
+                  [
+                    -73.777278,
+                    40.7267513
+                  ],
+                  [
+                    -73.7772697,
+                    40.726734
+                  ],
+                  [
+                    -73.777335,
+                    40.7267159
+                  ],
+                  [
+                    -73.7773109,
+                    40.7266657
+                  ],
+                  [
+                    -73.7771482,
+                    40.7267108
+                  ],
+                  [
+                    -73.7771806,
+                    40.7267784
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.7774173,
+                    40.7267997
+                  ],
+                  [
+                    -73.7771152,
+                    40.7268837
+                  ],
+                  [
+                    -73.777009,
+                    40.7266624
+                  ],
+                  [
+                    -73.7773764,
+                    40.7265604
+                  ],
+                  [
+                    -73.7774742,
+                    40.7267643
+                  ],
+                  [
+                    -73.7774089,
+                    40.7267824
+                  ],
+                  [
+                    -73.7774173,
+                    40.7267997
+                  ]
+                ],
+                [
+                  [
+                    -73.7771697,
+                    40.7267959
+                  ],
+                  [
+                    -73.7773012,
+                    40.7267594
+                  ],
+                  [
+                    -73.7772929,
+                    40.7267421
+                  ],
+                  [
+                    -73.7773582,
+                    40.7267239
+                  ],
+                  [
+                    -73.7773218,
+                    40.7266481
+                  ],
+                  [
+                    -73.777125,
+                    40.7267028
+                  ],
+                  [
+                    -73.7771697,
+                    40.7267959
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.7777421,
+                    40.7269127
+                  ],
+                  [
+                    -73.7769625,
+                    40.7271293
+                  ],
+                  [
+                    -73.7766841,
+                    40.7265494
+                  ],
+                  [
+                    -73.7775291,
+                    40.7263147
+                  ],
+                  [
+                    -73.7777991,
+                    40.7268773
+                  ],
+                  [
+                    -73.7777338,
+                    40.7268954
+                  ],
+                  [
+                    -73.7777421,
+                    40.7269127
+                  ]
+                ],
+                [
+                  [
+                    -73.7774742,
+                    40.7267643
+                  ],
+                  [
+                    -73.7773764,
+                    40.7265604
+                  ],
+                  [
+                    -73.777009,
+                    40.7266624
+                  ],
+                  [
+                    -73.7771152,
+                    40.7268837
+                  ],
+                  [
+                    -73.7774173,
+                    40.7267997
+                  ],
+                  [
+                    -73.7774089,
+                    40.7267824
+                  ],
+                  [
+                    -73.7774742,
+                    40.7267643
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 96.42393565774432,
+      "est_ffe_ft": 98.42393565774432,
+      "freeboard_delta_h_ft": null,
+      "hand_rel_elev_ft": 5.0,
+      "twi_index": 8.0,
+      "noaa_atlas15_p24h_100yr_in": 8.25,
+      "atlas15_cmip6_mult": 1.1,
+      "landfire_fbfm40_code": "NB1",
+      "slope_deg": 5.0,
+      "wui_class": "NON_WUI",
+      "openfema_tract_claim_count": 10739,
+      "openfema_tract_mean_lcr": 0.0,
+      "wrc_burn_probability": null
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "WOOD_SHAKE_UNRATED",
+      "cv_confidence": 0.0,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": false,
+      "cv_zone1_no_shed": false,
+      "cv_enclosed_eaves": false,
+      "cv_ember_vents": false,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "NONE",
+      "iot_shutoff_active": false,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.0007835403688643791,
+      "parcel_raw_lcr": 0.000325,
+      "credibility_weight_z": 0.4286,
+      "posterior_lcr": 0.000587,
+      "expected_annual_loss_usd": 205.46,
+      "peril_split": [
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.4013,
+          "expected_freq_n": 0.00048,
+          "expected_sev_s": 112109.99,
+          "peril_aal_usd": 54.11
+        },
+        {
+          "peril": "PLUVIAL",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.0,
+          "expected_sev_s": 0.0,
+          "peril_aal_usd": 0.0
+        },
+        {
+          "peril": "SEWER_BACKUP",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.00283,
+          "expected_sev_s": 53501.51,
+          "peril_aal_usd": 151.34
+        }
+      ],
+      "resili_score": 829,
+      "baseline_macro_score": 825,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 0.0,
+      "annual_base_premium_usd": 4200.0,
+      "annual_discounted_premium_usd": 4200.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.11,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 520.8,
+        "payback_years": 17.28,
+        "resale_value_bump_pct": 0.8,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_BACKWATER_VALVE",
+        "title": "Backwater valve on the house sewer lateral",
+        "peril": "SEWER_BACKUP",
+        "statutory_authority": "NYC DEP sewer backup mitigation (backwater valves)",
+        "gross_capex_usd": 3500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3500.0,
+        "lcr_delta_bps": -0.87,
+        "score_delta_pts": 2,
+        "annual_premium_savings_usd": 46.96,
+        "payback_years": 74.53,
+        "resale_value_bump_pct": 0.3,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_SUMP_PUMP_BATTERY",
+        "title": "Sump pump with battery backup",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 2500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 2500.0,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.2,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_DRY_FLOODPROOFING",
+        "title": "Dry floodproofing: sealed walls and shields to a 3 ft stage",
+        "peril": "PLUVIAL",
+        "statutory_authority": "FEMA P-936 (dry floodproofing)",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.5,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_ELEVATED_MECHANICALS",
+        "title": "Elevate boiler, water heater and electrical service",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.15,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 8.29,
+        "payback_years": 1086.06,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": false
+      }
+    ],
+    "hitl_status": {
+      "escalated": true,
+      "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+      "trigger_reason": "Aerial CV confidence 0.00 is below 0.85.",
+      "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits."
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": false,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": false,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
+        "cat_b2_class_a_roof": false,
+        "cat_b2_enclosed_eaves": false,
+        "cat_b2_ember_vents": false,
+        "cat_b2_multi_pane_windows": false,
+        "cat_b2_vertical_siding_clearance_6in": false
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "EPQS_current",
+        "NOAA_PFDS": "Atlas14",
+        "OpenFEMA": "NfipClaims_v3",
+        "LANDFIRE": "LF2025_FBFM40",
+        "FEMA_NFHL": "live",
+        "FEMA_NRI": "December 2025",
+        "CENSUS_GEOCODER": "Public_AR_Current"
+      }
+    },
+    "input_provenance": [
+      {
+        "field": "fema_flood_zone",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "bfe_ft_navd88",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "usgs_lag_ft",
+        "value_source": "LIVE",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "EPQS_current"
+      },
+      {
+        "field": "est_ffe_ft",
+        "value_source": "DEFAULT",
+        "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+        "vintage": null
+      },
+      {
+        "field": "freeboard_delta_h_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "noaa_atlas15_p24h_100yr_in",
+        "value_source": "LIVE",
+        "source_name": "NOAA PFDS Atlas 14",
+        "vintage": "Atlas14"
+      },
+      {
+        "field": "atlas15_cmip6_mult",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "landfire_fbfm40_code",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "hand_rel_elev_ft",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "twi_index",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "slope_deg",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wui_class",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wrc_burn_probability",
+        "value_source": "UNAVAILABLE",
+        "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+        "vintage": "RDS-2020-0016-2"
+      },
+      {
+        "field": "openfema_tract_claim_count",
+        "value_source": "LIVE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "openfema_tract_mean_lcr",
+        "value_source": "UNAVAILABLE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "tract_prior_lcr",
+        "value_source": "LIVE",
+        "source_name": "FEMA National Risk Index",
+        "vintage": "December 2025"
+      },
+      {
+        "field": "rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "National default replacement cost",
+        "vintage": null
+      },
+      {
+        "field": "year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "footprint",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "cv_roof_class",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_confidence",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_overhang_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone0_clear",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone1_no_shed",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "unpermitted_footprint_delta_sqft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bbl",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.borough",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bin",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bldg_class",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.num_floors",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_code",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_type",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.ground_elevation_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.roof_height_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dep_stormwater",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP Stormwater Flood Maps (LIMITED_CURRENT: no queryable layer)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_events_500m_5y",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FloodNet NYC (no sensor within 500 m)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_max_depth_in",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FloodNet NYC (aq7i-eu5q, kb2e-tjy3)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sewer_backup_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.street_flooding_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.residential_units_500m",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.catch_basins_150m",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP catch basins (2w2g-fk3i)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_open_violations",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_cellar_conversion_flag",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.evacuation_zone",
+        "value_source": "LIVE",
+        "source_name": "NYC Hurricane Evacuation Zones (epne-qv9x)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sandy_inundated",
+        "value_source": "LIVE",
+        "source_name": "NYC Sandy Inundation Zone (5xsi-dfpx)",
+        "vintage": null
+      }
+    ],
+    "factor_contributions": [
+      {
+        "factor": "NYC site (DEP class, basement, 311, FloodNet, Sandy)",
+        "input_value": "4072730030",
+        "score_points": 2.7826,
+        "source": "NYC layer"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": 0.714,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 176.45,
+      "aal_p50_usd": 198.69,
+      "aal_p95_usd": 255.12,
+      "score_p05": 825.9,
+      "score_p95": 830.4,
+      "loss_1_in_100_usd": 156.71,
+      "loss_1_in_250_usd": 5976.4,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0042"
+    },
+    "premium_build": {
+      "expected_loss_usd": 205.46,
+      "deductible_usd": 3500.0,
+      "net_expected_loss_usd": 184.51,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 283.86,
+      "modeled_mitigation_credit_pct": 0.0,
+      "filed_mitigation_credit_pct": 0.0
+    },
+    "evidence_log": [],
+    "indicative_only": false,
+    "nyc": {
+      "bbl": "4072730030",
+      "bin": "4156491",
+      "borough": "Queens",
+      "bldg_class": "A1",
+      "year_built": 1940,
+      "num_floors": 2.0,
+      "basement_code": "2",
+      "basement_type": "PARTIAL",
+      "ground_elevation_ft": 94.0,
+      "roof_height_ft": 31.78,
+      "dep_stormwater": [
+        {
+          "scenario": "LIMITED_CURRENT",
+          "flood_class": "UNAVAILABLE"
+        },
+        {
+          "scenario": "MODERATE_CURRENT",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "MODERATE_2050",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "EXTREME_2080",
+          "flood_class": "NONE"
+        }
+      ],
+      "floodnet_events_500m_5y": null,
+      "floodnet_max_depth_in": null,
+      "sewer_backup_311_500m_5y": 20,
+      "street_flooding_311_500m_5y": 2,
+      "residential_units_500m": 593,
+      "catch_basins_150m": 16,
+      "dob_open_violations": 0,
+      "dob_cellar_conversion_flag": false,
+      "sandy_inundated": false,
+      "evacuation_zone": "X"
+    }
+  },
+  "NYC_ROCKAWAY": {
+    "request_id": "25533ccb-5398-545a-8d3e-207ec4ae9869",
+    "processing_time_ms": 3412.6,
+    "parcel_identity": {
+      "apn_uid": "41607900310000",
+      "address": "74-02 Beach Channel Drive, Queens, NY",
+      "county_fips": "36081",
+      "state": "NY",
+      "h3_res11": "",
+      "h3_res13": "",
+      "rcv_usd": 350000.0,
+      "year_built": 1920,
+      "centroid": [
+        -73.802387,
+        40.590961
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.802359798467,
+                    40.59104523725
+                  ],
+                  [
+                    -73.802357421388,
+                    40.591028184412
+                  ],
+                  [
+                    -73.80235306375,
+                    40.591028537127
+                  ],
+                  [
+                    -73.802348079387,
+                    40.590992787596
+                  ],
+                  [
+                    -73.80234361659,
+                    40.590993149135
+                  ],
+                  [
+                    -73.802338015702,
+                    40.590952976062
+                  ],
+                  [
+                    -73.802328476158,
+                    40.590884553932
+                  ],
+                  [
+                    -73.80239706511,
+                    40.590878996789
+                  ],
+                  [
+                    -73.802397813045,
+                    40.590878935939
+                  ],
+                  [
+                    -73.802404970907,
+                    40.590930284507
+                  ],
+                  [
+                    -73.802430618082,
+                    40.590928206067
+                  ],
+                  [
+                    -73.802445961109,
+                    40.591038256854
+                  ],
+                  [
+                    -73.802359798467,
+                    40.59104523725
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.8023413,
+                    40.5910432
+                  ],
+                  [
+                    -73.8023369,
+                    40.5910435
+                  ],
+                  [
+                    -73.8023319,
+                    40.5910078
+                  ],
+                  [
+                    -73.8023274,
+                    40.5910081
+                  ],
+                  [
+                    -73.80232,
+                    40.5909544
+                  ],
+                  [
+                    -73.8023085,
+                    40.5908725
+                  ],
+                  [
+                    -73.8023951,
+                    40.5908655
+                  ],
+                  [
+                    -73.802414,
+                    40.5908639
+                  ],
+                  [
+                    -73.8024211,
+                    40.5909153
+                  ],
+                  [
+                    -73.8024468,
+                    40.5909132
+                  ],
+                  [
+                    -73.8024659,
+                    40.5910503
+                  ],
+                  [
+                    -73.8023436,
+                    40.5910602
+                  ],
+                  [
+                    -73.8023413,
+                    40.5910432
+                  ]
+                ],
+                [
+                  [
+                    -73.802446,
+                    40.5910383
+                  ],
+                  [
+                    -73.8024306,
+                    40.5909282
+                  ],
+                  [
+                    -73.802405,
+                    40.5909303
+                  ],
+                  [
+                    -73.8023978,
+                    40.5908789
+                  ],
+                  [
+                    -73.8023971,
+                    40.590879
+                  ],
+                  [
+                    -73.8023285,
+                    40.5908846
+                  ],
+                  [
+                    -73.802338,
+                    40.590953
+                  ],
+                  [
+                    -73.8023436,
+                    40.5909931
+                  ],
+                  [
+                    -73.8023481,
+                    40.5909928
+                  ],
+                  [
+                    -73.8023531,
+                    40.5910285
+                  ],
+                  [
+                    -73.8023574,
+                    40.5910282
+                  ],
+                  [
+                    -73.8023598,
+                    40.5910452
+                  ],
+                  [
+                    -73.802446,
+                    40.5910383
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.8025276,
+                    40.5908382
+                  ],
+                  [
+                    -73.8025656,
+                    40.5911107
+                  ],
+                  [
+                    -73.8022628,
+                    40.5911352
+                  ],
+                  [
+                    -73.8022604,
+                    40.5911181
+                  ],
+                  [
+                    -73.8022561,
+                    40.5911185
+                  ],
+                  [
+                    -73.8022511,
+                    40.5910828
+                  ],
+                  [
+                    -73.8022466,
+                    40.5910831
+                  ],
+                  [
+                    -73.8022297,
+                    40.5909615
+                  ],
+                  [
+                    -73.8022088,
+                    40.5908121
+                  ],
+                  [
+                    -73.8023853,
+                    40.5907978
+                  ],
+                  [
+                    -73.8024948,
+                    40.5907889
+                  ],
+                  [
+                    -73.802502,
+                    40.5908403
+                  ],
+                  [
+                    -73.8025276,
+                    40.5908382
+                  ]
+                ],
+                [
+                  [
+                    -73.8024659,
+                    40.5910503
+                  ],
+                  [
+                    -73.8024468,
+                    40.5909132
+                  ],
+                  [
+                    -73.8024211,
+                    40.5909153
+                  ],
+                  [
+                    -73.802414,
+                    40.5908639
+                  ],
+                  [
+                    -73.8023951,
+                    40.5908655
+                  ],
+                  [
+                    -73.8023085,
+                    40.5908725
+                  ],
+                  [
+                    -73.80232,
+                    40.5909544
+                  ],
+                  [
+                    -73.8023274,
+                    40.5910081
+                  ],
+                  [
+                    -73.8023319,
+                    40.5910078
+                  ],
+                  [
+                    -73.8023369,
+                    40.5910435
+                  ],
+                  [
+                    -73.8023413,
+                    40.5910432
+                  ],
+                  [
+                    -73.8023436,
+                    40.5910602
+                  ],
+                  [
+                    -73.8024659,
+                    40.5910503
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -73.802754,
+                    40.5906283
+                  ],
+                  [
+                    -73.8028448,
+                    40.5912797
+                  ],
+                  [
+                    -73.8020364,
+                    40.5913451
+                  ],
+                  [
+                    -73.8020341,
+                    40.5913281
+                  ],
+                  [
+                    -73.8020297,
+                    40.5913284
+                  ],
+                  [
+                    -73.8020247,
+                    40.5912927
+                  ],
+                  [
+                    -73.8020203,
+                    40.5912931
+                  ],
+                  [
+                    -73.8019768,
+                    40.5909812
+                  ],
+                  [
+                    -73.8019297,
+                    40.5906432
+                  ],
+                  [
+                    -73.8023579,
+                    40.5906085
+                  ],
+                  [
+                    -73.8027211,
+                    40.5905789
+                  ],
+                  [
+                    -73.8027283,
+                    40.5906304
+                  ],
+                  [
+                    -73.802754,
+                    40.5906283
+                  ]
+                ],
+                [
+                  [
+                    -73.8024948,
+                    40.5907889
+                  ],
+                  [
+                    -73.8023853,
+                    40.5907978
+                  ],
+                  [
+                    -73.8022088,
+                    40.5908121
+                  ],
+                  [
+                    -73.8022297,
+                    40.5909615
+                  ],
+                  [
+                    -73.8022466,
+                    40.5910831
+                  ],
+                  [
+                    -73.8022511,
+                    40.5910828
+                  ],
+                  [
+                    -73.8022561,
+                    40.5911185
+                  ],
+                  [
+                    -73.8022604,
+                    40.5911181
+                  ],
+                  [
+                    -73.8022628,
+                    40.5911352
+                  ],
+                  [
+                    -73.8025656,
+                    40.5911107
+                  ],
+                  [
+                    -73.8025276,
+                    40.5908382
+                  ],
+                  [
+                    -73.802502,
+                    40.5908403
+                  ],
+                  [
+                    -73.8024948,
+                    40.5907889
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 6.6273812160132,
+      "est_ffe_ft": 8.6273812160132,
+      "freeboard_delta_h_ft": null,
+      "hand_rel_elev_ft": 5.0,
+      "twi_index": 8.0,
+      "noaa_atlas15_p24h_100yr_in": 8.13,
+      "atlas15_cmip6_mult": 1.1,
+      "landfire_fbfm40_code": "NB1",
+      "slope_deg": 5.0,
+      "wui_class": "NON_WUI",
+      "openfema_tract_claim_count": 10739,
+      "openfema_tract_mean_lcr": 0.0,
+      "wrc_burn_probability": null
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "WOOD_SHAKE_UNRATED",
+      "cv_confidence": 0.0,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": false,
+      "cv_zone1_no_shed": false,
+      "cv_enclosed_eaves": false,
+      "cv_ember_vents": false,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "NONE",
+      "iot_shutoff_active": false,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.000937448593542416,
+      "parcel_raw_lcr": 0.001404,
+      "credibility_weight_z": 0.4286,
+      "posterior_lcr": 0.001138,
+      "expected_annual_loss_usd": 398.16,
+      "peril_split": [
+        {
+          "peril": "FLOOD",
+          "zip_immunity_pi": 0.1043,
+          "expected_freq_n": 0.0016,
+          "expected_sev_s": 215740.39,
+          "peril_aal_usd": 344.38
+        },
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.4013,
+          "expected_freq_n": 0.00048,
+          "expected_sev_s": 50274.06,
+          "peril_aal_usd": 24.22
+        },
+        {
+          "peril": "PLUVIAL",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.0,
+          "expected_sev_s": 0.0,
+          "peril_aal_usd": 0.0
+        },
+        {
+          "peril": "SEWER_BACKUP",
+          "zip_immunity_pi": 0.0,
+          "expected_freq_n": 0.00123,
+          "expected_sev_s": 23991.96,
+          "peril_aal_usd": 29.57
+        }
+      ],
+      "resili_score": 821,
+      "baseline_macro_score": 823,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 0.0,
+      "annual_base_premium_usd": 4200.0,
+      "annual_discounted_premium_usd": 4200.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.11,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 520.8,
+        "payback_years": 17.28,
+        "resale_value_bump_pct": 0.8,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_BACKWATER_VALVE",
+        "title": "Backwater valve on the house sewer lateral",
+        "peril": "SEWER_BACKUP",
+        "statutory_authority": "NYC DEP sewer backup mitigation (backwater valves)",
+        "gross_capex_usd": 3500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3500.0,
+        "lcr_delta_bps": -0.38,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 20.46,
+        "payback_years": 171.08,
+        "resale_value_bump_pct": 0.3,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_SUMP_PUMP_BATTERY",
+        "title": "Sump pump with battery backup",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 2500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 2500.0,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.2,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_FLOOD_VENTS",
+        "title": "Flood vents (engineered openings) in the foundation walls",
+        "peril": "FLOOD",
+        "statutory_authority": "FEMA Technical Bulletin 1 (flood openings)",
+        "gross_capex_usd": 2400.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 2400.0,
+        "lcr_delta_bps": -0.52,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 28.03,
+        "payback_years": 85.61,
+        "resale_value_bump_pct": 0.1,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_DRY_FLOODPROOFING",
+        "title": "Dry floodproofing: sealed walls and shields to a 3 ft stage",
+        "peril": "PLUVIAL",
+        "statutory_authority": "FEMA P-936 (dry floodproofing)",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": -1.52,
+        "score_delta_pts": 1,
+        "annual_premium_savings_usd": 82.07,
+        "payback_years": 182.76,
+        "resale_value_bump_pct": 0.5,
+        "currently_applied": false
+      },
+      {
+        "action_id": "NYC_ELEVATED_MECHANICALS",
+        "title": "Elevate boiler, water heater and electrical service",
+        "peril": "PLUVIAL",
+        "statutory_authority": "Retrofit; no statutory credit",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -0.85,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 45.66,
+        "payback_years": 197.11,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": false
+      }
+    ],
+    "hitl_status": {
+      "escalated": true,
+      "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+      "trigger_reason": "Aerial CV confidence 0.00 is below 0.85.",
+      "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits."
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": false,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": false,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
+        "cat_b2_class_a_roof": false,
+        "cat_b2_enclosed_eaves": false,
+        "cat_b2_ember_vents": false,
+        "cat_b2_multi_pane_windows": false,
+        "cat_b2_vertical_siding_clearance_6in": false
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "EPQS_current",
+        "NOAA_PFDS": "Atlas14",
+        "OpenFEMA": "NfipClaims_v3",
+        "LANDFIRE": "LF2025_FBFM40",
+        "FEMA_NFHL": "live",
+        "FEMA_NRI": "December 2025",
+        "CENSUS_GEOCODER": "Public_AR_Current"
+      }
+    },
+    "input_provenance": [
+      {
+        "field": "fema_flood_zone",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "bfe_ft_navd88",
+        "value_source": "LIVE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "usgs_lag_ft",
+        "value_source": "LIVE",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "EPQS_current"
+      },
+      {
+        "field": "est_ffe_ft",
+        "value_source": "DEFAULT",
+        "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+        "vintage": null
+      },
+      {
+        "field": "freeboard_delta_h_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+        "vintage": "live"
+      },
+      {
+        "field": "noaa_atlas15_p24h_100yr_in",
+        "value_source": "LIVE",
+        "source_name": "NOAA PFDS Atlas 14",
+        "vintage": "Atlas14"
+      },
+      {
+        "field": "atlas15_cmip6_mult",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "landfire_fbfm40_code",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "hand_rel_elev_ft",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "twi_index",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "slope_deg",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wui_class",
+        "value_source": "DEFAULT",
+        "source_name": "National default (no live source)",
+        "vintage": null
+      },
+      {
+        "field": "wrc_burn_probability",
+        "value_source": "UNAVAILABLE",
+        "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+        "vintage": "RDS-2020-0016-2"
+      },
+      {
+        "field": "openfema_tract_claim_count",
+        "value_source": "LIVE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "openfema_tract_mean_lcr",
+        "value_source": "UNAVAILABLE",
+        "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+        "vintage": "NfipClaims_NfipPolicies_v3"
+      },
+      {
+        "field": "tract_prior_lcr",
+        "value_source": "LIVE",
+        "source_name": "FEMA National Risk Index",
+        "vintage": "December 2025"
+      },
+      {
+        "field": "rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "National default replacement cost",
+        "vintage": null
+      },
+      {
+        "field": "year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "footprint",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "cv_roof_class",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_confidence",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_overhang_ft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone0_clear",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "cv_zone1_no_shed",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "unpermitted_footprint_delta_sqft",
+        "value_source": "UNAVAILABLE",
+        "source_name": "No aerial image for this parcel",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bbl",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.borough",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bin",
+        "value_source": "LIVE",
+        "source_name": "NYC GeoSearch (DCP PAD)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.bldg_class",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.num_floors",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_code",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.basement_type",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.year_built",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.ground_elevation_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.roof_height_ft",
+        "value_source": "LIVE",
+        "source_name": "NYC Building Footprints (5zhs-2jue)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dep_stormwater",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP Stormwater Flood Maps (LIMITED_CURRENT: no queryable layer)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_events_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "FloodNet NYC (aq7i-eu5q, kb2e-tjy3)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.floodnet_max_depth_in",
+        "value_source": "LIVE",
+        "source_name": "FloodNet NYC (aq7i-eu5q, kb2e-tjy3)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sewer_backup_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.street_flooding_311_500m_5y",
+        "value_source": "LIVE",
+        "source_name": "NYC 311 (erm2-nwe9)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.residential_units_500m",
+        "value_source": "LIVE",
+        "source_name": "NYC MapPLUTO (64uk-42ks)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.catch_basins_150m",
+        "value_source": "LIVE",
+        "source_name": "NYC DEP catch basins (2w2g-fk3i)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_open_violations",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.dob_cellar_conversion_flag",
+        "value_source": "LIVE",
+        "source_name": "NYC DOB (3h2n-5cm9 violations, w9ak-ipjd DOB NOW)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.evacuation_zone",
+        "value_source": "LIVE",
+        "source_name": "NYC Hurricane Evacuation Zones (epne-qv9x)",
+        "vintage": null
+      },
+      {
+        "field": "nyc.sandy_inundated",
+        "value_source": "LIVE",
+        "source_name": "NYC Sandy Inundation Zone (5xsi-dfpx)",
+        "vintage": null
+      }
+    ],
+    "factor_contributions": [
+      {
+        "factor": "NYC site (DEP class, basement, 311, FloodNet, Sandy)",
+        "input_value": "4160790031",
+        "score_points": -5.2518,
+        "source": "NYC layer"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": 2.9084,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 291.46,
+      "aal_p50_usd": 380.81,
+      "aal_p95_usd": 559.35,
+      "score_p05": 816.4,
+      "score_p95": 824.3,
+      "loss_1_in_100_usd": 187.49,
+      "loss_1_in_250_usd": 187.49,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0030"
+    },
+    "premium_build": {
+      "expected_loss_usd": 398.16,
+      "deductible_usd": 3500.0,
+      "net_expected_loss_usd": 388.13,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 597.12,
+      "modeled_mitigation_credit_pct": 0.0,
+      "filed_mitigation_credit_pct": 0.0
+    },
+    "evidence_log": [],
+    "indicative_only": false,
+    "nyc": {
+      "bbl": "4160790031",
+      "bin": "4303278",
+      "borough": "Queens",
+      "bldg_class": "A2",
+      "year_built": 1920,
+      "num_floors": 1.0,
+      "basement_code": "2",
+      "basement_type": "PARTIAL",
+      "ground_elevation_ft": 7.0,
+      "roof_height_ft": 17.60908851,
+      "dep_stormwater": [
+        {
+          "scenario": "LIMITED_CURRENT",
+          "flood_class": "UNAVAILABLE"
+        },
+        {
+          "scenario": "MODERATE_CURRENT",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "MODERATE_2050",
+          "flood_class": "NONE"
+        },
+        {
+          "scenario": "EXTREME_2080",
+          "flood_class": "NONE"
+        }
+      ],
+      "floodnet_events_500m_5y": 3,
+      "floodnet_max_depth_in": 9.21,
+      "sewer_backup_311_500m_5y": 79,
+      "street_flooding_311_500m_5y": 57,
+      "residential_units_500m": 2852,
+      "catch_basins_150m": 26,
+      "dob_open_violations": 0,
+      "dob_cellar_conversion_flag": false,
+      "sandy_inundated": true,
+      "evacuation_zone": "1"
+    }
   }
 }

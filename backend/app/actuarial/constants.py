@@ -288,9 +288,10 @@ REGISTRY: dict[str, Const] = {
         "rates are 60-minute intensities; the table is for lower Manhattan and is not re-fetched per parcel.",
     ),
     "nyc.dep_scenario_rate_in_hr": Const(
-        {"LIMITED": 1.77, "MODERATE": 2.13, "EXTREME": 3.66}, _DEP, _D, True,
-        "NYC DEP Stormwater Flood Map scenarios: Limited (1.77 in/hr, current sea level), Moderate (2.13 in/hr, "
-        "current and 2050 sea level), Extreme (3.66 in/hr, 2080 sea level).",
+        {"LIMITED_CURRENT": 1.77, "MODERATE_CURRENT": 2.13, "MODERATE_2050": 2.13, "EXTREME_2080": 3.66}, _DEP, _D, True,
+        "NYC DEP Stormwater Flood Map scenarios by the contract's scenario names: Limited (1.77 in/hr, current sea "
+        "level), Moderate (2.13 in/hr, current and 2050 sea level), Extreme (3.66 in/hr, 2080 sea level). The two "
+        "Moderate maps share a rainfall rate; the sea-level difference is tidal and is not modelled here.",
     ),
     "nyc.dep_class_depth_ft": Const(
         {"NUISANCE": 0.667, "DEEP_CONTIGUOUS": 2.0}, _DEP, _D, False,

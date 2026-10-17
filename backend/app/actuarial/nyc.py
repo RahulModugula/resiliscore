@@ -51,14 +51,30 @@ def basement_kind(layer: NycLayer) -> tuple[str, bool]:
     return str(c("nyc.basement_unknown_default")), True
 
 
+def blank_layer(**fields) -> NycLayer:
+    """A NycLayer with every contract field empty, overridden by `fields` (the contract has no defaults)."""
+    base = {
+        "bbl": "reference", "bin": None, "borough": "", "bldg_class": None, "year_built": None, "num_floors": None,
+        "basement_code": None, "basement_type": "UNKNOWN", "ground_elevation_ft": None, "roof_height_ft": None,
+        "dep_stormwater": [], "floodnet_events_500m_5y": None, "floodnet_max_depth_in": None,
+        "sewer_backup_311_500m_5y": None, "street_flooding_311_500m_5y": None, "residential_units_500m": None,
+        "catch_basins_150m": None, "dob_open_violations": None, "dob_cellar_conversion_flag": None,
+        "sandy_inundated": None, "evacuation_zone": None,
+    }
+    return NycLayer(**{**base, **fields})
+
+
 def reference_layer() -> NycLayer:
     """The reference NYC home the intercepts are solved on: tract-typical basement, nuisance ponding in every
     scenario, citywide-average sewer-backup density and catch basins, no FloodNet history, not in the Sandy zone."""
     units = int(c("nyc.res_units_500m_default"))
     density = c("nyc.sewer.ref_density_per_1000_units_yr")
-    return NycLayer(
-        bbl="reference", basement_type=str(c("nyc.reference_basement")),
-        dep_stormwater=[DepStormwater(scenario=f"{rate} in/hr", flood_class="NUISANCE") for rate in _scenario_rates()],
+    return blank_layer(
+        basement_type=str(c("nyc.reference_basement")),
+        dep_stormwater=[
+            DepStormwater(scenario=s, flood_class="NUISANCE")
+            for s in ("LIMITED_CURRENT", "MODERATE_CURRENT", "EXTREME_2080")
+        ],
         sewer_backup_311_500m_5y=round(density * units / UNITS_PER_DENSITY * WINDOW_YEARS),
         catch_basins_150m=int(c("nyc.sewer.catch_basin_reference")), residential_units_500m=units,
         floodnet_events_500m_5y=0, dob_cellar_conversion_flag=False, sandy_inundated=False,
@@ -66,7 +82,7 @@ def reference_layer() -> NycLayer:
 
 
 def _scenario_rates() -> list[float]:
-    return sorted(c("nyc.dep_scenario_rate_in_hr").values())
+    return sorted(set(c("nyc.dep_scenario_rate_in_hr").values()))
 
 
 def annual_exceedance(rate_in_hr: float) -> float:
@@ -77,16 +93,9 @@ def annual_exceedance(rate_in_hr: float) -> float:
 
 
 def _rate_of(scenario: str) -> float | None:
-    """DEP scenario label -> its rainfall rate (in/hr): the number in the label, else Limited/Moderate/Extreme."""
-    text = scenario.lower()
-    rates = c("nyc.dep_scenario_rate_in_hr")
-    for rate in rates.values():
-        if f"{rate:.2f}" in text:
-            return float(rate)
-    for name, rate in rates.items():
-        if name.lower() in text:
-            return float(rate)
-    return None
+    """DEP scenario name -> its rainfall rate (in/hr); None for a scenario the model does not know."""
+    rate = c("nyc.dep_scenario_rate_in_hr").get(scenario)
+    return None if rate is None else float(rate)
 
 
 def _class_depth_ft(flood_class: str) -> float:
@@ -216,4 +225,5 @@ def sewer_rate(layer: NycLayer, doses: NycDoses) -> tuple[float, float]:
 def data_missing(layer: NycLayer) -> bool:
     """True when the basement type is unknown or DEP data is absent, so the NYC bands widen and the score is
     indicative only."""
-    return basement_kind(layer)[1] or not layer.dep_stormwater
+    known = [row for row in layer.dep_stormwater if row.flood_class != "UNAVAILABLE"]
+    return basement_kind(layer)[1] or not known

@@ -159,7 +159,8 @@ def active_perils(hazard: PublicHazardLayer, nyc_layer: NycLayer | None = None) 
     """Flood in FEMA special flood hazard areas (A/V zones), wildfire in the WUI, wind/hail everywhere, and
     pluvial and sewer backup wherever the NYC layer is present."""
     perils = []
-    if hazard.fema_flood_zone[:1] in ("A", "V"):
+    # A lot inside the observed Sandy inundation zone has flood exposure even where FEMA maps it zone X.
+    if hazard.fema_flood_zone[:1] in ("A", "V") or (nyc_layer is not None and nyc_layer.sandy_inundated):
         perils.append("FLOOD")
     if hazard.wui_class != "NON_WUI":
         perils.append("WILDFIRE")

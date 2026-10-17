@@ -226,7 +226,7 @@ ACTIONS: tuple[Action, ...] = (
     Action(
         "NYC_FLOOD_VENTS", "flood_vents", "Flood vents (engineered openings) in the foundation walls",
         "FLOOD", "FEMA Technical Bulletin 1 (flood openings)", *_E["NYC_FLOOD_VENTS"],
-        lambda r, v: r.nyc is not None and "FLOOD" in cm.active_perils(r.public_hazard_layer),
+        lambda r, v: r.nyc is not None and "FLOOD" in cm.active_perils(r.public_hazard_layer, r.nyc),
         lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="flood_vents",
     ),
     Action(
@@ -356,7 +356,10 @@ def simulate(
     rows = [_mitigation_row(r, a, v, base_premium, tract, installed) for a in ACTIONS if a.applicable(r, v)]
     scale = ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0
     rcv = r.parcel_identity.rcv_usd
-    freeboard_missing = cm.effective_freeboard(r.public_hazard_layer, r.nyc) is None and "FLOOD" in {t.peril for t in ev.terms}
+    in_sfha = r.public_hazard_layer.fema_flood_zone[:1] in ("A", "V")  # outside it there is no BFE to measure against
+    freeboard_missing = (
+        in_sfha and cm.effective_freeboard(r.public_hazard_layer, r.nyc) is None and "FLOOD" in {t.peril for t in ev.terms}
+    )
     nyc_missing = r.nyc is not None and nyc_mod.data_missing(r.nyc)
     mc = uncertainty.simulate_losses(
         ev.terms, state=r.parcel_identity.state, rcv_usd=rcv, tract_prior_lcr=prior, z=ev.credibility.z,
