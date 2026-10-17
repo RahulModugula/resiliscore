@@ -1,7 +1,9 @@
 import { BufferGeometry, Color, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
-import { difference, intersection, union, type MultiPolygon } from "polygon-clipping";
+import polygonClipping, { type MultiPolygon } from "polygon-clipping";
 import { geometryPolygons, projectLngLat } from "./geo";
 import type { Geometry, LngLat, TerrainGrid } from "./types";
+
+const { difference, intersection, union } = polygonClipping;
 
 export const TERRAIN_PALETTE = { low: "#54796b", high: "#c5ae82", minM: 0, maxM: 100 } as const;
 
