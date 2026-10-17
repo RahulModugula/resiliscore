@@ -1,4 +1,4 @@
-"""In-process latency and throughput benchmark for the ResiliScore API.
+"""In-process latency and throughput benchmark for the SaveMyHome API.
 
 Calls the ASGI app through httpx's ASGITransport, so no socket is opened and no upstream API is reached.
 Run from backend/:  uv run python -m scripts.benchmark --n 500 --warmup 50 --direct-n 1000

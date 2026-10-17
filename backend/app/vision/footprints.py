@@ -25,7 +25,7 @@ from app.vision.parcel_rings import SQM_TO_SQFT, to_lnglat, to_metres
 log = logging.getLogger(__name__)
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
-USER_AGENT = "ResiliScore-hackathon/0.1 (underwriting demo)"
+USER_AGENT = "SaveMyHome-hackathon/0.1 (underwriting demo)"
 TIMEOUT_S = 2.5
 SEARCH_RADIUS_M = 30
 DEFAULT_AREA_SQFT = 1_800.0

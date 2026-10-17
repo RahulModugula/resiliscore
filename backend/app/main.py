@@ -36,7 +36,7 @@ def cors_origins(env: Mapping[str, str]) -> list[str]:
 
 configure_logging()
 log = logging.getLogger(__name__)
-app = FastAPI(title="ResiliScore API", version="0.1.0", lifespan=http.lifespan)
+app = FastAPI(title="SaveMyHome API", version="0.1.0", lifespan=http.lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins(os.environ),

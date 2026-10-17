@@ -1,5 +1,5 @@
 ---
-name: ResiliScore underwriting workspace
+name: SaveMyHome underwriting workspace
 description: Parcel evidence and underwriting decisions in a dense adaptive workspace
 colors:
   dark-bg: "#0b1519"
@@ -81,7 +81,7 @@ components:
     rounded: "{rounded.panel}"
     padding: "20px"
 ---
-# ResiliScore design system
+# SaveMyHome design system
 
 ## Overview
 

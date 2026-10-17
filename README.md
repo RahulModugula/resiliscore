@@ -1,6 +1,6 @@
-# ResiliScore
+# SaveMyHome
 
-ResiliScore is a parcel-level property catastrophe resilience score on a 300–850 scale, with an underwriting copilot built around it.
+SaveMyHome is a parcel-level property catastrophe resilience score on a 300–850 scale, with an underwriting copilot built around it.
 It pairs public hazard data (OpenFEMA, USGS 3DEP, NOAA Atlas 15 and LANDFIRE) with verified parcel mitigations.
 Bühlmann-Straub credibility then moves the census-tract prior toward the parcel's own risk.
 

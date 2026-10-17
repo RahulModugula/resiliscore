@@ -92,7 +92,7 @@ def issue_decision(score: ParcelScoreResponse, submission_id: str) -> tuple[int,
     ab = score.actuarial_breakdown
     hitl = score.hitl_status
     if ab.underwriting_tier == "TIER_3_DECLINE_ESCALATE" or hitl.escalated:
-        reason = hitl.trigger_reason if hitl.escalated else f"ResiliScore {ab.resili_score} is below 580"
+        reason = hitl.trigger_reason if hitl.escalated else f"SaveMyHome {ab.resili_score} is below 580"
         return 409, {
             "status": "ReferredToUnderwriting",
             "referral": {

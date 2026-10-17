@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 import httpx
 
-USER_AGENT = "ResiliScore/0.1 (+https://github.com/RahulModugula/resiliscore)"
+USER_AGENT = "SaveMyHome/0.1 (+https://github.com/RahulModugula/resiliscore)"
 
 _client: httpx.AsyncClient | None = None
 

@@ -22,7 +22,7 @@ export function HeaderScenarioBar({ active, onSelect, onAddress, live, onLive, d
   }
   return <>
     <header className="topbar">
-      <Link className="brand" href="/" aria-label="ResiliScore home"><span className="brand-mark"><Activity size={23} /></span>ResiliScore<span className="trademark">™</span></Link>
+      <Link className="brand" href="/" aria-label="SaveMyHome home"><span className="brand-mark"><Activity size={23} /></span>SaveMyHome<span className="trademark">™</span></Link>
       <span className="brand-description">Property resilience<br /><strong>Underwriting copilot</strong></span>
       <div className="connection"><span className={`status-dot ${loading ? "loading" : ""}`} /><span>{live ? "Live API selected" : "Guidewire & MCP · Demo"}</span></div>
       <div className="header-actions"><label className="mode-switch"><input type="checkbox" checked={live} onChange={e => onLive(e.target.checked)} />Live API</label>

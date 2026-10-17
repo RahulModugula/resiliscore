@@ -24,9 +24,9 @@ export function ScoreGaugeCard({ parcel, simulated, localProjection = false, onA
     ["Flo · Water shutoff", p.iot_shutoff_active ? "Active" : "Not active"],
   ];
   return <section className="score-panel panel">
-    <div className="panel-heading"><h2>Parcel ResiliScore</h2><span className={`badge ${tone}`}>{simulated ? "Projected" : "Verified parcel"}</span></div>
+    <div className="panel-heading"><h2>Parcel SaveMyHome</h2><span className={`badge ${tone}`}>{simulated ? "Projected" : "Verified parcel"}</span></div>
     <div className={`gauge-wrap ${tone}`}>
-      <svg viewBox="0 0 320 190" className="score-gauge" role="img" aria-label={`ResiliScore ${a.resili_score} on a scale from 300 to 850`}>
+      <svg viewBox="0 0 320 190" className="score-gauge" role="img" aria-label={`SaveMyHome ${a.resili_score} on a scale from 300 to 850`}>
         <path d="M35 150 A125 125 0 0 1 285 150" fill="none" stroke="var(--border)" strokeWidth="12" />
         <path d="M35 150 A125 125 0 0 1 163 25" fill="none" stroke="var(--red)" strokeWidth="12" />
         <path d="M168 25 A125 125 0 0 1 248 61" fill="none" stroke="var(--amber)" strokeWidth="12" />
