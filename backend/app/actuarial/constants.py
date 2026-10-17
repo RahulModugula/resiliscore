@@ -350,7 +350,7 @@ REGISTRY: dict[str, Const] = {
     "nyc.ddf.fia_1floor_basement_a": Const(
         (0, 0, 0, 0, 6, 10, 18, 23, 27, 32, 39, 39, 43), _HAZUS, _D, False,
         "Hazus DmgFnId 121 (FIA RES1 one floor, with basement, structure, A-Zone), percent at -4..+8 ft relative to the "
-        "first floor. Values checked against the CSV. TESTED AND NOT ADOPTED: worse than Hazus 129 on NFIP basement "
+        "first floor. Values checked against the CSV. TESTED AND NOT ADOPTED: worse than Hazus 129 on squared error on NFIP basement "
         "claims in both leave-one-event-out directions (docs/validation/nyc_basement.md).",
     ),
     "nyc.ddf.fia_2floor_basement_a": Const(

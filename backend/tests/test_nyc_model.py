@@ -387,3 +387,11 @@ def test_the_score_endpoint_serves_the_nyc_scenarios():
         ).json()
     assert body["nyc"]["bbl"] == "3005130048" and body["actuarial_breakdown"]["resili_score"] == 835
     assert out["actuarial_breakdown"]["expected_annual_loss_usd"] < body["actuarial_breakdown"]["expected_annual_loss_usd"]
+
+
+def test_the_nyc_split_with_unequal_ifld_and_cfld_exposures_keeps_flood_non_negative_and_the_total():
+    odd = br.NriRates("x", 1e9, {"IFLD": 1e6, "CFLD": 1e5}, {"IFLD": 1e8, "CFLD": 1e9})
+    plain, split = br.base_rates_for(odd), br.base_rates_for(odd, nyc=True)
+    assert split.flood >= 0 and split.pluvial >= 0 and split.sewer >= 0
+    assert split.flood + split.pluvial + split.sewer == pytest.approx(plain.flood)
+    assert br.base_rates_for(odd, "all", nyc=True).flood >= 0

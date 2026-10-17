@@ -46,15 +46,17 @@ class NriRates:
     version: str = "v1.20"
     reference_hazard: PublicHazardLayer | None = None
 
-    def loss_rate(self, peril: str, basis: Literal["exposed", "all"] = "exposed") -> float:
-        codes = HAZARD_GROUPS[peril]
-        eal = sum(self.ealb_usd.get(c, 0.0) for c in codes)
+    def denominator(self, peril: str, basis: Literal["exposed", "all"] = "exposed") -> float:
+        """Building value the peril's loss is divided by: the exposed value (largest across its hazard codes) or the
+        tract-wide value, which also stands in when no exposed-value figure exists."""
         if basis == "all":
-            return eal / self.buildvalue_usd
-        exposed = max((self.expb_usd.get(c, 0.0) for c in codes), default=0.0)
-        if exposed <= 0:  # no exposed-value figure (or no exposure): fall back to the tract-wide building value
-            return eal / self.buildvalue_usd if eal > 0 else 0.0
-        return eal / exposed
+            return self.buildvalue_usd
+        exposed = max((self.expb_usd.get(c, 0.0) for c in HAZARD_GROUPS[peril]), default=0.0)
+        return exposed if exposed > 0 else self.buildvalue_usd
+
+    def loss_rate(self, peril: str, basis: Literal["exposed", "all"] = "exposed") -> float:
+        eal = sum(self.ealb_usd.get(c, 0.0) for c in HAZARD_GROUPS[peril])
+        return eal / self.denominator(peril, basis) if eal > 0 else 0.0
 
     @property
     def tract_prior_lcr(self) -> float:
@@ -90,10 +92,9 @@ def base_rates_for(
     flood, wildfire, wind = (nri.loss_rate(p, basis) for p in ("FLOOD", "WILDFIRE", "WIND_HAIL"))
     if not nyc:
         return BaseRates(flood, wildfire, wind, reference_hazard=nri.reference_hazard)
-    ifld = nri.ealb_usd.get("IFLD", 0.0)
-    exposed = nri.expb_usd.get("IFLD", 0.0)
-    denominator = exposed if basis == "exposed" and exposed > 0 else nri.buildvalue_usd
-    inland = ifld / denominator if denominator > 0 else 0.0
+    # The inland share uses the same denominator as the flood rate, so the three flood perils sum to it and FLOOD
+    # cannot go negative when the IFLD and CFLD exposures differ.
+    inland = min(flood, nri.ealb_usd.get("IFLD", 0.0) / nri.denominator("FLOOD", basis))
     share = c_get("nyc.ifld_split")
     return BaseRates(
         flood=flood - inland + share["FLOOD"] * inland, wildfire=wildfire, wind=wind,
