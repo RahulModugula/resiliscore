@@ -62,6 +62,7 @@ export default function ManhattanExplorer() {
 
   function selectNeighborhood(id: string | null) {
     if (id !== null && !data?.neighborhoods.some(item => item.id === id)) return;
+    if (id === neighborhoodId && detailError) setDetailRetry(value => value + 1);
     assessmentController.current?.abort();
     setPending(null); setAssessmentError(""); setNeighborhoodId(id); setDetailError(""); setQuery(""); setLimit(60);
     window.history.replaceState(null, "", id ? `/?neighborhood=${encodeURIComponent(id)}` : "/");
@@ -99,7 +100,7 @@ export default function ManhattanExplorer() {
         </div>
         <label className={styles.search}><Search size={17} /><span className={styles.srOnly}>{neighborhood ? "Find a property by name, BIN, or BBL" : "Find a neighborhood"}</span><input type="search" value={query} placeholder={neighborhood ? "Search name, BIN, or BBL" : "Find a neighborhood"} onChange={event => { setQuery(event.target.value); setLimit(60); }} /></label>
         <div className={styles.listHeading}><span>{neighborhood ? "Mapped buildings" : "Neighborhoods & park areas"}</span><span>{neighborhood ? activeDetail ? matchingBuildings.length.toLocaleString() : "…" : visibleNeighborhoods.length || "…"}</span></div>
-        <div className={styles.list} aria-busy={!data || detailPending}>
+        <div className={styles.list} aria-busy={(!data && !loadError) || detailPending}>
           {loadError ? <div className={styles.listMessage} role="alert"><p>{loadError}</p><button className="secondary-button" onClick={() => setRetry(value => value + 1)}>Reload map data</button></div>
             : !data ? <p className={styles.listMessage} role="status">Loading Manhattan data…</p>
               : detailPending ? <p className={styles.listMessage} role="status">Loading building footprints, parks, and terrain…</p>

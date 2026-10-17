@@ -1,4 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
+import { PerspectiveCamera, Vector3 } from "three";
+import { cameraFrame, combineBounds, worldPoint } from "../../src/lib/manhattan/sceneGeometry";
+import type { Bounds, Building, ManhattanOverview, Neighborhood, NeighborhoodDetail } from "../../src/lib/manhattan/types";
 
 test.use({ launchOptions: { args: ["--enable-unsafe-swiftshader"] } });
 
@@ -43,7 +46,7 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     await expect(page).toHaveURL(/\/assessment\?property=/);
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
     await expect(page.getByText("Offline model screening", { exact: true }).first()).toBeVisible();
-    await expect(page.getByRole("status")).toContainText("national defaults");
+    await expect(page.getByRole("status")).toContainText(/national.default/);
     await expect(page.getByRole("button", { name: /bind.*PolicyCenter|Issue.*bind/ })).toHaveCount(0);
     await page.reload();
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
@@ -54,11 +57,12 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     expect(externalRequests).toEqual([]);
   });
 
-  test("failed map asset can be retried", async ({ page }) => {
+  for (const failure of ["HTTP error", "invalid payload"] as const) test(`map asset ${failure} can be retried`, async ({ page }) => {
     let fail = true;
-    await page.route("**/manhattan/manifest.json", route => fail ? route.fulfill({ status: 503, body: "unavailable" }) : route.continue());
+    await page.route("**/manhattan/manifest.json", route => fail ? route.fulfill(failure === "HTTP error" ? { status: 503, body: "unavailable" } : { json: { details: {}, sources: [] } }) : route.continue());
     await page.goto("/");
-    await expect(page.getByRole("alert").filter({ hasText: "Map data" })).toContainText("503");
+    await expect(page.getByRole("alert").filter({ hasText: "Map data" })).toBeVisible();
+    await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
     fail = false;
     await page.getByRole("button", { name: "Reload map data" }).click();
     await expect(page.getByRole("button", { name: new RegExp(district) })).toBeVisible();
@@ -100,14 +104,45 @@ test("real WebGL renderer loads and the transparent layer remains usable", async
   test.setTimeout(60_000);
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
+  await page.route("**/v1/**", route => route.abort("connectionrefused"));
+  let failDetail = true;
+  await page.route("**/manhattan/neighborhoods/MN0101.json", route => {
+    if (failDetail) { failDetail = false; return route.fulfill({ json: { neighborhoodId: "wrong-neighborhood", buildings: [] } }); }
+    return route.continue();
+  });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await expect(page.getByText("Click a neighborhood to explore", { exact: false })).toBeVisible();
-  await expect(page.locator("canvas")).toBeVisible();
-  await page.getByRole("button", { name: new RegExp(district) }).click();
+  await expect(page.getByRole("button", { name: new RegExp(district) })).toBeVisible();
+  await expect(page.getByText("Click a neighborhood to explore", { exact: false })).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator("canvas")).toBeVisible({ timeout: 30_000 });
+  const overview: ManhattanOverview = await (await page.request.get("/manhattan/overview.json")).json();
+  const neighborhoods: Neighborhood[] = await (await page.request.get("/manhattan/neighborhoods.json")).json();
+  const detail: NeighborhoodDetail = await (await page.request.get("/manhattan/neighborhoods/MN0101.json")).json();
+  const tower = detail.buildings.reduce((highest, next) => (next.heightM ?? 0) > (highest.heightM ?? 0) ? next : highest);
+  // Project a known real roof into the rendered camera, then exercise actual raycast picking.
+  async function clickRoof(bounds: Bounds, buildings: Building[]) {
+    const rect = (await page.locator("canvas").boundingBox())!;
+    const skyline = buildings.reduce((max, building) => Math.max(max, (building.groundElevationM ?? 0) + (building.heightM ?? 0)), 0);
+    const frame = cameraFrame(bounds, rect.width / rect.height, skyline);
+    const camera = new PerspectiveCamera(38, rect.width / rect.height, 2, 150000);
+    camera.position.set(...frame.position); camera.lookAt(...frame.target); camera.updateMatrixWorld();
+    const roof = new Vector3(...worldPoint(tower.center, (tower.groundElevationM ?? 0) + (tower.heightM ?? 0))).project(camera);
+    await page.mouse.click(rect.x + (roof.x + 1) / 2 * rect.width, rect.y + (1 - roof.y) / 2 * rect.height);
+  }
+  await clickRoof(combineBounds(neighborhoods), overview.buildings);
+  await expect(page.getByRole("heading", { name: district, exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Retry neighborhood" })).toBeVisible();
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  // Reselecting the same map neighborhood must retry its failed, uncached detail.
+  await clickRoof(neighborhoods.find(item => item.id === "MN0101")!.bounds, detail.buildings);
   await expect(page.getByRole("list", { name: "Properties", exact: true })).toBeVisible();
   await page.getByRole("checkbox", { name: "Underground drainage" }).check();
   await expect(page.getByText("Historic illustrative interceptors", { exact: true })).toBeVisible();
   await expect(page.locator("canvas")).toBeVisible();
+  await page.getByRole("checkbox", { name: "Underground drainage" }).uncheck();
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await clickRoof(neighborhoods.find(item => item.id === "MN0101")!.bounds, detail.buildings);
+  await expect(page).toHaveURL(`/assessment?property=${tower.id}`);
+  await expect(page.getByRole("heading", { name: "Property risk assessment", exact: true })).toBeVisible();
   expect(errors).toEqual([]);
 });
