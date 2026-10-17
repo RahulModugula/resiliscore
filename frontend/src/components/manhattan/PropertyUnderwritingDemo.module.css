@@ -1,0 +1,24 @@
+.demo { align-self: start; }
+.demo h2 { scroll-margin-top: 16px; }
+.intro { color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+.comparison { width: 100%; border-collapse: collapse; margin-top: 20px; font-variant-numeric: tabular-nums; }
+.comparison caption { text-align: left; color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+.comparison th, .comparison td { padding: 10px 0; border-bottom: 1px solid var(--border); text-align: right; }
+.comparison th:first-child { text-align: left; font-weight: 500; }
+.comparison thead th { color: var(--muted); font-size: 12px; font-weight: 400; }
+.comparison td { min-width: 65px; }
+.comparison small { display: block; color: var(--muted); font-size: 11px; }
+.step { border-top: 1px solid var(--border); margin-top: 22px; padding-top: 18px; }
+.step h3 { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+.action { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; line-height: 1.5; }
+.action input { margin-top: 4px; accent-color: var(--accent); flex-shrink: 0; }
+.action strong { font-size: 13px; font-weight: 500; }
+.action small { display: block; color: var(--muted); margin-top: 6px; font-size: 12px; }
+.step > button { margin-top: 12px; }
+.status { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.5; }
+.status svg { flex-shrink: 0; margin-top: 2px; color: var(--amber); }
+.reviewActions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+@media (max-width: 650px) {
+  .comparison th, .comparison td { font-size: 12px; }
+  .reviewActions { flex-direction: column; }
+}
