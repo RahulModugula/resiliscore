@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { PerspectiveCamera, Vector3 } from "three";
 import { unprojectMeters } from "../src/lib/manhattan/geo";
 import { buildingAtFace, buildingGeometry, cameraFrame, polygonGeometry, terrainElevation, terrainGeometry, worldPoint } from "../src/lib/manhattan/sceneGeometry";
 import type { Building, Geometry, LngLat, Neighborhood, TerrainGrid } from "../src/lib/manhattan/types";
@@ -67,4 +68,20 @@ test("camera bounds include portrait and landscape viewports with finite positio
   assert.ok(portrait.position.every(Number.isFinite));
   assert.ok(Math.abs(landscape.target[0] - 500) < 0.001);
   assert.ok(Math.abs(landscape.target[2] + 1000) < 0.001);
+});
+
+test("oblique camera framing includes all geographic bounds and the supplied skyline", () => {
+  const a = unprojectMeters([-3000, -10000]);
+  const b = unprojectMeters([3000, 10000]);
+  for (const aspect of [0.46, 1, 1.8]) {
+    const frame = cameraFrame([a[0], a[1], b[0], b[1]], aspect, 550);
+    const camera = new PerspectiveCamera(38, aspect, 2, 150000);
+    camera.position.set(...frame.position);
+    camera.lookAt(...frame.target);
+    camera.updateMatrixWorld();
+    for (const x of [-3000, 3000]) for (const y of [0, 550]) for (const z of [-10000, 10000]) {
+      const projected = new Vector3(x, y, z).project(camera);
+      assert.ok(Math.abs(projected.x) <= 1 && Math.abs(projected.y) <= 1, `corner escaped the ${aspect} viewport`);
+    }
+  }
 });

@@ -158,15 +158,27 @@ export function combineBounds(neighborhoods: Neighborhood[]): Bounds {
 }
 
 /** Fit the complete bounds at any viewport aspect, with an oblique south-east viewpoint. */
-export function cameraFrame(bounds: Bounds, aspect: number) {
+export function cameraFrame(bounds: Bounds, aspect: number, maxElevation = 0) {
   const a = worldPoint([bounds[0], bounds[1]]);
   const b = worldPoint([bounds[2], bounds[3]]);
-  const center: Point = [(a[0] + b[0]) / 2, 0, (a[2] + b[2]) / 2];
-  const radius = Math.max(Math.hypot(a[0] - b[0], a[2] - b[2]) / 2, 130);
+  const center: Point = [(a[0] + b[0]) / 2, maxElevation / 2, (a[2] + b[2]) / 2];
   const vertical = 38 * Math.PI / 180;
   const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * Math.max(aspect, 0.2));
-  const distance = radius / Math.sin(Math.min(vertical, horizontal) / 2) * 1.07;
   const offset = [0.35, 0.8, 0.75];
   const length = Math.hypot(...offset);
+  const toward = offset.map((value) => value / length);
+  const groundLength = Math.hypot(toward[0], toward[2]);
+  const right = [toward[2] / groundLength, 0, -toward[0] / groundLength];
+  const up = [-toward[1] * toward[0] / groundLength, groundLength, -toward[1] * toward[2] / groundLength];
+  const dot = (point: number[], axis: number[]) => point.reduce((sum, value, index) => sum + value * axis[index], 0);
+  let distance = 300;
+  // Fit the actual oblique bounding box rather than a loose bounding sphere.
+  // Include the supplied skyline height so towers remain inside the camera frame.
+  for (const x of [a[0], b[0]]) for (const y of [0, maxElevation]) for (const z of [a[2], b[2]]) {
+    const point = [x - center[0], y - center[1], z - center[2]];
+    const depth = dot(point, toward);
+    distance = Math.max(distance, depth + Math.abs(dot(point, right)) / Math.tan(horizontal / 2), depth + Math.abs(dot(point, up)) / Math.tan(vertical / 2));
+  }
+  distance *= 1.1;
   return { target: center, position: offset.map((value, index) => center[index] + value / length * distance) as Point, distance };
 }

@@ -45,13 +45,13 @@ function useReducedMotion() {
   return reduced;
 }
 
-function CameraRig({ bounds, reducedMotion }: { bounds: Bounds; reducedMotion: boolean }) {
+function CameraRig({ bounds, reducedMotion, maxElevation }: { bounds: Bounds; reducedMotion: boolean; maxElevation: number }) {
   const controls = useRef<CameraControls>(null);
   const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
   const [w, s, e, n] = bounds;
   useEffect(() => {
-    const frame = cameraFrame([w, s, e, n], size.width / Math.max(size.height, 1));
+    const frame = cameraFrame([w, s, e, n], size.width / Math.max(size.height, 1), maxElevation);
     const control = controls.current;
     if (!control) return;
     control.minDistance = 90;
@@ -59,7 +59,7 @@ function CameraRig({ bounds, reducedMotion }: { bounds: Bounds; reducedMotion: b
     control.smoothTime = reducedMotion ? 0 : 0.45;
     void control.setLookAt(...frame.position, ...frame.target, !reducedMotion);
     invalidate();
-  }, [w, s, e, n, size.width, size.height, reducedMotion, invalidate]);
+  }, [w, s, e, n, size.width, size.height, reducedMotion, maxElevation, invalidate]);
   return <CameraControls ref={controls} makeDefault minPolarAngle={0.12} maxPolarAngle={Math.PI / 2.15} dollySpeed={0.8} draggingSmoothTime={0.08} />;
 }
 
@@ -187,6 +187,7 @@ function City(props: ManhattanSceneProps) {
   const buildings = useMemo(() => activeDetail
     ? [...(overview?.buildings ?? []).filter((building) => building.neighborhoodId !== activeDetail.neighborhoodId), ...activeDetail.buildings]
     : overview?.buildings ?? [], [overview, activeDetail]);
+  const maxElevation = useMemo(() => buildings.reduce((max, building) => selectedNeighborhoodId && building.neighborhoodId !== selectedNeighborhoodId ? max : Math.max(max, (building.groundElevationM ?? 0) + (building.heightM ?? 0)), 0), [buildings, selectedNeighborhoodId]);
   const terrain = (activeDetail ?? overview)?.terrain;
   const hovered = neighborhoods.find((neighborhood) => neighborhood.id === (hoverBuilding?.neighborhoodId ?? hoverNeighborhoodId));
   const propertyHover = hoverBuilding && hoverBuilding.neighborhoodId === activeDetail?.neighborhoodId ? hoverBuilding : null;
@@ -197,7 +198,7 @@ function City(props: ManhattanSceneProps) {
     <ambientLight intensity={1.15} />
     <directionalLight position={[-6000, 10000, 4000]} intensity={2.3} color="#fff4d9" />
     <hemisphereLight args={["#d4e4ed", "#47584b", 1.2]} />
-    <CameraRig bounds={bounds} reducedMotion={reducedMotion} />
+    <CameraRig bounds={bounds} reducedMotion={reducedMotion} maxElevation={maxElevation} />
     <Landscape neighborhoods={neighborhoods} overview={overview} detail={activeDetail} showUnderground={props.showUnderground} />
     {neighborhoods.map((neighborhood) => <NeighborhoodMesh key={neighborhood.id} neighborhood={neighborhood} terrain={terrain} selected={neighborhood.id === selectedNeighborhoodId || neighborhood.id === hovered?.id} muted={!!selectedNeighborhoodId} underground={!!props.showUnderground} onSelect={onNeighborhoodSelect} onHover={setHoverNeighborhoodId} />)}
     <BuildingMesh key={activeDetail?.neighborhoodId ?? "overview"} buildings={buildings} activeNeighborhoodId={activeDetail?.neighborhoodId ?? null} onSelect={onBuildingSelect} onNeighborhoodSelect={onNeighborhoodSelect} selectedBuildingId={selectedBuildingId} underground={!!props.showUnderground} onHover={setHoverBuilding} />
