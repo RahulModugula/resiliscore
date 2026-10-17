@@ -15,6 +15,8 @@ from app.ingestion.usgs_3dep import EPQS_URL
 from app.integrations.guidewire_mock import router as guidewire_router
 from app.models.schemas import ParcelScoreResponse, State
 from app.observability import RequestContextMiddleware, configure_logging, current_request_id
+from app.verification.consortium import router as consortium_router
+from app.verification.evidence import router as evidence_router
 
 DEFAULT_CORS_ORIGINS = "http://localhost:3000"
 UPSTREAMS = {"openfema": OPENFEMA_URL, "usgs_3dep": EPQS_URL}
@@ -37,6 +39,8 @@ app.add_middleware(
 # Added last so it is outermost: every response, preflight included, carries the request id.
 app.add_middleware(RequestContextMiddleware)
 app.include_router(guidewire_router)
+app.include_router(evidence_router)
+app.include_router(consortium_router)
 
 OVERRIDE_CV_CONFIDENCE = 0.99  # SPEC Prompt 1D: mobile self-inspection or underwriter approval
 

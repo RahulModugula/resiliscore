@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, model_validator
 from app.actuarial.optimizer import simulate
 from app.fixtures import by_apn, by_scenario
 from app.models.schemas import ParcelScoreResponse
+from app.rules.applicability import applied_rule_ids
 
 CONDITIONAL_BIND_DAYS = 60
 
@@ -34,26 +35,6 @@ class QuoteRequest(BaseModel):
         if (self.scenario_id is None) == (self.apn_uid is None):
             raise ValueError("provide exactly one of scenario_id or apn_uid")
         return self
-
-
-def applied_rules(score: ParcelScoreResponse) -> list[str]:
-    """Gosu rule ids that fire for the parcel's state and verified features."""
-    pvl = score.private_verification_layer
-    state = score.parcel_identity.state
-    rules: list[str] = []
-    if state == "CA":
-        ca = score.regulatory_compliance.ca_2644_9_factors.model_dump()
-        if any(v for k, v in ca.items() if k.startswith("cat_a")):
-            rules.append("CA_CCR_2644_9_CAT_A")
-        if any(v for k, v in ca.items() if k.startswith(("cat_b1", "cat_b2"))):
-            rules.append("CA_CCR_2644_9_CAT_B1_B2")
-    if state == "LA" and pvl.ibhs_fortified_tier != "NONE":
-        rules.append("LA_FORTIFIED_ROOF_CREDIT")
-    if state == "FL" and pvl.ibhs_fortified_tier != "NONE":
-        rules.append("FL_FORTIFIED_HOME_CREDIT")
-    if pvl.ibhs_wph_tier != "NONE":
-        rules.append(f"IBHS_WPH_{pvl.ibhs_wph_tier}_CREDIT")
-    return rules
 
 
 def _digest(submission_id: str, salt: str) -> str:
@@ -79,7 +60,7 @@ def _quote_payload(submission_id: str, score: ParcelScoreResponse) -> dict[str, 
             "aalUsd": ab.expected_annual_loss_usd,
         },
         "idmDocumentId": f"IDM-{_digest(submission_id, 'idm')[:12].upper()}",
-        "appliedRules": applied_rules(score),
+        "appliedRules": applied_rule_ids(score),
         "premium": {
             "currency": "USD",
             "basePremium": ab.annual_base_premium_usd,
