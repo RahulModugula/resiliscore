@@ -8,6 +8,8 @@ from pydantic import BaseModel, model_validator
 from app.fixtures import by_address, by_apn, by_scenario
 from app.models.schemas import HitlStatus, ParcelScoreResponse, UnderwritingTier
 
+from app.integrations.guidewire_mock import router as guidewire_router
+
 app = FastAPI(title="ResiliScore API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
@@ -15,6 +17,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(guidewire_router)
 
 
 class ScoreRequest(BaseModel):
