@@ -1,23 +1,41 @@
+import os
 import time
 import uuid
+from collections.abc import Mapping
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from app import pipeline
 from app.actuarial.optimizer import simulate
 from app.fixtures import by_address, by_apn, by_scenario
+from app.ingestion.openfema import OPENFEMA_URL
+from app.ingestion.usgs_3dep import EPQS_URL
 from app.integrations.guidewire_mock import router as guidewire_router
 from app.models.schemas import ParcelScoreResponse, State
+from app.observability import RequestContextMiddleware, configure_logging, current_request_id
 
+DEFAULT_CORS_ORIGINS = "http://localhost:3000"
+UPSTREAMS = {"openfema": OPENFEMA_URL, "usgs_3dep": EPQS_URL}
+
+
+def cors_origins(env: Mapping[str, str]) -> list[str]:
+    """Comma-separated RS_CORS_ORIGINS, or the local frontend when unset or blank."""
+    origins = [origin.strip() for origin in env.get("RS_CORS_ORIGINS", "").split(",") if origin.strip()]
+    return origins or [DEFAULT_CORS_ORIGINS]
+
+
+configure_logging()
 app = FastAPI(title="ResiliScore API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=cors_origins(os.environ),
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Added last so it is outermost: every response, preflight included, carries the request id.
+app.add_middleware(RequestContextMiddleware)
 app.include_router(guidewire_router)
 
 OVERRIDE_CV_CONFIDENCE = 0.99  # SPEC Prompt 1D: mobile self-inspection or underwriter approval
@@ -29,8 +47,8 @@ class ScoreRequest(BaseModel):
 
     scenario_id: str | None = None
     address: str | None = None
-    lat: float | None = None
-    lng: float | None = None
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lng: float | None = Field(default=None, ge=-180, le=180)
     county_fips: str | None = None
     state: State | None = None
     footprint: list[list[float]] | None = None
@@ -56,12 +74,22 @@ class VerifyOverrideRequest(BaseModel):
 def _fresh(resp: ParcelScoreResponse, started: float) -> ParcelScoreResponse:
     """A per-request copy with a new request_id and the real elapsed time."""
     elapsed_ms = (time.perf_counter() - started) * 1000
-    return resp.model_copy(update={"request_id": str(uuid.uuid4()), "processing_time_ms": elapsed_ms})
+    request_id = current_request_id() or str(uuid.uuid4())
+    return resp.model_copy(update={"request_id": request_id, "processing_time_ms": elapsed_ms})
 
 
 @app.get("/healthz")
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/readyz")
+def readyz() -> dict[str, object]:
+    """Which upstreams are configured. Reads settings only and makes no network calls."""
+    return {
+        "status": "ready",
+        "upstreams": {name: {"configured": bool(url), "url": url} for name, url in UPSTREAMS.items()},
+    }
 
 
 @app.post("/v1/parcel/score", response_model=ParcelScoreResponse)
