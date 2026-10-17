@@ -18,20 +18,43 @@ The sources are published under [NYC Open Data Terms of Use](https://opendata.ci
 
 [DEP's Stormwater Management Program chapter 4](https://www.nyc.gov/assets/dep/downloads/pdf/water/stormwater/ms4/nyc-swmp-report-ch4.pdf) describes its detailed Sewer Network Geodatabase as maintained for internal use. [DEP's records request process](https://www.nyc.gov/site/dep/about/request-records.page) offers GIS data cuts, sewer maps and as-built records. The bundled sewer lines come from [Open Sewer Atlas NYC's author-published KML](https://openseweratlas.tumblr.com/data), not a third-party mirror. Credit: Open Sewer Atlas NYC. The author permits illustrative and educational use with attribution and warns that the files combine outdated DEP shapefiles and manually traced public planning documents. They are unofficial, incomplete and unsuitable for planning. `sewerAvailability` is `partial`; depths remain null. Lines represent major interceptors and force mains, not every street sewer or building lateral. Full line geometries overlapping Manhattan NTA bounds are retained, so some extend into rivers or other boroughs. No connections are inferred between neighboring drains or buildings.
 
-## Elevation limitations
+## Measured ground elevation
 
-The terrain grid uses actual NYC building-base ground elevations with inverse distance weighting over the nearest eight observations within 600 metres. It is a regional ground context estimate, not a bare-earth digital elevation model or an engineering terrain survey. Grid points outside Manhattan NTA polygons or without nearby observations remain null. Park interiors can have sparse support, so their terrain should not imply measured local hills or rock outcrops. Rows run from south to north, columns west to east.
+Terrain comes from the [USGS 3DEP Bare Earth DEM service](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer), explicitly locked to the official catalog's one-metre bare-earth source tiles. [USGS's one-metre DEM product metadata](https://data.usgs.gov/datacatalog/data/USGS%3A77ae0551-c61e-4979-aedd-d797abdcde0e) specifies metre elevations referenced to NAVD88 and public-domain access. The exported raster uses WGS84 longitude/latitude horizontally. It has no hillshade, color ramp, building-base inference or synthetic hills.
 
-Ground elevation is separate from building height. Neither the terrain estimate nor the building-base value is first-floor elevation, flood freeboard, catastrophe hazard, or underwriting evidence. No risk scores are stored here. Missing address, height, construction year and elevation values remain null; consumers must label any visual placeholder as an estimate.
+A single common raster supplies every neighborhood. Neighborhood detail uses approximately 10 metre spacing, the city overview takes every fifth source sample for approximately 50 metre spacing, and `terrain-10m.json` provides the complete common 10 metre grid for block context across neighborhood boundaries. Native one-metre source data are nearest-neighbor sampled onto this geographic grid. This is a display resolution, not a claim that every rendered point is an original one-metre observation. The source projects have different acquisition vintages and may differ at project boundaries. They do not describe live construction or an engineering survey.
+
+`TerrainGrid.bounds` describes the centers of the southwest and northeast samples, not the raster's outer pixel edges. Rows run south to north and columns west to east. The optional `raster` metadata records the pixel-edge extent, exact degree spacing, native and display resolution, datum and row orientation. Float32 north-first TIFF rows are reversed once when caching. Heights round to 0.01 metre for JSON storage; rounding does not increase measurement accuracy.
+
+Source NoData, nonfinite values, ArcGIS Float32 NoData sentinels and cells outside the Manhattan study area remain null. The study mask includes cells whose pixel footprint touches an NTA polygon, so shoreline sampling retains real nearby observations. Missing cells are not interpolated or extrapolated. Zero elevation in the DEM is a valid measurement. The separate building `groundElevationM` attributes retain their original NYC source treatment and are not overwritten by this rebuild.
+
+The measured interior of Central Park contains over 35,000 supported grid samples and approximately 39 metres of relief. Inwood Hill Park contains over 9,000 supported samples and approximately 72 metres of relief. These ranges refer to samples inside their NTA polygons, rather than extrema from neighboring buildings. Unit tests check both areas and shared grid alignment.
+
+`dem-provenance.json` records the raw GeoTIFF checksum, request parameters, exact decoded affine transform, source IDs, catalog metadata, retrieval time and export response. `source-checksums.json` also pins the raw DEM checksum. The raw source GeoTIFF stays in the rebuild cache outside Git; the locally bundled JSON grids need no USGS connection at runtime.
+
+Ground elevation is separate from building height. Neither bare-earth terrain nor a building-base elevation is first-floor elevation, flood freeboard, catastrophe hazard, or underwriting evidence. No risk scores are stored here.
 
 ## Rebuild
 
-From `frontend/` run:
+Use Python 3.9 through 3.12 in a virtual environment. From `frontend/`:
 
 ```sh
-python3 scripts/build-manhattan-data.py
+python3 -m venv /tmp/resiliscore-dem-venv
+/tmp/resiliscore-dem-venv/bin/pip install -r scripts/manhattan-dem-requirements.txt
+/tmp/resiliscore-dem-venv/bin/python scripts/build-manhattan-dem.py
 ```
 
-The script uses only Python 3's standard library. It downloads four NYC public datasets and the attributed Open Sewer Atlas KML with ordered, paginated queries and caches the raw snapshots in `/tmp/resiliscore-manhattan-sources`. Subsequent builds reuse those exact snapshots. Use `--cache <directory>` to keep them elsewhere, or `--refresh` to download a new snapshot. Run `npm test`, `npm run lint` and `npm run build` after rebuilding. Do not edit generated JSON by hand.
+The DEM-only command updates terrain in the existing basemap files. To rebuild the complete basemap and measured terrain together, run `scripts/build-manhattan-data.py` with the same Python environment. This first rebuilds the four NYC public datasets and the attributed Open Sewer Atlas KML, then runs the measured DEM stage. It never estimates terrain from building-base elevations.
 
-Coordinates round to seven decimal places, roughly one centimetre at this latitude. Source precision and accuracy remain the limiting factors. Building centers are footprint bounding-box centers, which can fall outside irregular footprints. Assignment tests the center against NTA polygons, then samples real exterior vertices for footprints crossing shorelines or boundaries. Footprints outside all Manhattan NTAs are excluded and counted in the manifest.
+NYC source snapshots cache in `/tmp/resiliscore-manhattan-sources`; the USGS GeoTIFF, source catalog and export metadata cache in `/tmp/resiliscore-manhattan-dem`. Subsequent builds reuse those exact snapshots. The DEM command accepts `--cache <directory>`. The complete basemap command accepts `--cache <NYC directory>` and `--dem-cache <USGS directory>`. Use `--refresh` to retrieve new source snapshots. The USGS export can take several minutes. Do not edit generated JSON by hand.
+
+Verify rebuilt data with:
+
+```sh
+/tmp/resiliscore-dem-venv/bin/python -m unittest discover -s scripts -p 'test_manhattan_dem.py'
+npm test
+npm run lint
+npm run build
+```
+
+Building, neighborhood and park coordinates round to seven decimal places, roughly one centimetre at this latitude. DEM sample bounds retain the decoded raster precision. Source precision and accuracy remain the limiting factors. Building centers are footprint bounding-box centers, which can fall outside irregular footprints. Assignment tests the center against NTA polygons, then samples real exterior vertices for footprints crossing shorelines or boundaries. Footprints outside all Manhattan NTAs are excluded and counted in the manifest.

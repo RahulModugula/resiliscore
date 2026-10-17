@@ -18,13 +18,7 @@ import urllib.request
 from xml.etree import ElementTree
 
 BASE = 'https://data.cityofnewyork.us/resource/'
-ORIGIN = (-73.9712, 40.7831)
-R = 6371008.8
 FEET_TO_METERS = 0.3048
-
-
-def project(point):
-    return ((point[0] - ORIGIN[0]) * math.pi / 180 * R * math.cos(ORIGIN[1] * math.pi / 180), (point[1] - ORIGIN[1]) * math.pi / 180 * R)
 
 
 def polygons(geometry):
