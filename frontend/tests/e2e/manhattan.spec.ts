@@ -22,12 +22,13 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
   test.beforeEach(async ({ page }) => {
     await withoutWebGL(page);
     await page.route("**/v1/**", route => route.abort("connectionrefused"));
+    await page.route("https://elevation.nationalmap.gov/**", route => route.abort("internetdisconnected"));
   });
 
   test("real neighborhoods, drainage attribution, and offline property handoff", async ({ page }) => {
     const externalRequests: string[] = [];
     page.on("request", request => {
-      if (!request.url().startsWith("http://127.0.0.1:") && !request.url().includes("/v1/") && !request.url().startsWith("data:")) externalRequests.push(request.url());
+      if (!request.url().startsWith("http://127.0.0.1:") && !request.url().startsWith("https://elevation.nationalmap.gov/") && !request.url().includes("/v1/") && !request.url().startsWith("data:")) externalRequests.push(request.url());
     });
     await page.goto("/");
     await expect(page.getByRole("heading", { name: "Manhattan", exact: true })).toBeVisible();

@@ -1,0 +1,42 @@
+{
+  "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?f=json&bbox=-74.00492371760805%2C40.70498885309086%2C-74.00087365731238%2C40.708145441945874&bboxSR=4326&imageSR=4326&size=343%2C353&format=tiff&pixelType=F32&renderingRule=%7B%22rasterFunction%22%3A%22None%22%7D&mosaicRule=%7B%22mosaicMethod%22%3A%22esriMosaicLockRaster%22%2C%22lockRasterIds%22%3A%5B34803%2C48017%2C91112%2C98316%2C36417%2C20981%2C21809%2C30939%2C31132%2C38316%2C40892%2C66988%2C88859%2C89904%2C104980%5D%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&interpolation=RSP_NearestNeighbor&adjustAspectRatio=false",
+  "spacing": 1,
+  "bounds": [
+    -74.00491779646727,
+    40.70499333688185,
+    -74.00087957845317,
+    40.708140958154885
+  ],
+  "id": "441",
+  "response": {
+    "href": "https://elevation.nationalmap.gov/arcgis/rest/directories/elevation_output/3DEPElevation_ImageServer/_ags_b6e9b072_f4b8_44cb_8e69_43c81048d593.tif",
+    "width": 343,
+    "height": 353,
+    "extent": {
+      "xmin": -74.00492371760805,
+      "ymin": 40.70498885309086,
+      "xmax": -74.00087365731238,
+      "ymax": 40.708145441945874,
+      "spatialReference": {
+        "wkid": 4326,
+        "latestWkid": 4326
+      }
+    },
+    "scale": 0
+  },
+  "sha256": "bb013ca7021a8c3ea911013df13f8d9997486bb43aef2f97de1b0bcdfb8f1f0b",
+  "retrievedAt": "2026-10-17T22:11:20.730928+00:00",
+  "source": "USGS 3DEP bare-earth one-metre source tiles, NAVD88 metres, nearest-neighbor export. Public domain.",
+  "rasterioReference": {
+    "southFirstFloat32Sha256": "d5c056412651b8ee60e826c79585163bfe1cef22e50f35d7db3d677760c3ea6c",
+    "bounds": [
+      -74.00491781373007,
+      40.70499332417989,
+      -74.00087956119036,
+      40.708140970856846
+    ],
+    "width": 343,
+    "height": 353,
+    "known": 121079
+  }
+}

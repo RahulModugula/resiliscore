@@ -84,6 +84,14 @@ export async function loadBuildingContext(property: {id: string; neighborhoodId:
   const buildings=selectBlockBuildings(overview.buildings,selected,bounds).map(b=>({...b,address:resolveBuildingAddress(b,addresses)}));
   const resolved=buildings.find(b=>b.id===selected.id)!;
   // The 50m overview is too coarse at block scale. The common 10m DEM also covers NTA edges.
-  const terrain=cropTerrain(measured,bounds);
+  // Include entire neighboring footprints, so their walls do not float past a clipped ground patch.
+  const terrainBounds=buildings.reduce<Bounds>((extent,building)=>{
+    for(const ring of building.footprint) for(const point of ring) {
+      extent[0]=Math.min(extent[0],point[0]);extent[1]=Math.min(extent[1],point[1]);
+      extent[2]=Math.max(extent[2],point[0]);extent[3]=Math.max(extent[3],point[1]);
+    }
+    return extent;
+  },[...bounds]);
+  const terrain=cropTerrain(measured,terrainBounds);
   return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock,wholeBlock };
 }

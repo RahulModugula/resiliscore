@@ -24,6 +24,7 @@ export interface BuildingGeometryOptions {
   terrain?: TerrainGrid | null;
   terrainAt?: (point: LngLat) => TerrainGrid | null | undefined;
   verticalScale?: number;
+  groundAt?: (building: Building) => number | null;
 }
 
 function openRing(ring: LngLat[]): LngLat[] {
@@ -70,7 +71,7 @@ export function buildingGeometry(buildings: Building[], options: BuildingGeometr
   const tall = new Color("#eff0d9");
   for (const building of buildings) {
     const { rings, points, faces } = polygonTriangles(building.footprint);
-    const ground = buildingGroundElevation(building, gridAt(building.center)) ?? 0;
+    const ground = (options.groundAt ? options.groundAt(building) : buildingGroundElevation(building, gridAt(building.center))) ?? 0;
     // Missing height stays a flat footprint. Never infer a storey count or a roof height.
     const roof = ground * verticalScale + (building.heightM ?? 0) + 0.2;
     const roofStart = positions.length / 3;

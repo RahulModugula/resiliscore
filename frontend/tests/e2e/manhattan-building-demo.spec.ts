@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { expect,test } from "@playwright/test";
 
+test.beforeEach(async({page})=>{await page.route("https://elevation.nationalmap.gov/**",route=>route.abort("internetdisconnected"));});
+
 for (const viewport of [{name:"desktop",width:1440,height:1000},{name:"mobile",width:390,height:844}]) {
 test(`${viewport.name}: map exposes the building demo and opens its controls directly`, async ({page}) => {
   await page.setViewportSize({width:viewport.width,height:viewport.height});

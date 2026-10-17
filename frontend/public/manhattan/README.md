@@ -1,6 +1,6 @@
 # Manhattan basemap cache
 
-This directory is a static snapshot for the frontend's Manhattan explorer. It requires no backend, map API key or runtime connection to NYC Open Data. All coordinates use longitude/latitude in WGS84. Heights and elevations use metres.
+This directory is a static snapshot for the frontend's Manhattan explorer. It requires no backend, map API key or runtime connection to NYC Open Data. The building view optionally upgrades its cached terrain through the public USGS service, as described below. All coordinates use longitude/latitude in WGS84. Heights and elevations use metres.
 
 `manifest.json` lists the snapshot sources, exact counts, detail URLs and limitations. `neighborhoods.json` contains the 38 Manhattan NTA2020 polygons, including park and island areas. `overview.json` contains every matched real footprint for the city view. Each file under `neighborhoods/` contains every matched, non-placeholder building footprint for that area, overlapping NYC Parks properties, and a local elevation grid. Roof and courtyard rings remain intact.
 
@@ -58,3 +58,13 @@ npm run build
 ```
 
 Building, neighborhood and park coordinates round to seven decimal places, roughly one centimetre at this latitude. DEM sample bounds retain the decoded raster precision. Source precision and accuracy remain the limiting factors. Building centers are footprint bounding-box centers, which can fall outside irregular footprints. Assignment tests the center against NTA polygons, then samples real exterior vertices for footprints crossing shorelines or boundaries. Footprints outside all Manhattan NTAs are excluded and counted in the manifest.
+
+## Building-view ground detail
+
+The building view first uses the bundled 10 m grid so the map and offline assessment stay usable. It then requests a Float32 GeoTIFF from the same [USGS 3DEP service](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer), locking the one-metre source IDs listed in `dem-provenance.json`. Requests use the raw `None` raster function, nearest-neighbor sampling, WGS84 horizontal coordinates and NAVD88 metre source heights. Public block coordinates are sent to USGS, without credentials or referrer data. No backend endpoint or API key is involved. A failed request retains and labels the cached 10 m view; the user can retry. Successful detail is retained in a bounded in-memory cache for the current page session.
+
+The request targets near-1 m spacing, bounded to 512 × 512 pixels for large campuses or blocks. The view reports the actual decoded spacing. Pixel centres and south-to-north row order come from the GeoTIFF affine transform. Float32 NoData, nonfinite values and ArcGIS sentinels stay unknown. A finer display grid does not establish survey accuracy, current construction, first-floor elevation or flood freeboard. Source tiles can have different acquisition vintages and project-boundary discrepancies.
+
+[NYC's footprint metadata](https://github.com/CityOfNewYork/nyc-geo-metadata/blob/main/Metadata/Metadata_BuildingFootprints.md) defines roof height above the lowest ground at the building base. The block view therefore samples the perimeter, anchors the retained roof height above its lowest supported DEM ground, and subdivides long walls to follow intermediate ground changes. It reports the supported perimeter range and marks incomplete coverage. The island/neighborhood renderer and risk inputs remain unchanged. These are bare-earth terrain and footprint extrusions, not measured facade or roof models.
+
+`frontend/tests/fixtures/elevation/usgs-block-441.tif` records a small actual service export with its request, response and checksum in the adjacent JSON. Tests compare decoding, footprint placement, successful detail, failed-service fallback and cache reuse without needing the live service.
