@@ -1,4 +1,4 @@
-import { intersection } from "polygon-clipping";
+import polygonClipping from "polygon-clipping";
 import { geometryBounds, geometryPolygons, pointInGeometry } from "./geo";
 import { combineBounds } from "./sceneGeometry";
 import type { Bounds, Building, Geometry, Infrastructure, ManhattanOverview, Neighborhood, NeighborhoodDetail, Park, SewerLine, LngLat, TerrainGrid } from "./types";
@@ -85,7 +85,7 @@ export function sceneScope(neighborhoods: Neighborhood[], overview: ManhattanOve
   return {
     selected, neighborhoods: [selected], detail: activeDetail,
     buildings: (source?.buildings ?? []).filter(building => building.neighborhoodId === selected.id),
-    parks: (source?.parks ?? []).filter(park => overlaps(geometryBounds(park.geometry), selected.bounds) && intersection(geometryPolygons(park.geometry), geometryPolygons(selected.geometry)).length > 0),
+    parks: (source?.parks ?? []).filter(park => overlaps(geometryBounds(park.geometry), selected.bounds) && polygonClipping.intersection(geometryPolygons(park.geometry), geometryPolygons(selected.geometry)).length > 0),
     terrain: source?.terrain,
     infrastructure: infrastructure ? { ...infrastructure, stormDrains: infrastructure.stormDrains.filter(drain => pointInGeometry(drain.position, selected.geometry) || onBoundary(drain.position, boundary)), sewerLines: infrastructure.sewerLines.flatMap(line => clipLine(line, selected.geometry, boundary)) } : undefined,
     bounds: selected.bounds,
