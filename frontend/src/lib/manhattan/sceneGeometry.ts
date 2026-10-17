@@ -1,6 +1,9 @@
 import { BufferGeometry, Color, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
-import { geometryPolygons, pointInGeometry, projectLngLat } from "./geo";
+import { geometryPolygons, projectLngLat } from "./geo";
 import type { Bounds, Building, Geometry, LngLat, Neighborhood, Park, TerrainGrid } from "./types";
+
+import { sampleTerrain, terrainSurface } from "./terrainSurface";
+export { TERRAIN_PALETTE } from "./terrainSurface";
 
 type Point = [number, number, number];
 
@@ -10,18 +13,16 @@ export function worldPoint(point: LngLat, elevation = 0): Point {
   return [east, elevation, -north];
 }
 
-export function terrainElevation(point: LngLat, terrain?: TerrainGrid | null): number | null {
-  if (!terrain || terrain.width < 2 || terrain.height < 2) return null;
-  const [w, s, e, n] = terrain.bounds;
-  const x = (point[0] - w) / (e - w) * (terrain.width - 1);
-  const y = (point[1] - s) / (n - s) * (terrain.height - 1);
-  if (x < 0 || y < 0 || x > terrain.width - 1 || y > terrain.height - 1) return null;
-  const x0 = Math.min(Math.floor(x), terrain.width - 2);
-  const y0 = Math.min(Math.floor(y), terrain.height - 2);
-  const samples = [terrain.elevationsM[y0 * terrain.width + x0], terrain.elevationsM[y0 * terrain.width + x0 + 1], terrain.elevationsM[(y0 + 1) * terrain.width + x0], terrain.elevationsM[(y0 + 1) * terrain.width + x0 + 1]];
-  if (samples.some((sample) => sample == null)) return null;
-  const [a, b, c, d] = samples as number[];
-  return a * (1 - (x - x0)) * (1 - (y - y0)) + b * (x - x0) * (1 - (y - y0)) + c * (1 - (x - x0)) * (y - y0) + d * (x - x0) * (y - y0);
+export const terrainElevation = sampleTerrain;
+
+export function buildingGroundElevation(building: Building, terrain?: TerrainGrid | null): number | null {
+  return terrainElevation(building.center, terrain) ?? building.groundElevationM;
+}
+
+export interface BuildingGeometryOptions {
+  terrain?: TerrainGrid | null;
+  terrainAt?: (point: LngLat) => TerrainGrid | null | undefined;
+  verticalScale?: number;
 }
 
 function openRing(ring: LngLat[]): LngLat[] {
@@ -56,7 +57,9 @@ function triangle(positions: number[], a: Point, b: Point, c: Point) {
 }
 
 /** One mesh and one draw call for real building footprints; triangle ranges retain picking IDs. */
-export function buildingGeometry(buildings: Building[]) {
+export function buildingGeometry(buildings: Building[], options: BuildingGeometryOptions = {}) {
+  const verticalScale = options.verticalScale ?? 1;
+  const gridAt = (point: LngLat) => options.terrainAt?.(point) ?? options.terrain;
   const positions: number[] = [];
   const colors: number[] = [];
   const indices: number[] = [];
@@ -65,15 +68,15 @@ export function buildingGeometry(buildings: Building[]) {
   const tall = new Color("#eff0d9");
   for (const building of buildings) {
     const { rings, points, faces } = polygonTriangles(building.footprint);
-    const ground = building.groundElevationM ?? 0;
+    const ground = buildingGroundElevation(building, gridAt(building.center)) ?? 0;
     // Missing height stays a flat footprint. Never infer a storey count or a roof height.
-    const roof = ground + (building.heightM ?? 0) + 0.2;
+    const roof = ground * verticalScale + (building.heightM ?? 0) + 0.2;
     const roofStart = positions.length / 3;
-    for (const point of points) positions.push(...worldPoint(point, roof));
+    for (const point of points) positions.push(...worldPoint(point, building.heightM == null ? (terrainElevation(point, gridAt(point)) ?? ground) * verticalScale + 0.2 : roof));
     for (const [a, b, c] of faces) indices.push(roofStart + a, roofStart + b, roofStart + c);
     if (building.heightM != null && building.heightM > 0) {
       const groundStart = positions.length / 3;
-      for (const point of points) positions.push(...worldPoint(point, ground));
+      for (const point of points) positions.push(...worldPoint(point, (terrainElevation(point, gridAt(point)) ?? ground) * verticalScale));
       let ringStart = 0;
       for (const ring of rings) for (let i = 0; i < ring.length; i++) {
         const a = ringStart + i;
@@ -110,46 +113,45 @@ export function polygonGeometry(geometry: Geometry, elevation: (point: LngLat) =
   return geometryFromPositions(positions);
 }
 
-export function outlineGeometry(geometry: Geometry, terrain?: TerrainGrid | null, lift = 4) {
+export function outlineGeometry(geometry: Geometry, terrain?: TerrainGrid | null, lift = 4, verticalScale = 1) {
   const positions: number[] = [];
   for (const polygon of geometryPolygons(geometry)) for (const sourceRing of polygon) {
     const ring = openRing(sourceRing);
     for (let i = 0; i < ring.length; i++) {
-      const a = ring[i];
-      const b = ring[(i + 1) % ring.length];
-      positions.push(...worldPoint(a, (terrainElevation(a, terrain) ?? 0) + lift), ...worldPoint(b, (terrainElevation(b, terrain) ?? 0) + lift));
+      const a = ring[i], b = ring[(i + 1) % ring.length];
+      const cuts = [0, 1];
+      if (terrain) {
+        const [w, south, e, north] = terrain.bounds;
+        const grid = (point: LngLat) => [(point[0] - w) / (e - w) * (terrain.width - 1), (point[1] - south) / (north - south) * (terrain.height - 1)];
+        const ga = grid(a), gb = grid(b);
+        for (const [first, last] of [[ga[0], gb[0]], [ga[1], gb[1]], [ga[0] + ga[1], gb[0] + gb[1]]]) {
+          if (Math.abs(last - first) < 1e-10) continue;
+          for (let value = Math.ceil(Math.min(first, last)); value <= Math.floor(Math.max(first, last)); value++) {
+            const t = (value - first) / (last - first);
+            if (t > 1e-10 && t < 1 - 1e-10) cuts.push(t);
+          }
+        }
+      }
+      cuts.sort((a, b) => a - b);
+      for (let j = 0; j < cuts.length - 1; j++) {
+        if (cuts[j + 1] - cuts[j] < 1e-10) continue;
+        const first: LngLat = [a[0] + (b[0] - a[0]) * cuts[j], a[1] + (b[1] - a[1]) * cuts[j]];
+        const second: LngLat = [a[0] + (b[0] - a[0]) * cuts[j + 1], a[1] + (b[1] - a[1]) * cuts[j + 1]];
+        const h1 = terrain ? terrainElevation(first, terrain) : 0, h2 = terrain ? terrainElevation(second, terrain) : 0;
+        if (h1 != null && h2 != null) positions.push(...worldPoint(first, h1 * verticalScale + lift), ...worldPoint(second, h2 * verticalScale + lift));
+      }
     }
   }
   return geometryFromPositions(positions);
 }
 
-export function parkGeometry(parks: Park[], terrain?: TerrainGrid | null) {
-  const positions: number[] = [];
-  for (const park of parks) {
-    const geometry = polygonGeometry(park.geometry, (point) => (terrainElevation(point, terrain) ?? 0) + 0.7);
-    for (const coordinate of geometry.getAttribute("position").array) positions.push(coordinate);
-    geometry.dispose();
-  }
-  return geometryFromPositions(positions);
+export function parkGeometry(parks: Park[], terrain?: TerrainGrid | null, verticalScale = 1) {
+  if (!terrain) return geometryFromPositions([]);
+  return terrainSurface(terrain, parks.map((park) => park.geometry), { verticalScale, lift: 0.06, color: "#4d8066" });
 }
 
-/** Unsupported grid cells are omitted, and coastline masking keeps water at the datum. */
-export function terrainGeometry(terrain: TerrainGrid, neighborhoods: Neighborhood[]) {
-  const positions: number[] = [];
-  const [w, s, e, n] = terrain.bounds;
-  const lngLat = (x: number, y: number): LngLat => [w + x / (terrain.width - 1) * (e - w), s + y / (terrain.height - 1) * (n - s)];
-  const isLand = (point: LngLat) => neighborhoods.some(({ bounds, geometry }) => point[0] >= bounds[0] && point[0] <= bounds[2] && point[1] >= bounds[1] && point[1] <= bounds[3] && pointInGeometry(point, geometry));
-  for (let y = 0; y < terrain.height - 1; y++) for (let x = 0; x < terrain.width - 1; x++) {
-    const points = [lngLat(x, y), lngLat(x + 1, y), lngLat(x, y + 1), lngLat(x + 1, y + 1)];
-    const heights = [terrain.elevationsM[y * terrain.width + x], terrain.elevationsM[y * terrain.width + x + 1], terrain.elevationsM[(y + 1) * terrain.width + x], terrain.elevationsM[(y + 1) * terrain.width + x + 1]];
-    if (heights.some((height) => height == null)) continue;
-    for (const face of [[0, 1, 2], [1, 3, 2]]) {
-      const center: LngLat = [face.reduce((sum, i) => sum + points[i][0], 0) / 3, face.reduce((sum, i) => sum + points[i][1], 0) / 3];
-      if (!isLand(center) || !face.every((index) => isLand(points[index]))) continue;
-      triangle(positions, worldPoint(points[face[0]], heights[face[0]]!), worldPoint(points[face[1]], heights[face[1]]!), worldPoint(points[face[2]], heights[face[2]]!));
-    }
-  }
-  return geometryFromPositions(positions);
+export function terrainGeometry(terrain: TerrainGrid, neighborhoods: Neighborhood[], options: { verticalScale?: number; showTerrain?: boolean } = {}) {
+  return terrainSurface(terrain, neighborhoods.map((neighborhood) => neighborhood.geometry), options);
 }
 
 export function combineBounds(neighborhoods: Neighborhood[]): Bounds {
