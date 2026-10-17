@@ -4,7 +4,7 @@ import { assessManhattanProperty } from "../../src/lib/manhattan/assessment";
 import type { NeighborhoodDetail } from "../../src/lib/manhattan/types";
 
 async function selectedProperty() {
-  const detail:NeighborhoodDetail=JSON.parse(await readFile(new URL("../../public/manhattan/neighborhoods/MN0101.json",import.meta.url),"utf8"));
+  const detail:NeighborhoodDetail=JSON.parse(await readFile(`${process.cwd()}/public/manhattan/neighborhoods/MN0101.json`,"utf8"));
   return detail.buildings.find(b=>b.id==="441")!;
 }
 
