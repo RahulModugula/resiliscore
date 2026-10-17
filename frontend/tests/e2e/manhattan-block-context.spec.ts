@@ -21,6 +21,9 @@ test("assessment shows street address, adjoining buildings and measured block el
   await expect(block.getByText(/\d+\.\d m NAVD88/, {exact:true})).toBeVisible();
   await expect(block.getByText("Building height above ground",{exact:true})).toBeVisible();
   await expect(block.locator("canvas")).toBeVisible();
+  await expect(block.getByTestId("selected-building-marker")).toBeVisible();
+  await expect(block.getByTestId("selected-building-marker")).toHaveText("207 FRONT STREET");
+  await expect(block.getByTestId("selected-building-marker")).toHaveAttribute("data-property-id",building.id);
   await block.getByText(/mapped buildings · .*neighboring streets/).click();
   await expect(block.getByRole("list",{name:"Surrounding building addresses"}).getByRole("listitem")).not.toHaveCount(1);
   await expect(block.getByText(/Streets:.*FULTON/)).toBeVisible();

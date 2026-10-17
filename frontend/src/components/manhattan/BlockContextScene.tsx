@@ -1,9 +1,9 @@
 "use client";
 
-import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Component, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { CameraControls, Html } from "@react-three/drei";
-import { DoubleSide, EdgesGeometry } from "three";
+import { DoubleSide, EdgesGeometry, Vector3 } from "three";
 import { buildingGeometry, cameraFrame, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
 import { colorTerrain, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
 import type { BlockContext } from "@/lib/manhattan/blockContext";
@@ -55,17 +55,32 @@ function Block({context}:{context:BlockContext}) {
     <mesh geometry={geometries.buildings}><meshStandardMaterial vertexColors roughness={1} side={DoubleSide}/></mesh>
     <mesh geometry={geometries.selected}><meshStandardMaterial color="#57d3df" roughness={.8} side={DoubleSide}/></mesh>
     <lineSegments geometry={geometries.selectedEdges} renderOrder={5} raycast={()=>null}><lineBasicMaterial color="#57d3df" depthTest={false}/></lineSegments>
-    <Html position={worldPoint(context.selected.center,(terrainElevation(context.selected.center,context.terrain)??context.selected.groundElevationM??0)+(context.selected.heightM??0)+12)} center style={{pointerEvents:"none"}}><span className={styles.selectedLabel}>Selected property</span></Html>
+
     {streetLabels.map(label=><Html key={label.id} position={worldPoint(label.point,label.elevation!+3)} center style={{pointerEvents:"none"}}><span className={styles.streetLabel}>{label.name}</span></Html>)}
   </group>;
 }
+/** Keep the selected address in React's DOM tree; project its anchor from the real 3D roof position. */
+function SelectedAddress({context,marker}:{context:BlockContext;marker:RefObject<HTMLSpanElement|null>}) {
+  const point=useMemo(()=>new Vector3(...worldPoint(context.selected.center,(terrainElevation(context.selected.center,context.terrain)??context.selected.groundElevationM??0)+(context.selected.heightM??0)+2)),[context]);
+  useFrame(({camera,size})=>{
+    const element=marker.current;
+    if(!element) return;
+    const screen=point.clone().project(camera);
+    element.style.left=`${(screen.x+1)*size.width/2}px`;
+    element.style.top=`${(1-screen.y)*size.height/2}px`;
+    element.style.visibility=screen.z>=-1 && screen.z<=1 ? "visible" : "hidden";
+  });
+  return null;
+}
 export default function BlockContextScene({context}:{context:BlockContext}) {
   const [reset,setReset]=useState(0);
+  const marker=useRef<HTMLSpanElement>(null);
   return <div className={styles.scene} role="group" aria-label="3D selected property and surrounding block with measured ground elevation">
     <SceneBoundary><Canvas frameloop="demand" dpr={[1,1.5]} camera={{fov:38,near:1,far:30000}} fallback={<p className={styles.fallback}>3D rendering is unavailable. Use the address, street and elevation information below.</p>} gl={{antialias:true}}>
       <color attach="background" args={["#13232b"]}/><ambientLight intensity={1.1}/><directionalLight position={[2000,6000,1500]} intensity={2}/>
-      <Block context={context}/><Camera context={context} reset={reset}/>
+      <Block context={context}/><Camera context={context} reset={reset}/><SelectedAddress context={context} marker={marker}/>
     </Canvas></SceneBoundary>
+    <span ref={marker} data-testid="selected-building-marker" data-property-id={context.selected.id} className={styles.selectedMarker}>{context.selected.address??"Selected building · Address unavailable"}</span>
     <button type="button" className={styles.reset} onClick={()=>setReset(r=>r+1)}>Reset block view</button>
     <span className={styles.controls}><span className={styles.pointerControls}>Drag to rotate · Right-drag to pan · Scroll to zoom</span><span className={styles.touchControls}>Drag to rotate · Two fingers to pan and zoom</span></span>
   </div>;
