@@ -13,8 +13,10 @@ export function ScoreGaugeCard({ parcel, simulated, onAction }: { parcel: Parcel
   const tone = tier === 1 ? "success" : tier === 2 ? "warning" : "error";
   const delta = a.resili_score - a.baseline_macro_score;
   const angle = -90 + (a.resili_score - 300) / 550 * 180;
+  const radians = angle * Math.PI / 180;
+  const marker = `M${160 + 116 * Math.sin(radians)} ${150 - 116 * Math.cos(radians)}L${160 + 135 * Math.sin(radians)} ${150 - 135 * Math.cos(radians)}`;
   const channels = [
-    ["USGS 3DEP · Elevation", p.elev_cert_verified ? "Verified" : "Estimate"],
+    ["USGS 3DEP · Ground elevation", "Supplied"],
     ["OpenFEMA · Elevation certificate", p.elev_cert_verified ? "Verified" : "Not verified"],
     ["Aerial computer vision", `${Math.round(p.cv_confidence * 100)}% confidence`],
     ["IBHS registry", p.ibhs_fortified_tier !== "NONE" ? `FORTIFIED ${p.ibhs_fortified_tier}` : p.ibhs_wph_tier !== "NONE" ? `WPH ${p.ibhs_wph_tier}` : "Not verified"],
@@ -27,8 +29,8 @@ export function ScoreGaugeCard({ parcel, simulated, onAction }: { parcel: Parcel
         <path d="M35 150 A125 125 0 0 1 285 150" fill="none" stroke="var(--border)" strokeWidth="12" />
         <path d="M35 150 A125 125 0 0 1 163 25" fill="none" stroke="var(--red)" strokeWidth="12" />
         <path d="M168 25 A125 125 0 0 1 248 61" fill="none" stroke="var(--amber)" strokeWidth="12" />
-        <path d="M252 66 A125 125 0 0 1 285 150" fill="none" stroke="var(--accent)" strokeWidth="12" />
-        <motion.g initial={false} animate={{ rotate: angle }} transition={{ duration: reduced ? 0 : .6, ease: [.16, 1, .3, 1] }} style={{ originX: "160px", originY: "150px" }}><path d="M160 17V34" stroke="var(--text)" strokeWidth="4" strokeLinecap="round" /></motion.g>
+        <path d="M252 66 A125 125 0 0 1 285 150" fill="none" stroke="var(--green)" strokeWidth="12" />
+        <motion.path data-testid="score-marker" initial={false} animate={{ d: marker }} transition={{ duration: reduced ? 0 : .6, ease: [.16, 1, .3, 1] }} stroke="var(--text)" strokeWidth="4" strokeLinecap="round" />
         <text x="160" y="128" textAnchor="middle" className="score-number" fill="var(--text)" data-testid="score">{a.resili_score}</text><text x="160" y="151" textAnchor="middle" fill="var(--muted)" fontSize="12">of 850</text><text x="28" y="177" fill="var(--muted)" fontSize="11">300</text><text x="272" y="177" fill="var(--muted)" fontSize="11">850</text>
       </svg>
       <p className={`tier-text ${tone}`}>{parcel.hitl_status.escalated ? "Auto-bind paused · Human review" : conditional ? "Tier 2 · Conditional bind" : tierLabel(a.resili_score)}</p>

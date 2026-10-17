@@ -64,7 +64,7 @@ test("Escondido holds auto-bind until demo smartphone evidence is reviewed", asy
   await page.getByRole("button", { name: /Verification guardrail/ }).click();
   await expect(page.getByTestId("score")).toHaveText("815");
   await page.getByRole("checkbox", { name: /Simulate satellite change-detection alert/ }).check();
-  await expect(page.getByRole("alert")).toContainText("240 sq ft");
+  await expect(page.getByRole("alert").filter({ hasText: "240 sq ft" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Binding paused for verification" })).toBeDisabled();
   await page.getByRole("button", { name: "Open review workbench" }).click();
   const workbench = page.getByRole("dialog");

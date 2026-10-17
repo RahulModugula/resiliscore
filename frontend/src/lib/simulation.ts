@@ -9,6 +9,7 @@ export function tierForScore(score: number): UnderwritingTier {
 export function simulateMitigations(base: ParcelScoreResponse, actionIds: string[]): ParcelScoreResponse {
   const result = structuredClone(base);
   const actions = base.prescriptive_mitigations.filter(a => !a.currently_applied && actionIds.includes(a.action_id));
+  if (actions.length === 0) return result;
   const a = result.actuarial_breakdown;
   const delta = actions.reduce((sum, item) => sum + item.lcr_delta_bps / 10000, 0);
   a.resili_score = Math.min(850, a.resili_score + actions.reduce((sum, item) => sum + item.score_delta_pts, 0));
@@ -45,6 +46,10 @@ export function applyStructureLoading(base: ParcelScoreResponse): ParcelScoreRes
   result.parcel_identity.rcv_usd += 240 * 250; // Demo assumption: $250/sq ft.
   result.actuarial_breakdown.posterior_lcr += 35 / 10000;
   result.actuarial_breakdown.expected_annual_loss_usd = result.actuarial_breakdown.posterior_lcr * result.parcel_identity.rcv_usd;
+  const a = result.actuarial_breakdown;
+  a.parcel_raw_lcr = (a.posterior_lcr - (1 - a.credibility_weight_z) * a.tract_prior_lcr) / a.credibility_weight_z;
+  const priorTotal = a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0);
+  if (priorTotal > 0) a.peril_split.forEach(item => { item.peril_aal_usd *= a.expected_annual_loss_usd / priorTotal; });
   result.actuarial_breakdown.underwriting_tier = "TIER_2_CONDITIONAL";
   result.hitl_status = { escalated: false, trigger_code: "NONE", trigger_reason: null, recommended_underwriter_action: "Demo loading accepted. Conditional bind requires permit review within 60 days." };
   return result;
