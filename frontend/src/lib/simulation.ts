@@ -13,7 +13,9 @@ export function simulateMitigations(base: ParcelScoreResponse, actionIds: string
   const a = result.actuarial_breakdown;
   const delta = actions.reduce((sum, item) => sum + item.lcr_delta_bps / 10000, 0);
   a.resili_score = Math.min(850, a.resili_score + actions.reduce((sum, item) => sum + item.score_delta_pts, 0));
-  a.posterior_lcr = Math.max(0, a.posterior_lcr + delta);
+  // Mitigation can remove parcel loss, but cannot erase the unverified tract prior.
+  const priorFloor = (1 - a.credibility_weight_z) * a.tract_prior_lcr;
+  a.posterior_lcr = Math.max(priorFloor, a.posterior_lcr + delta);
   a.parcel_raw_lcr = Math.max(0, (a.posterior_lcr - (1 - a.credibility_weight_z) * a.tract_prior_lcr) / a.credibility_weight_z);
   a.expected_annual_loss_usd = a.posterior_lcr * result.parcel_identity.rcv_usd;
   // Preserve the supplied peril allocation while making its total agree with AAL.
