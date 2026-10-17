@@ -37,6 +37,7 @@ export function BlockContextView({property,onAddressResolved}:{property:{id:stri
       <div><dt>Building height above ground</dt><dd>{context.selected.heightM===null ? "Unknown" : `${context.selected.heightM.toFixed(1)} m`}</dd></div>
       <div><dt>Block ground elevation</dt><dd>{samples.length ? <span className={styles.legend}><span>{min.toFixed(1)} m</span><span className={styles.ramp} aria-hidden="true"/><span>{max.toFixed(1)} m</span></span> : "Unknown"}</dd></div>
     </dl>
+    <p className={styles.nearby}>Nearby streets: {streetNames.slice(0,4).join(" · ")||"No mapped at-grade streets"}{streetNames.length>4 ? ` · +${streetNames.length-4} in source details` : ""}</p>
     <details className={styles.details}><summary>{context.buildings.length} mapped buildings · {streetNames.length} neighboring streets · Source details</summary>
       <p>The selected building is cyan. Ground and buildings are shown at true scale. Ground elevation is metres relative to NAVD88; building height is measured above ground. Missing elevation samples leave gaps. Map elevation is context, not certified freeboard or a risk-model input.</p>
       <p>Streets: {streetNames.join(" · ")||"No street centerlines in this extent"}.</p>

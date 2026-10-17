@@ -3,7 +3,7 @@
 import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { CameraControls, Html } from "@react-three/drei";
-import { DoubleSide } from "three";
+import { DoubleSide, EdgesGeometry } from "three";
 import { buildingGeometry, cameraFrame, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
 import { colorTerrain, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
 import type { BlockContext } from "@/lib/manhattan/blockContext";
@@ -36,7 +36,7 @@ function Block({context}:{context:BlockContext}) {
     const options={terrain:context.terrain,verticalScale:1};
     const buildings=buildingGeometry(context.buildings.filter(b=>b.id!==context.selected.id),options).geometry;
     const selected=buildingGeometry(context.buildings.filter(b=>b.id===context.selected.id),options).geometry;
-    return {land,buildings,selected,streets:streetGeometry(context.streets,context.terrain,context.bounds)};
+    return {land,buildings,selected,selectedEdges:new EdgesGeometry(selected),streets:streetGeometry(context.streets,context.terrain,context.bounds)};
   },[context]);
   useEffect(()=>()=>{Object.values(geometries).forEach(g=>g.dispose());},[geometries]);
   const streetLabels=useMemo(()=>{
@@ -47,13 +47,15 @@ function Block({context}:{context:BlockContext}) {
       if(!position) return [];
       names.add(street.name);
       return [{id:street.id,name:street.name,...position}];
-    }).slice(0,8);
+    }).sort((a,b)=>Math.hypot(...worldPoint(a.point).map((v,i)=>v-worldPoint(context.selected.center)[i]))-Math.hypot(...worldPoint(b.point).map((v,i)=>v-worldPoint(context.selected.center)[i]))).filter((label,index,labels)=>labels.slice(0,index).every(other=>Math.hypot(...worldPoint(label.point).map((v,i)=>v-worldPoint(other.point)[i]))>95)).slice(0,3);
   },[context]);
   return <group>
     <mesh geometry={geometries.land}><meshStandardMaterial vertexColors side={DoubleSide} roughness={1}/></mesh>
     <mesh geometry={geometries.streets}><meshStandardMaterial color="#34474e" roughness={1} side={DoubleSide}/></mesh>
     <mesh geometry={geometries.buildings}><meshStandardMaterial vertexColors roughness={1} side={DoubleSide}/></mesh>
     <mesh geometry={geometries.selected}><meshStandardMaterial color="#57d3df" roughness={.8} side={DoubleSide}/></mesh>
+    <lineSegments geometry={geometries.selectedEdges} renderOrder={5} raycast={()=>null}><lineBasicMaterial color="#57d3df" depthTest={false}/></lineSegments>
+    <Html position={worldPoint(context.selected.center,(terrainElevation(context.selected.center,context.terrain)??context.selected.groundElevationM??0)+(context.selected.heightM??0)+12)} center style={{pointerEvents:"none"}}><span className={styles.selectedLabel}>Selected property</span></Html>
     {streetLabels.map(label=><Html key={label.id} position={worldPoint(label.point,label.elevation!+3)} center style={{pointerEvents:"none"}}><span className={styles.streetLabel}>{label.name}</span></Html>)}
   </group>;
 }
