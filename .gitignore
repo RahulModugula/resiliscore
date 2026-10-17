@@ -1,0 +1,18 @@
+# local agent config — never pushed
+CLAUDE.md
+.claude/
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+# node
+node_modules/
+.next/
+out/
+# env
+.env
+.env.*
+!.env.example
+.DS_Store
