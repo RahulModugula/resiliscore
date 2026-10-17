@@ -71,7 +71,7 @@
 .validation-axis span { position: absolute; transform: translateX(-50%); }
 .validation-fire-scroll { max-height: 540px; overflow-y: auto; }
 .validation-source { display: flex; flex-direction: column; gap: 5px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 10px; color: var(--muted); overflow-wrap: anywhere; line-height: 1.6; }
-.validation-flood-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.validation-flood-chart { display: block; width: 100%; min-width: 520px; height: auto; overflow: visible; }
 .validation-gridline { stroke: var(--border); stroke-width: 1; }
 .validation-svg-label { fill: var(--muted); font-size: 11px; font-family: inherit; }
 .validation-hazus-line { fill: none; stroke: var(--water); stroke-width: 2; }

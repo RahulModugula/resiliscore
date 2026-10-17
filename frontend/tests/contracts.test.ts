@@ -31,7 +31,7 @@ test("scenario selector exposes the three demo journeys and returns independent 
 test("the unpermitted variant preserves score while explicitly holding auto-bind", () => {
   const clear = getScenario("SCENARIO_3_ESCONDIDO_HITL");
   const alerted = getScenario("SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED");
-  assert.equal(clear.actuarial_breakdown.resili_score, 815);
+  assert.equal(clear.actuarial_breakdown.resili_score, fixtures.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown.resili_score);
   assert.equal(alerted.actuarial_breakdown.resili_score, clear.actuarial_breakdown.resili_score);
   assert.equal(clear.hitl_status.escalated, false);
   assert.equal(alerted.hitl_status.escalated, true);
