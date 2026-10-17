@@ -48,12 +48,14 @@ export default function ManhattanExplorer() {
   useEffect(() => {
     const controller = new AbortController();
     setLoadError("");
+    setAddressError(false);
     const addresses = loadAddressIndex(controller.signal).catch(error => {
       if (controller.signal.aborted) throw error;
       setAddressError(true);
       return {};
     });
     void Promise.all([loadManhattan(controller.signal), addresses]).then(([result, index]) => {
+      if (controller.signal.aborted) return;
       addressIndex.current = index;
       setData({ ...result, overview: { ...result.overview, buildings: addressBuildings(result.overview.buildings, index) } });
       const requested = new URLSearchParams(window.location.search).get("neighborhood");
@@ -66,14 +68,14 @@ export default function ManhattanExplorer() {
     if (!data || !neighborhoodId) return;
     const controller = new AbortController();
     setDetailError("");
-    void loadNeighborhood(data.manifest, neighborhoodId, controller.signal).then(result => setDetail({ ...result, buildings: addressBuildings(result.buildings, addressIndex.current) }))
+    void loadNeighborhood(data.manifest, neighborhoodId, controller.signal).then(result => { if (!controller.signal.aborted) setDetail({ ...result, buildings: addressBuildings(result.buildings, addressIndex.current) }); })
       .catch(error => { if (!controller.signal.aborted) setDetailError(error instanceof Error ? error.message : "Neighborhood detail could not be loaded"); });
     return () => controller.abort();
   }, [data, neighborhoodId, detailRetry]);
   useEffect(() => () => assessmentController.current?.abort(), []);
 
   const visibleNeighborhoods = useMemo(() => (data?.neighborhoods ?? []).filter(item => `${item.name} ${item.id}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name)), [data, query]);
-  const matchingBuildings = useMemo(() => (activeDetail?.buildings ?? []).filter(building => `${propertyLabel(building)} ${building.bbl ?? ""}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => propertyLabel(a).localeCompare(propertyLabel(b))), [activeDetail, query]);
+  const matchingBuildings = useMemo(() => (activeDetail?.buildings ?? []).filter(building => `${propertyLabel(building)} ${building.name ?? ""} ${building.bin ?? ""} ${building.bbl ?? ""}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => propertyLabel(a).localeCompare(propertyLabel(b))), [activeDetail, query]);
 
   function selectNeighborhood(id: string | null) {
     if (id !== null && !data?.neighborhoods.some(item => item.id === id)) return;
@@ -119,7 +121,7 @@ export default function ManhattanExplorer() {
           <h1>{neighborhood ? neighborhood.name : "Manhattan"}</h1>
           <p>{neighborhood ? "Select a building to run its risk assessment." : "Choose a neighborhood, then a property to assess."}</p>
         </div>
-        <label className={styles.search}><Search size={17} /><span className={styles.srOnly}>{neighborhood ? "Find a property by name, BIN, or BBL" : "Find a neighborhood"}</span><input type="search" value={query} placeholder={neighborhood ? "Search name, BIN, or BBL" : "Find a neighborhood"} onChange={event => { setQuery(event.target.value); setLimit(60); }} /></label>
+        <label className={styles.search}><Search size={17} /><span className={styles.srOnly}>{neighborhood ? "Find a property by address, BIN, or BBL" : "Find a neighborhood"}</span><input type="search" value={query} placeholder={neighborhood ? "Search address, BIN, or BBL" : "Find a neighborhood"} onChange={event => { setQuery(event.target.value); setLimit(60); }} /></label>
         <div className={styles.listHeading}><span>{neighborhood ? "Mapped buildings" : "Neighborhoods & park areas"}</span><span>{neighborhood ? activeDetail ? matchingBuildings.length.toLocaleString() : "…" : visibleNeighborhoods.length || "…"}</span></div>
         {addressError && <p className={styles.addressNotice} role="status">Street addresses could not be loaded. Unresolved addresses remain unknown.</p>}
         <div className={styles.list} aria-busy={(!data && !loadError) || detailPending}>
@@ -129,7 +131,7 @@ export default function ManhattanExplorer() {
                 : detailError ? <div className={styles.listMessage} role="alert"><p>{detailError}</p><button className="secondary-button" onClick={() => setDetailRetry(value => value + 1)}>Retry neighborhood</button></div>
                   : neighborhood ? <>
                     {!matchingBuildings.length && <p className={styles.listMessage}>{query ? "No buildings match this search." : "No building footprints are published for this area. Choose another neighborhood."}</p>}
-                    <ul aria-label="Properties">{matchingBuildings.slice(0, limit).map(building => <li key={building.id}><button className={styles.listButton} aria-label={`Assess ${propertyLabel(building)}`} aria-pressed={pending?.id === building.id} onClick={() => void selectBuilding(building)}><Building2 size={16} /><span><strong>{propertyLabel(building)}</strong><small>{building.heightM === null ? "Height unknown" : `${Math.round(building.heightM)} m tall`}{building.yearBuilt ? ` · Built ${building.yearBuilt}` : " · Build year unknown"}</small></span><ChevronRight size={15} /></button></li>)}</ul>
+                    <ul aria-label="Properties">{matchingBuildings.slice(0, limit).map(building => <li key={building.id}><button className={styles.listButton} aria-label={`Assess ${propertyLabel(building)}${!building.address ? `, ${building.bin ? `BIN ${building.bin}` : `source ${building.id}`}` : ""}`} aria-pressed={pending?.id === building.id} onClick={() => void selectBuilding(building)}><Building2 size={16} /><span><strong>{propertyLabel(building)}</strong><small>{building.heightM === null ? "Height unknown" : `${Math.round(building.heightM)} m tall`}{building.yearBuilt ? ` · Built ${building.yearBuilt}` : " · Build year unknown"}{!building.address ? ` · ${building.bin ? `BIN ${building.bin}` : `Source ${building.id}`}` : ""}</small></span><ChevronRight size={15} /></button></li>)}</ul>
                     {matchingBuildings.length > limit && <button className={styles.more} onClick={() => setLimit(value => value + 60)}>Show more properties</button>}
                   </> : <>
                     {!visibleNeighborhoods.length && <p className={styles.listMessage}>No neighborhoods match this search.</p>}
