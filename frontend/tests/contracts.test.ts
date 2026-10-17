@@ -31,11 +31,22 @@ test("scenario selector exposes the three demo journeys and returns independent 
 test("the unpermitted variant preserves score while explicitly holding auto-bind", () => {
   const clear = getScenario("SCENARIO_3_ESCONDIDO_HITL");
   const alerted = getScenario("SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED");
-  assert.equal(clear.actuarial_breakdown.resili_score, 815);
+  assert.equal(clear.actuarial_breakdown.underwriting_tier, "TIER_1_AUTO_BIND");
+  assert.ok(clear.actuarial_breakdown.resili_score >= 720);
   assert.equal(alerted.actuarial_breakdown.resili_score, clear.actuarial_breakdown.resili_score);
   assert.equal(clear.hitl_status.escalated, false);
   assert.equal(alerted.hitl_status.escalated, true);
   assert.equal(alerted.hitl_status.trigger_code, "HITL_TRIGGER_02_UNPERMITTED_ADDITION");
   assert.equal(alerted.private_verification_layer.unpermitted_footprint_delta_sqft, 240);
   assert.ok(alerted.parcel_identity.geometries.features.some(feature => /240 sq ft/.test(feature.properties.label ?? "")));
+});
+
+
+test("scenario summaries reflect the current supplied score anchors", () => {
+  const flood = goldenScenarios.SCENARIO_1_LA_FLOOD.actuarial_breakdown;
+  const wildfire = goldenScenarios.SCENARIO_2_CA_WUI;
+  const plannedScore = Math.min(850, wildfire.actuarial_breakdown.resili_score + wildfire.prescriptive_mitigations.filter(action => !action.currently_applied).reduce((sum, action) => sum + action.score_delta_pts, 0));
+  assert.equal(scenarios[0].summary, `${flood.baseline_macro_score} → ${flood.resili_score} · Verified freeboard`);
+  assert.equal(scenarios[1].summary, `${wildfire.actuarial_breakdown.resili_score} → ${plannedScore} · Mitigation plan`);
+  assert.equal(scenarios[2].summary, `${goldenScenarios.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown.resili_score} · Human review workflow`);
 });

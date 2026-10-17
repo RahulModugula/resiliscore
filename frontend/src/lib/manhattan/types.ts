@@ -11,7 +11,7 @@ export interface Neighborhood {
   geometry: Geometry;
   center: LngLat;
   bounds: Bounds;
-  /** NYC NTA2020 type: 0 residential, 1 park, 2 airport, 3 cemetery, 4 other. */
+  /** NYC NTA2020 classification code, preserved verbatim from the source. */
   type: string;
 }
 
