@@ -33,7 +33,9 @@ _PHI = NormalDist().cdf
 
 # --- Flood frequency (all gamma, beta > 0; spec 3.1) ---
 GAMMA0, GAMMA1, GAMMA2 = -3.0, 0.15, 0.17
-BETA0, BETA1, BETA2, BETA3, BETA4 = -4.98102, 0.08, 0.12, 0.35, 0.4
+# DEMO CALIBRATION: BETA0, DELTA0, DELTA2 and the roof_class_a effect (below) were solved to the
+# reference parcels (see module docstring). They are not validated against loss data.
+BETA0, BETA1, BETA2, BETA3, BETA4 =-4.98102, 0.08, 0.12, 0.35, 0.4
 ELEVATED_BLDG_FT = 3.0  # I_elev_bldg: certified freeboard at or above this
 
 # --- Wildfire frequency ---
@@ -44,7 +46,8 @@ DELTA0, DELTA1, DELTA2, DELTA3_CANOPY, DELTA4_FIREWISE = -4.66275, 0.9, 0.012272
 OMEGA0 = -0.4
 V0, V1_REGION, V2_PRE_CODE = -4.6, 1.0, 0.3
 PRE_CODE_YEAR = 2002
-STATE_WIND_INDEX = {"LA": 1.0, "FL": 1.1, "CA": 0.0}
+STATE_WIND_INDEX = {"LA": 1.0, "AL": 1.0, "FL": 1.1, "CA": 0.0}
+DEFAULT_WIND_INDEX = 0.5  # states outside the table (e.g. TX): mid-scale, neither Gulf-coast nor hail-only
 
 # --- Severity ---
 L_MAX, K_DDF, D0_DDF, DDF_FLOOR_FT = 0.88, 0.36, 2.85, -2.0
@@ -99,6 +102,7 @@ EFFECTS: dict[str, dict[str, Effect]] = {
         "zone1_no_shed": Effect(eta=0.6, psi=0.1, theta=0.15, alpha=0.15),
         "ember_vents": Effect(eta=0.7, psi=0.3, theta=0.3, alpha=0.3),
         "enclosed_eaves": Effect(psi=0.25, theta=0.2, alpha=0.2),
+        # demo calibration (scale solved to the reference parcels), not validated against loss data
         "roof_class_a": Effect(eta=0.50321, psi=0.19569, theta=0.27956, alpha=0.25161),
     },
     "WIND_HAIL": {
@@ -204,7 +208,7 @@ def _wildfire(h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations,
 
 def _wind(state: str, year_built: int, m: Mitigations) -> PerilTerm:
     pi = _sigmoid(OMEGA0 + _sum("WIND_HAIL", m, "eta"))
-    lam = math.exp(V0 + V1_REGION * STATE_WIND_INDEX[state] + V2_PRE_CODE * float(year_built < PRE_CODE_YEAR))
+    lam = math.exp(V0 + V1_REGION * STATE_WIND_INDEX.get(state, DEFAULT_WIND_INDEX) + V2_PRE_CODE * float(year_built < PRE_CODE_YEAR))
     return PerilTerm("WIND_HAIL", pi, (1 - pi) * lam, _severity("WIND_HAIL", BODY_WIND, m))
 
 
@@ -236,16 +240,20 @@ def parcel_raw_lcr(hazard: PublicHazardLayer, verification: PrivateVerificationL
 
 
 def peril_split(
-    hazard: PublicHazardLayer, verification: PrivateVerificationLayer, rcv: float, **ctx
+    hazard: PublicHazardLayer, verification: PrivateVerificationLayer, rcv: float, *, scale: float = 1.0, **ctx
 ) -> list[PerilSplit]:
-    """Contract rows: expected_sev_s and peril_aal_usd are dollars (fraction * RCV)."""
+    """Contract rows: expected_sev_s and peril_aal_usd are dollars (fraction * RCV).
+
+    `scale` multiplies severity (and so each AAL) proportionally, used to restate the rows at the
+    credibility-weighted rate (posterior LCR / raw LCR) so they sum to the priced AAL.
+    """
     return [
         PerilSplit(
             peril=t.peril,
             zip_immunity_pi=round(t.pi, 4),
             expected_freq_n=round(t.n, 5),
-            expected_sev_s=round(t.s * rcv, 2),
-            peril_aal_usd=round(t.n * t.s * rcv, 2),
+            expected_sev_s=round(t.s * scale * rcv, 2),
+            peril_aal_usd=round(t.n * t.s * scale * rcv, 2),
         )
         for t in peril_terms(hazard, verification, **ctx)
     ]

@@ -222,3 +222,53 @@ def test_hitl_triggers_fire(override, code):
 def test_hitl_does_not_fire_at_the_limits(override):
     status = _hitl(**override)
     assert not status.escalated and status.trigger_code == "NONE"
+
+
+# --- states outside the original table ---
+def _in_state(key: str, state: str) -> ParcelScoreResponse:
+    r = load(key)
+    return r.model_copy(update={"parcel_identity": r.parcel_identity.model_copy(update={"state": state})})
+
+
+def test_al_parcel_gets_the_fortified_grant():
+    out = simulate(_in_state(S1, "AL"), [])
+    row = next(m for m in out.prescriptive_mitigations if m.action_id == "LA_FORTIFIED_ROOF")
+    assert (row.grant_subsidy_usd, row.net_capex_usd) == (10000.0, 8000.0)
+
+
+def test_tx_parcel_does_not_crash_and_gets_no_grant():
+    out = simulate(_in_state(S2, "TX"), ["HAIL_CLASS4_ROOF"])
+    assert 300 <= out.actuarial_breakdown.resili_score <= 850
+    assert all(m.grant_subsidy_usd == 0 for m in out.prescriptive_mitigations)
+    assert "LA_FORTIFIED_ROOF" not in {m.action_id for m in out.prescriptive_mitigations}
+
+
+# --- priced AAL is posterior x RCV ---
+@pytest.mark.parametrize("key", [S1, S2, S3, S3_BAD])
+def test_aal_is_posterior_times_rcv_and_rows_sum_to_it(key):
+    r = load(key)
+    b = simulate(r, []).actuarial_breakdown
+    assert b.expected_annual_loss_usd == pytest.approx(b.posterior_lcr * r.parcel_identity.rcv_usd, rel=1e-3)
+    assert sum(p.peril_aal_usd for p in b.peril_split) == pytest.approx(b.expected_annual_loss_usd, abs=0.05)
+
+
+def test_s1_aal_matches_golden_1080():
+    assert simulate(load(S1), []).actuarial_breakdown.expected_annual_loss_usd == pytest.approx(1080.0, abs=5)
+
+
+# --- id handling ---
+def test_ibhs_wph_plus_is_a_larger_action_than_the_class_a_roof_action():
+    plus = simulate(load(S2), ["zone0_clear", "ember_vents_eaves", "ibhs_wph_plus"])
+    assert plus.actuarial_breakdown.resili_score == 644
+    assert plus.actuarial_breakdown.resili_score > simulate(load(S2), S2_ALL).actuarial_breakdown.resili_score
+
+
+# --- full chain ---
+@pytest.mark.parametrize("key", [S1, S2, S3, S3_BAD])
+def test_no_applicable_action_lowers_the_score(key):
+    r = load(key)
+    base = simulate(r, []).actuarial_breakdown.resili_score
+    applicable = [m.action_id for m in simulate(r, []).prescriptive_mitigations]
+    assert applicable
+    for action in applicable:
+        assert simulate(r, [action]).actuarial_breakdown.resili_score >= base, action

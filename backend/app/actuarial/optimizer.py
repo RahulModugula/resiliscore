@@ -166,7 +166,7 @@ ACTIONS: tuple[Action, ...] = (
     Action(
         "LA_FORTIFIED_ROOF", "ibhs_fortified_roof", "IBHS FORTIFIED Roof (Louisiana Fortify Homes grant)",
         "WIND_HAIL", "LA R.S. 22:1460 FORTIFIED Roof credit", 18000.0, 6.8,
-        lambda r, v: r.parcel_identity.state == "LA",
+        lambda r, v: r.parcel_identity.state in ("LA", "AL"),
         _FORTIFIED_ROOF,
         lambda v: {
             "cv_roof_class": "CLASS_A_FORTIFIED",
@@ -192,7 +192,11 @@ ACTIONS: tuple[Action, ...] = (
         lambda v: {"iot_shutoff_active": False},
     ),
 )
-_BY_KEY = {k: a for a in ACTIONS for k in (a.action_id, a.alias)}
+# Accepted ids: the canonical (golden) action ids and the spec's short ids. The API and MCP pass the
+# golden ids; the S2 score of 630 comes from CA_ZONE0_1_CLEARANCE + CA_EMBER_VENTS_EAVES +
+# CA_IBHS_WPH_CLASS_A_ROOF. The short id `ibhs_wph_plus` is a different, larger action (CA_IBHS_WPH_PLUS:
+# WPH Plus certificate plus every wildfire flag), so swapping it in for the class-A-roof action gives 644.
+_BY_KEY ={k: a for a in ACTIONS for k in (a.action_id, a.alias)}
 
 
 def _select(v: PrivateVerificationLayer, action_ids: list[str]) -> PrivateVerificationLayer:
@@ -255,8 +259,14 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
         parcel_raw_lcr=round(ev.raw_lcr, 6),
         credibility_weight_z=round(ev.credibility.z, 4),
         posterior_lcr=round(ev.posterior_lcr, 6),
-        expected_annual_loss_usd=round(sum(t.n * t.s for t in ev.terms) * r.parcel_identity.rcv_usd, 2),
-        peril_split=cm.peril_split(r.public_hazard_layer, v, r.parcel_identity.rcv_usd, **_ctx(r)),
+        expected_annual_loss_usd=round(ev.posterior_lcr * r.parcel_identity.rcv_usd, 2),
+        peril_split=cm.peril_split(
+            r.public_hazard_layer,
+            v,
+            r.parcel_identity.rcv_usd,
+            scale=ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0,
+            **_ctx(r),
+        ),
         resili_score=ev.score,
         baseline_macro_score=score(prior),
         underwriting_tier=ev.tier,
