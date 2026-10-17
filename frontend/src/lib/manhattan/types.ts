@@ -35,12 +35,27 @@ export interface Building {
 export interface Park { id: string; name: string; geometry: Geometry }
 
 export interface TerrainGrid {
+  /** Coordinates of the southwest and northeast sample centres, not pixel edges. */
   bounds: Bounds;
   width: number;
   height: number;
   /** Row-major, starting at southwest; null means no supported ground observation. */
   elevationsM: (number | null)[];
   source: string;
+  raster?: {
+    dataset: "USGS_3DEP_1M";
+    horizontalCrs: "EPSG:4326";
+    verticalDatum: "NAVD88";
+    elevationUnit: "metre";
+    sourceResolutionM: number;
+    nominalSpacingM: number;
+    cellSizeDegrees: LngLat;
+    extent: Bounds;
+    sampleLocation: "pixel-center";
+    rowOrder: "south-to-north";
+    resampling: "nearest-neighbor";
+    quantizationM: number;
+  };
 }
 
 export interface StormDrain { id: string; position: LngLat; depthM: number | null }
@@ -66,6 +81,8 @@ export interface ManhattanManifest {
   version: number;
   neighborhoodsUrl: string;
   overviewUrl: string;
+  /** Lazy full-resolution DEM for block context across neighborhood boundaries. */
+  terrainUrl?: string;
   details: Record<string, string>;
   counts: { neighborhoods: number; buildings: number; parks: number };
   sources: ManhattanSource[];

@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Download NYC public basemap data and cache a standalone Manhattan map.
 
-Python 3 standard library only. Source snapshots cache outside Git. Existing
+Requires scripts/manhattan-dem-requirements.txt for the USGS DEM stage.
+Source snapshots cache outside Git. Existing
 snapshots are reused; use --refresh to retrieve a new snapshot.
 """
 import argparse
 import datetime
 import hashlib
 import json
+import runpy
 import math
 from pathlib import Path
 import time
@@ -111,47 +113,6 @@ def fetch(dataset, where, order, cache, refresh):
     return records
 
 
-class Elevations:
-    """IDW over nearby actual building-base elevation observations, not a DEM."""
-    def __init__(self, buildings):
-        self.buckets = {}
-        for building in buildings:
-            elevation = building['groundElevationM']
-            if elevation is None:
-                continue
-            x, y = project(building['center'])
-            cell = (math.floor(x / 300), math.floor(y / 300))
-            self.buckets.setdefault(cell, []).append((x, y, elevation))
-
-    def sample(self, point):
-        x, y = project(point)
-        cx, cy = math.floor(x / 300), math.floor(y / 300)
-        near = []
-        for dx in range(-2, 3):
-            for dy in range(-2, 3):
-                for px, py, elevation in self.buckets.get((cx + dx, cy + dy), []):
-                    distance2 = (px - x) ** 2 + (py - y) ** 2
-                    if distance2 <= 600 ** 2:
-                        near.append((distance2, elevation))
-        near.sort()
-        if not near:
-            return None
-        nearest = near[:8]
-        weights = [1 / max(25, d2) for d2, _ in nearest]
-        return round(sum(w * p[1] for w, p in zip(weights, nearest)) / sum(weights), 2)
-
-    def grid(self, bb, neighborhoods, spacing=150):
-        width = max(2, math.ceil((project([bb[2], bb[1]])[0] - project(bb[:2])[0]) / spacing) + 1)
-        height = max(2, math.ceil((project([bb[0], bb[3]])[1] - project(bb[:2])[1]) / spacing) + 1)
-        values = []
-        for row in range(height):
-            for col in range(width):
-                point = [bb[0] + col / (width - 1) * (bb[2] - bb[0]), bb[1] + row / (height - 1) * (bb[3] - bb[1])]
-                land = any(in_bounds(point, n['bounds']) and contains(point, n['geometry']) for n in neighborhoods)
-                values.append(self.sample(point) if land else None)
-        return {'bounds': rounded(bb), 'width': width, 'height': height, 'elevationsM': values, 'source': 'NYC OTI building-base ground_elevation, feet to metres, IDW nearest 8 within 600m; not a bare-earth DEM'}
-
-
 def write(path, data):
     path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False) + '\n')
 
@@ -160,6 +121,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache', type=Path, default=Path('/tmp/resiliscore-manhattan-sources'))
     parser.add_argument('--refresh', action='store_true')
+    parser.add_argument('--dem-cache', type=Path, default=Path('/tmp/resiliscore-manhattan-dem'))
     args = parser.parse_args()
     args.cache.mkdir(parents=True, exist_ok=True)
     output = Path(__file__).resolve().parent.parent / 'public' / 'manhattan'
@@ -229,29 +191,32 @@ def main():
     def infrastructure(selected, bb=None):
         lines = [line for line in sewer_lines if bb is None or overlap(line_bounds(line), bb)]
         return {'stormDrains': [{'id': d['id'], 'position': d['position'], 'depthM': None} for d in selected], 'sewerLines': lines, 'sewerAvailability': 'partial', 'sewerStatus': 'Open Sewer Atlas NYC historic illustrative interceptors and force mains. Unofficial, incomplete and not for planning. All depths and catch-basin connectivity are unknown.'}
-    field = Elevations(buildings)
+    def pending_terrain(bb):
+        return {'bounds': bb, 'width': 2, 'height': 2, 'elevationsM': [None] * 4, 'source': 'Pending measured USGS 3DEP DEM rebuild'}
     details = {}
     for neighborhood in neighborhoods:
         ident = neighborhood['id']
-        detail = {'neighborhoodId': ident, 'buildings': [b for b in buildings if b['neighborhoodId'] == ident], 'parks': [p for p in parks if overlap(bounds(p['geometry']), neighborhood['bounds'])], 'terrain': field.grid(neighborhood['bounds'], neighborhoods, 100), 'infrastructure': infrastructure([d for d in drains if d['neighborhoodId'] == ident], neighborhood['bounds'])}
+        detail = {'neighborhoodId': ident, 'buildings': [b for b in buildings if b['neighborhoodId'] == ident], 'parks': [p for p in parks if overlap(bounds(p['geometry']), neighborhood['bounds'])], 'terrain': pending_terrain(neighborhood['bounds']), 'infrastructure': infrastructure([d for d in drains if d['neighborhoodId'] == ident], neighborhood['bounds'])}
         write(output / 'neighborhoods' / (ident + '.json'), detail)
         details[ident] = '/manhattan/neighborhoods/' + ident + '.json'
         print(ident, neighborhood['name'], len(detail['buildings']), flush=True)
     whole = [min(n['bounds'][0] for n in neighborhoods), min(n['bounds'][1] for n in neighborhoods), max(n['bounds'][2] for n in neighborhoods), max(n['bounds'][3] for n in neighborhoods)]
     overview = buildings
     write(output / 'neighborhoods.json', neighborhoods)
-    write(output / 'overview.json', {'buildings': overview, 'parks': parks, 'terrain': field.grid(whole, neighborhoods, 200), 'infrastructure': infrastructure(drains)})
+    write(output / 'overview.json', {'buildings': overview, 'parks': parks, 'terrain': pending_terrain(whole), 'infrastructure': infrastructure(drains)})
     retrieved = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     source_defs = [('9nt8-h7nd', 'NYC Department of City Planning 2020 Neighborhood Tabulation Areas'), ('5zhs-2jue', 'NYC OTI Building Footprints'), ('enfh-gkve', 'NYC Parks Properties'), ('2w2g-fk3i', 'NYC DEP Citywide Catch Basins')]
     sources = [{'name': name, 'url': 'https://data.cityofnewyork.us/d/' + ident, 'retrievedAt': datetime.datetime.fromtimestamp((args.cache / (ident + '.json')).stat().st_mtime, datetime.timezone.utc).date().isoformat(), 'license': 'NYC Open Data Terms of Use https://opendata.cityofnewyork.us/overview/#termsofuse'} for ident, name in source_defs]
     sources.append({'name': 'Open Sewer Atlas NYC illustrative interceptors and force mains', 'url': 'https://openseweratlas.tumblr.com/data', 'retrievedAt': datetime.datetime.fromtimestamp(kml_path.stat().st_mtime, datetime.timezone.utc).date().isoformat(), 'license': 'Author permits illustrative/educational use with credit to Open Sewer Atlas NYC. Unofficial, incomplete, not for planning.'})
-    limitations = ['Footprint extrusions represent measured plan perimeter and roof height, not facade, roof shape or photorealistic models.', 'NTA2020 boundaries are statistical areas, not legal neighborhood boundaries.', 'Terrain is interpolation of nearby building-base elevations, not a bare-earth DEM. Park interiors and areas without observations can be unknown.', 'Height, address, construction year and ground elevation remain null when unavailable; zero roof and ground source values are treated as unknown.', 'Overview and neighborhood details contain every matched non-placeholder source footprint; neighborhood details are available separately for focused loading.', f'{unassigned} footprint parts outside Manhattan NTA polygons were excluded; {skipped_placeholders} permit placeholders were excluded.', 'Basemap observations are not catastrophe hazard, first-floor elevation or underwriting evidence.', 'Catch basins are mapped surface inlet positions with unknown depth and connectivity. Historic Open Sewer Atlas NYC interceptors and force mains are unofficial, incomplete, illustrative only and not for planning. Depths are unknown; no drain connections are inferred.']
+    limitations = ['Footprint extrusions represent measured plan perimeter and roof height, not facade, roof shape or photorealistic models.', 'NTA2020 boundaries are statistical areas, not legal neighborhood boundaries.', 'Height, address, construction year and ground elevation remain null when unavailable; zero roof and ground source values are treated as unknown.', 'Overview and neighborhood details contain every matched non-placeholder source footprint; neighborhood details are available separately for focused loading.', f'{unassigned} footprint parts outside Manhattan NTA polygons were excluded; {skipped_placeholders} permit placeholders were excluded.', 'Basemap observations are not catastrophe hazard, first-floor elevation or underwriting evidence.', 'Catch basins are mapped surface inlet positions with unknown depth and connectivity. Historic Open Sewer Atlas NYC interceptors and force mains are unofficial, incomplete, illustrative only and not for planning. Depths are unknown; no drain connections are inferred.']
     write(output / 'manifest.json', {'version': 1, 'neighborhoodsUrl': '/manhattan/neighborhoods.json', 'overviewUrl': '/manhattan/overview.json', 'details': details, 'counts': {'neighborhoods': len(neighborhoods), 'buildings': len(buildings), 'parks': len(parks)}, 'sources': sources, 'limitations': limitations})
     write(output / 'source-checksums.json', {ident: {'sha256': hashlib.sha256((args.cache / (ident + '.json')).read_bytes()).hexdigest(), 'recordCount': len(records)} for ident, records in [('9nt8-h7nd', ntas), ('5zhs-2jue', footprints), ('enfh-gkve', properties), ('2w2g-fk3i', catch_basins)]})
     checksums_path = output / 'source-checksums.json'
     checksums = json.loads(checksums_path.read_text())
     checksums['open-sewer-atlas-kml'] = {'sha256': hashlib.sha256(kml_path.read_bytes()).hexdigest(), 'recordCount': len(kml.findall('.//k:Placemark', namespace))}
     write(checksums_path, checksums)
+    dem_builder = runpy.run_path(str(Path(__file__).with_name('build-manhattan-dem.py')))['build']
+    dem_builder(output, args.dem_cache, args.refresh)
     print('Complete', len(neighborhoods), len(buildings), len(parks), 'overview', len(overview), 'retrieved', retrieved, flush=True)
 
 
