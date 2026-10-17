@@ -148,7 +148,9 @@ export default function ManhattanExplorer() {
           <label className={styles.layerToggle}><Mountain size={17} /><span>Terrain relief</span><input type="checkbox" checked={terrainMode} onChange={event => setTerrainMode(event.target.checked)} /></label>
           {terrainMode && <div className={styles.terrainLegend}>
             <p>USGS ground elevation · metres</p>
-            {elevationRange && <div className={styles.elevationLabels}><span>{elevationRange[0]} m</span><span>{elevationRange[1]} m</span></div>}
+            <div className={styles.elevationRamp} aria-hidden="true" />
+            <div className={styles.elevationLabels}><span>0 m NAVD88</span><span>100 m</span></div>
+            {elevationRange && <p className={styles.groundRange}>Ground in view {elevationRange[0]}–{elevationRange[1]} m</p>}
             <fieldset className={styles.reliefScale}><legend>Ground height scale</legend>{[1, 3].map(scale => <label key={scale}><input type="radio" name="relief-scale" value={scale} checked={reliefScale === scale} onChange={() => setReliefScale(scale)} /><span>{scale === 1 ? "1× actual" : "3× relief"}</span></label>)}</fieldset>
             <p className={styles.reliefNote} role="status">{reliefScale === 1 ? "Actual ground heights. Buildings fade to reveal slopes." : "Ground heights exaggerated 3× for viewing. Assessment inputs stay unchanged."}</p>
           </div>}

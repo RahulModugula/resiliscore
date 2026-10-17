@@ -41,7 +41,9 @@
 .layerToggle input { margin-left: auto; width: 16px; min-height: 24px; }
 .layerToggle + .layerToggle { margin-top: 6px; }
 .terrainLegend { padding: 13px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-top: 0; margin-bottom: 6px; font-size: 11px; }
-.elevationLabels { display: flex; justify-content: space-between; margin-top: 10px; color: var(--muted); }
+.elevationRamp { height: 6px; margin-top: 10px; background: linear-gradient(to right, #54796b, #c5ae82); border-radius: 2px; }
+.elevationLabels { display: flex; justify-content: space-between; margin-top: 5px; color: var(--muted); font-size: 10px; }
+.groundRange { margin-top: 10px; color: var(--muted); }
 .reliefScale { margin: 14px 0 10px; padding: 0; border: 0; display: flex; gap: 12px; }
 .reliefScale legend { margin-bottom: 6px; color: var(--muted); }
 .reliefScale label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
