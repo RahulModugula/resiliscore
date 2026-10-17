@@ -81,6 +81,17 @@
     "indicative_only": {
       "type": "boolean",
       "default": false
+    },
+    "nyc": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NycLayer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     }
   },
   "required": [
@@ -465,7 +476,9 @@
           "enum": [
             "FLOOD",
             "WILDFIRE",
-            "WIND_HAIL"
+            "WIND_HAIL",
+            "PLUVIAL",
+            "SEWER_BACKUP"
           ]
         },
         "zip_immunity_pi": {
@@ -737,6 +750,179 @@
         "ny_dfs_cl7_ecdis_free",
         "ca_2644_9_factors",
         "dataset_vintages"
+      ],
+      "additionalProperties": false
+    },
+    "DepStormwater": {
+      "type": "object",
+      "properties": {
+        "scenario": {
+          "type": "string",
+          "enum": [
+            "LIMITED_CURRENT",
+            "MODERATE_CURRENT",
+            "MODERATE_2050",
+            "EXTREME_2080"
+          ]
+        },
+        "flood_class": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "NUISANCE",
+            "DEEP_CONTIGUOUS",
+            "UNAVAILABLE"
+          ]
+        }
+      },
+      "required": [
+        "scenario",
+        "flood_class"
+      ],
+      "additionalProperties": false
+    },
+    "NycLayer": {
+      "type": "object",
+      "properties": {
+        "bbl": {
+          "type": "string"
+        },
+        "bin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "borough": {
+          "type": "string"
+        },
+        "bldg_class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "year_built": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "num_floors": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "basement_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "basement_type": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "FULL",
+            "PARTIAL",
+            "UNKNOWN"
+          ]
+        },
+        "ground_elevation_ft": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "roof_height_ft": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "dep_stormwater": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DepStormwater"
+          }
+        },
+        "floodnet_events_500m_5y": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "floodnet_max_depth_in": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "sewer_backup_311_500m_5y": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "street_flooding_311_500m_5y": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "catch_basins_150m": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "dob_open_violations": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "dob_cellar_conversion_flag": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "sandy_inundated": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "evacuation_zone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "bbl",
+        "bin",
+        "borough",
+        "bldg_class",
+        "year_built",
+        "num_floors",
+        "basement_code",
+        "basement_type",
+        "ground_elevation_ft",
+        "roof_height_ft",
+        "dep_stormwater",
+        "floodnet_events_500m_5y",
+        "floodnet_max_depth_in",
+        "sewer_backup_311_500m_5y",
+        "street_flooding_311_500m_5y",
+        "catch_basins_150m",
+        "dob_open_violations",
+        "dob_cellar_conversion_flag",
+        "sandy_inundated",
+        "evacuation_zone"
       ],
       "additionalProperties": false
     },
