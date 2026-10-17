@@ -46,3 +46,11 @@ npm run test:e2e
 Playwright starts the frontend on port 3100 and exercises offline demo journeys, API failures, contract validation, and stale-response handling. Set `PLAYWRIGHT_BASE_URL` to use an existing frontend server.
 
 Frontend Codex guidance lives in `AGENTS.md`. Shared contracts and backend files are outside this work's ownership boundary.
+
+## Model validation tab
+
+The Model Validation tab bundles `../contracts/validation_report.json` directly through `src/data/validationReport.ts`. All metrics, ratios, confidence intervals, verdicts, and adoption notes come from that report. The roof headline is calculated from its odds ratio, so it changes with the evidence. The holdout selector identifies the fire being compared; each fire is scored out of sample. The header latency is the maximum p95 across the reported benchmark rows, with its aggregation labeled.
+
+With Live API enabled, the tab requests `GET /v1/model/validation`, checks the response against `validation_report_schema.json`, and retains the bundled report on invalid responses, HTTP errors, or timeouts. Returning to offline mode discards the live response. Null sections display results pending. The flood curve and hurricane table are ready for a populated, contract-compatible flood section.
+
+Charts include source, vintage, and fetch date. Caveat icons support hover, keyboard focus, and Escape. Narrow screens scroll within charts and tables. Download report exports exactly the active report. `tests/e2e/validation.spec.ts` covers these flows; its flood fixture is synthetic test data and is never bundled into the application.

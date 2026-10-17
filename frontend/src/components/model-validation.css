@@ -1,0 +1,126 @@
+.model-validation { display: grid; gap: 20px; }
+.validation-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.validation-heading h2 { font-size: 24px; font-weight: 500; letter-spacing: -.5px; }
+.validation-heading p { margin-top: 5px; color: var(--muted); max-width: 75ch; }
+.validation-heading-actions { display: flex; align-items: center; gap: 12px; }
+.validation-heading-actions .badge { text-transform: capitalize; }
+.validation-report-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; color: var(--muted); font-size: 12px; }
+.validation-report-meta > span { display: inline-flex; align-items: center; gap: 7px; }
+.validation-report-meta code { color: var(--text); }
+.validation-network { color: var(--muted); font-size: 12px; margin-top: -10px; }
+.validation-network.warning { color: var(--amber); }
+.validation-kpis { display: grid; grid-template-columns: 1.35fr repeat(4, 1fr); border: 1px solid var(--border); border-radius: 6px; background: var(--surface); margin: 0; }
+.validation-kpis > div { min-width: 0; padding: 18px; border-left: 1px solid var(--border); }
+.validation-kpis > div:first-child { border-left: 0; }
+.validation-kpis dt { color: var(--muted); font-size: 12px; }
+.validation-kpis dd { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 4px; font-size: 23px; font-weight: 500; letter-spacing: -.4px; }
+.validation-kpis small { display: block; color: var(--muted); font-size: 11px; }
+.validation-kpi-divider, .validation-kpi-unit { color: var(--muted); font-size: 16px; font-weight: 400; }
+.validation-kpis select { width: 100%; margin-top: 10px; padding: 5px 8px; min-height: 36px; color: var(--text); background: var(--surface-raised); border: 1px solid var(--border); border-radius: 4px; font-size: 12px; }
+.validation-accent { color: var(--accent); }
+.validation-section { min-width: 0; }
+.validation-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 14px 0 12px; border-bottom: 1px solid var(--border); }
+.validation-section-heading h2 { font-size: 20px; font-weight: 500; letter-spacing: -.3px; }
+.validation-section-heading > span { font-size: 12px; color: var(--muted); }
+.validation-verdict { padding: 18px 0 22px; }
+.validation-verdict-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+.validation-verdict h3 { font-size: 13px; font-weight: 500; }
+.validation-verdict p { max-width: 110ch; font-size: 13px; line-height: 1.65; white-space: pre-wrap; }
+.validation-adoption { margin-top: 9px; color: var(--amber); }
+.validation-method { margin-top: 10px; color: var(--muted); font-size: 12px; }
+.validation-method p { margin-top: 8px; }
+.model-validation summary { cursor: pointer; width: fit-content; }
+.model-validation summary:hover { color: var(--accent); }
+.validation-chart-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.validation-panel { overflow: visible; }
+.validation-chart-heading { margin-bottom: 18px; }
+.validation-chart-heading h3 { font-size: 16px; font-weight: 500; letter-spacing: -.15px; }
+.validation-chart-heading p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.validation-panel figure { margin: 0; }
+.validation-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; color: var(--muted); font-size: 11px; margin-bottom: 15px; }
+.validation-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.legend-dot.observed { background: var(--accent); }
+.legend-dot.current { background: var(--muted); }
+.legend-dot.hollow { border: 1.5px solid var(--amber); background: var(--surface); }
+.legend-line { display: inline-block; width: 20px; border-top: 2px solid var(--water); }
+.legend-line.fitted { border-top: 2px dashed var(--amber); }
+.validation-scroll-hint { display: none; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.validation-scroll { overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--border) var(--surface); }
+.validation-forest { min-width: 550px; }
+.validation-fires { min-width: 485px; }
+.validation-plot-row { display: grid; grid-template-columns: 170px minmax(100px, 1fr) 145px; gap: 15px; align-items: center; min-height: 51px; border-bottom: 1px solid var(--border); }
+.validation-fires .validation-plot-row { grid-template-columns: 155px minmax(100px, 1fr) 115px; }
+.validation-plot-header { min-height: 30px; font-size: 10px; color: var(--muted); }
+.validation-plot-header > :last-child { text-align: right; }
+.validation-row-label strong { font-size: 11px; font-weight: 500; }
+.validation-row-label small { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
+.validation-row-label strong small { display: inline; font-weight: 400; }
+.validation-plot-row > svg { width: 100%; height: 32px; overflow: visible; }
+.validation-estimate { text-align: right; font-size: 11px; }
+.validation-estimate small { font-size: 10px; color: var(--muted); }
+.validation-reference { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; opacity: .75; }
+.validation-observed { stroke: var(--accent); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.validation-unsupported { stroke: var(--muted); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.validation-observed-dot { fill: var(--accent); }
+.validation-current-dot, .validation-unsupported-dot { fill: var(--muted); }
+.validation-model-dot { fill: var(--surface); stroke: var(--amber); stroke-width: 1.5; }
+.validation-connector { stroke: var(--muted); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.validation-axis-row { border-bottom: 0; min-height: 30px; }
+.validation-axis { position: relative; height: 25px; margin-top: 8px; color: var(--muted); font-size: 10px; }
+.validation-axis span { position: absolute; transform: translateX(-50%); }
+.validation-fire-scroll { max-height: 540px; overflow-y: auto; }
+.validation-source { display: flex; flex-direction: column; gap: 5px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 10px; color: var(--muted); overflow-wrap: anywhere; line-height: 1.6; }
+.validation-flood-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.validation-gridline { stroke: var(--border); stroke-width: 1; }
+.validation-svg-label { fill: var(--muted); font-size: 11px; font-family: inherit; }
+.validation-hazus-line { fill: none; stroke: var(--water); stroke-width: 2; }
+.validation-fitted-line { fill: none; stroke: var(--amber); stroke-width: 2; stroke-dasharray: 6 4; }
+.validation-fitted-point { fill: var(--surface); stroke: var(--amber); stroke-width: 1.5; }
+.validation-data-details { margin-top: 12px; color: var(--muted); font-size: 12px; }
+.validation-data-details > div { margin-top: 10px; }
+.validation-table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+.validation-table th, .validation-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); text-align: right; font-weight: 400; }
+.validation-table th:first-child { text-align: left; padding-left: 0; }
+.validation-table th:last-child, .validation-table td:last-child { padding-right: 0; }
+.validation-table thead th { color: var(--muted); font-size: 10px; padding-top: 0; }
+.validation-table tbody th { font-weight: 500; }
+.validation-table tbody tr:last-child > * { border-bottom: 0; }
+.validation-table tbody tr:hover { background: var(--surface-raised); }
+.validation-table small { display: block; font-size: 10px; font-weight: 400; color: var(--muted); }
+.validation-bias.under { color: var(--amber); }
+.validation-bias.over { color: var(--red); }
+.validation-bias.neutral { color: var(--green); }
+.validation-bias small { color: inherit; }
+.validation-event-name { display: inline-flex; align-items: center; gap: 5px; }
+.validation-note { display: inline-flex; position: relative; color: var(--muted); cursor: help; }
+.validation-tooltip { position: fixed; width: 250px; max-height: 40vh; overflow-y: auto; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface-raised); box-shadow: var(--shadow); color: var(--text); font-size: 11px; font-weight: 400; white-space: normal; z-index: 50; }
+.validation-pending { display: flex; align-items: center; gap: 14px; padding: 26px 0; color: var(--muted); }
+.validation-pending h4 { margin: 0 0 4px; font-size: 15px; color: var(--text); font-weight: 500; }
+.validation-pending p { font-size: 12px; }
+.validation-references { padding: 16px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+.validation-references summary span { margin-left: 12px; font-size: 11px; }
+.validation-references ul { list-style: none; padding: 0; margin: 15px 0 0; }
+.validation-references li { display: grid; grid-template-columns: 85px minmax(0, 1fr) 100px; gap: 15px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.validation-references a { overflow-wrap: anywhere; }
+.validation-references strong { font-weight: 500; color: var(--text); }
+@media (max-width: 1200px) { .validation-chart-grid { grid-template-columns: 1fr; } .validation-kpis { grid-template-columns: repeat(3, 1fr); } .validation-kpis > div:nth-child(4) { border-left: 0; } .validation-kpis > div:nth-child(n+4) { border-top: 1px solid var(--border); } }
+@media (max-width: 650px) {
+  .validation-scroll-hint { display: block; }
+  .validation-heading, .validation-section-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .validation-heading h2 { font-size: 22px; }
+  .validation-heading p { font-size: 13px; }
+  .validation-heading-actions { width: 100%; justify-content: space-between; }
+  .validation-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .validation-kpis > div { padding: 14px; }
+  .validation-kpis > div:nth-child(odd) { border-left: 0; }
+  .validation-kpis > div:nth-child(even) { border-left: 1px solid var(--border); }
+  .validation-kpis > div:nth-child(n+3) { border-top: 1px solid var(--border); }
+  .validation-kpis dd { font-size: 20px; }
+  .validation-kpis > div:first-child { grid-column: 1 / -1; }
+  .validation-kpis > div:nth-child(2) { border-left: 0; border-top: 1px solid var(--border); }
+  .validation-kpis > div:nth-child(3), .validation-kpis > div:nth-child(5) { border-left: 1px solid var(--border); }
+  .validation-verdict p { font-size: 12px; }
+  .validation-panel { padding: 16px; }
+  .validation-references li { grid-template-columns: 1fr; gap: 5px; }
+}
