@@ -3,6 +3,7 @@
 import json
 import math
 import os
+import re
 
 import numpy as np
 import pytest
@@ -132,12 +133,44 @@ def test_sample_is_small_and_covers_the_states():
 
 def test_report_writes_all_outputs(report):
     _, out = report
-    for name in ("flood_severity_buckets.csv", "flood_holdout_buckets.csv", "flood_events.csv", "flood_summary.json"):
+    for name in ("flood_severity_buckets.csv", "flood_holdout_buckets.csv", "flood_events.csv",
+                 "flood_summary.json", "flood_detail.json"):
         assert (out / "results" / name).exists()
-    summary = json.loads((out / "results" / "flood_summary.json").read_text())
+    summary = json.loads((out / "results" / "flood_detail.json").read_text())
     assert summary["verdict"] in {"adopt", "keep Hazus"}
     assert summary["split"]["train_n"] > 0 and summary["split"]["holdout_n"] > 0
     assert summary["split"]["train_n"] + summary["split"]["holdout_n"] == summary["claims_no_basement"]
+
+
+def test_summary_matches_the_report_contract(report):
+    _, out = report
+    doc = json.loads((out / "results" / "flood_summary.json").read_text())
+    assert set(doc) == {"method", "data_source", "data_vintage", "fetched_on", "verdict", "severity_by_depth",
+                        "events", "ranking", "adopted", "adoption_note"}
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", doc["fetched_on"])
+    assert isinstance(doc["adopted"], bool) and doc["adopted"] == (doc["verdict"] == "adopt")
+    depth_keys = {"depth_bucket", "depth_mid_ft", "n", "observed_mean_dr", "observed_ci_low", "observed_ci_high",
+                  "hazus_pred_dr", "fitted_pred_dr"}
+    assert doc["severity_by_depth"]
+    for row in doc["severity_by_depth"]:
+        assert set(row) == depth_keys
+        assert 0 <= row["observed_ci_low"] <= row["observed_mean_dr"] <= row["observed_ci_high"] <= 1
+        assert 0 <= row["hazus_pred_dr"] <= 1
+    event_keys = {"event", "year", "states", "n_claims", "observed_mean_dr", "hazus_mae", "fitted_mae", "bias",
+                  "tract_spearman", "n_tracts", "note"}
+    for row in doc["events"]:
+        assert set(row) == event_keys and isinstance(row["states"], list)
+    assert any(r["event"].endswith("(basement)") for r in doc["events"])
+    assert doc["ranking"] is None  # no ranking run beside the test output
+
+
+def test_ranking_block_follows_the_contract(tmp_path):
+    (tmp_path / "flood_ranking_summary.json").write_text(json.dumps({
+        "tracts": 3, "spearman": 0.5, "gini": 0.2,
+        "deciles": [{"decile": 1, "claims": 4, "expected_claims": 3.5}],
+    }))
+    assert rep.contract_ranking(tmp_path) == {
+        "n_tracts": 3, "spearman": 0.5, "gini": 0.2, "deciles": [{"decile": 1, "expected": 3.5, "actual": 4.0}]}
 
 
 def test_adopt_rule_is_enforced(report):

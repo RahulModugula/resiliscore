@@ -18,6 +18,7 @@ Run (from backend/):  uv run python -m validation.flood_ranking --out validation
 
 import argparse
 import csv
+import json
 import math
 import random
 import time
@@ -205,12 +206,66 @@ def run(out: Path) -> list[dict]:
     return rows
 
 
+EVENT_STATES = ("LA", "MS", "NY", "NJ", "TX", "NC", "SC", "FL")
+
+
+def write_state_rates(path: Path, states: tuple[str, ...] = EVENT_STATES) -> int:
+    """Model flood rate and exposure for every NRI tract in `states`, for the per-event tract Spearman."""
+    rows = []
+    with httpx.Client() as client:
+        for state in states:
+            for t in fetch_nri_tracts(client, state):
+                rows.append({"tract": t.fips, "state": state, "model_flood_lcr": model_flood_lcr(t),
+                             "exposed_building_value_musd": (t.nri.expb_usd["IFLD"] + t.nri.expb_usd["CFLD"]) / 1e6})
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    return len(rows)
+
+
+def analyze(tracts_csv: Path, out_dir: Path) -> dict:
+    """Spearman with a bootstrap interval, Gini and a decile table from the per-tract CSV."""
+    with tracts_csv.open() as fh:
+        rows = list(csv.DictReader(fh))
+    pred = np.array([float(r["model_flood_lcr"]) for r in rows])
+    claims = np.array([float(r["claims"]) for r in rows])
+    expo = np.array([float(r["exposed_building_value_musd"]) for r in rows])
+    states = np.array([r["state"] for r in rows])
+    incidence = claims / expo / LOSS_YEARS
+    lo, hi = spearman_ci(pred, incidence)
+    table = decile_table(pred, claims, expo)
+    bottom = table[0]["claims_per_m_per_yr"]
+    result = {
+        "tracts": len(rows), "states": sorted(set(states)),
+        "tracts_with_zero_claims": int((claims == 0).sum()), "claims_total": int(claims.sum()),
+        "spearman": spearman(pred, incidence), "spearman_ci95": [lo, hi],
+        "gini": gini(pred, claims, expo),
+        "spearman_by_state": {s: spearman(pred[states == s], incidence[states == s]) for s in sorted(set(states))},
+        "top_over_bottom_decile_incidence": table[-1]["claims_per_m_per_yr"] / bottom if bottom > 0 else None,
+        "nri_version": rows[0]["nri_version"],
+        "max_abs_model_vs_nri": float(np.max(np.abs(pred - np.array([float(r["nri_flood_rate"]) for r in rows])))),
+        "deciles": table,
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "flood_ranking_summary.json").write_text(json.dumps(result, indent=2) + "\n")
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="validation/results/flood_ranking_tracts.csv")
+    parser.add_argument("--analyze-only", action="store_true", help="skip the network and analyse --out")
+    parser.add_argument("--state-rates", help="write per-tract model rates for the event states to this CSV and stop")
     args = parser.parse_args()
-    rows = run(Path(args.out))
-    print(f"wrote {len(rows)} tracts to {args.out}")
+    if args.state_rates:
+        print(f"wrote {write_state_rates(Path(args.state_rates))} tracts to {args.state_rates}")
+        return
+    if not args.analyze_only:
+        print(f"wrote {len(run(Path(args.out)))} tracts to {args.out}")
+    res = analyze(Path(args.out), Path(args.out).parent)
+    print(json.dumps({k: v for k, v in res.items() if k != "deciles"}, indent=2))
 
 
 if __name__ == "__main__":
