@@ -10,6 +10,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from app.actuarial.optimizer import simulate
 from app.fixtures import by_apn, by_scenario
 from app.models.schemas import ParcelScoreResponse
 
@@ -26,6 +27,7 @@ class QuoteRequest(BaseModel):
 
     scenario_id: str | None = None
     apn_uid: str | None = None
+    action_ids: list[str] = []  # mitigations assumed completed, priced by the same engine
 
     @model_validator(mode="after")
     def _exactly_one(self) -> "QuoteRequest":
@@ -89,10 +91,14 @@ def _quote_payload(submission_id: str, score: ParcelScoreResponse) -> dict[str, 
 
 @router.post("/submissions/{submission_id}/quote")
 def quote(submission_id: str, body: QuoteRequest) -> dict[str, Any]:
-    """PricingCenter BYOM quote for a golden parcel."""
-    score = by_scenario(body.scenario_id) if body.scenario_id is not None else by_apn(body.apn_uid or "")
-    if score is None:
+    """PricingCenter BYOM quote for a golden parcel, scored by `optimizer.simulate`."""
+    parcel = by_scenario(body.scenario_id) if body.scenario_id is not None else by_apn(body.apn_uid or "")
+    if parcel is None:
         raise HTTPException(status_code=404, detail="no golden scenario matches")
+    try:
+        score = simulate(parcel, body.action_ids)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     _submissions[submission_id] = score
     return _quote_payload(submission_id, score)
 

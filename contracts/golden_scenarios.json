@@ -325,22 +325,22 @@
       "tract_prior_lcr": 0.0185,
       "parcel_raw_lcr": 0.001372,
       "credibility_weight_z": 0.94,
-      "posterior_lcr": 0.0024,
-      "expected_annual_loss_usd": 1080.0,
+      "posterior_lcr": 0.002399,
+      "expected_annual_loss_usd": 1079.48,
       "peril_split": [
         {
           "peril": "FLOOD",
-          "zip_immunity_pi": 0.22,
-          "expected_freq_n": 0.031,
-          "expected_sev_s": 41356.49,
-          "peril_aal_usd": 1000.0
+          "zip_immunity_pi": 0.2172,
+          "expected_freq_n": 0.00869,
+          "expected_sev_s": 96624.82,
+          "peril_aal_usd": 839.19
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.45,
-          "expected_freq_n": 0.012,
-          "expected_sev_s": 12121.21,
-          "peril_aal_usd": 80.0
+          "zip_immunity_pi": 0.8455,
+          "expected_freq_n": 0.0057,
+          "expected_sev_s": 42177.45,
+          "peril_aal_usd": 240.29
         }
       ],
       "resili_score": 765,
@@ -359,12 +359,27 @@
         "gross_capex_usd": 18000.0,
         "grant_subsidy_usd": 10000.0,
         "net_capex_usd": 8000.0,
-        "lcr_delta_bps": -35.0,
-        "score_delta_pts": 90,
-        "annual_premium_savings_usd": 1560.0,
-        "payback_years": 5.13,
-        "resale_value_bump_pct": 4.0,
+        "lcr_delta_bps": -37.66,
+        "score_delta_pts": 149,
+        "annual_premium_savings_usd": 1596.0,
+        "payback_years": 5.01,
+        "resale_value_bump_pct": 6.8,
         "currently_applied": true
+      },
+      {
+        "action_id": "SMART_WATER_SHUTOFF",
+        "title": "Smart water shut-off valve with backflow protection",
+        "peril": "FLOOD",
+        "statutory_authority": "IBHS FORTIFIED Home water-intrusion guidance; carrier water-damage credit",
+        "gross_capex_usd": 650.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 650.0,
+        "lcr_delta_bps": -8.05,
+        "score_delta_pts": 51,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.2,
+        "currently_applied": false
       }
     ],
     "hitl_status": {
@@ -393,7 +408,7 @@
       "dataset_vintages": {
         "USGS_3DEP": "2025-05-01",
         "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
-        "OpenFEMA": "FimaNfipClaims_v2",
+        "OpenFEMA": "NfipClaims_v3",
         "LANDFIRE": "LF2024_FBFM40",
         "USGS_HAND": "NHDPlusHR_2024",
         "FEMA_NFHL": "2026-03",
@@ -762,21 +777,21 @@
       "parcel_raw_lcr": 0.026645,
       "credibility_weight_z": 0.62,
       "posterior_lcr": 0.0245,
-      "expected_annual_loss_usd": 20825.0,
+      "expected_annual_loss_usd": 20825.09,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.05,
-          "expected_freq_n": 0.021,
-          "expected_sev_s": 977443.61,
-          "peril_aal_usd": 19500.0
+          "zip_immunity_pi": 0.0474,
+          "expected_freq_n": 0.05116,
+          "expected_sev_s": 385021.3,
+          "peril_aal_usd": 19699.19
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.55,
-          "expected_freq_n": 0.008,
-          "expected_sev_s": 368055.56,
-          "peril_aal_usd": 1325.0
+          "zip_immunity_pi": 0.4013,
+          "expected_freq_n": 0.00812,
+          "expected_sev_s": 138601.52,
+          "peril_aal_usd": 1125.91
         }
       ],
       "resili_score": 385,
@@ -795,10 +810,10 @@
         "gross_capex_usd": 1800.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 1800.0,
-        "lcr_delta_bps": -18.0,
-        "score_delta_pts": 65,
-        "annual_premium_savings_usd": 680.0,
-        "payback_years": 2.65,
+        "lcr_delta_bps": -97.35,
+        "score_delta_pts": 93,
+        "annual_premium_savings_usd": 921.59,
+        "payback_years": 1.95,
         "resale_value_bump_pct": 0.4,
         "currently_applied": false
       },
@@ -810,10 +825,10 @@
         "gross_capex_usd": 3200.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 3200.0,
-        "lcr_delta_bps": -15.0,
-        "score_delta_pts": 55,
-        "annual_premium_savings_usd": 540.0,
-        "payback_years": 5.93,
+        "lcr_delta_bps": -58.01,
+        "score_delta_pts": 43,
+        "annual_premium_savings_usd": 847.56,
+        "payback_years": 3.78,
         "resale_value_bump_pct": 0.6,
         "currently_applied": false
       },
@@ -825,11 +840,41 @@
         "gross_capex_usd": 14500.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 14500.0,
-        "lcr_delta_bps": -42.0,
-        "score_delta_pts": 125,
-        "annual_premium_savings_usd": 920.0,
-        "payback_years": 15.76,
+        "lcr_delta_bps": -23.56,
+        "score_delta_pts": 13,
+        "annual_premium_savings_usd": 1377.28,
+        "payback_years": 10.53,
         "resale_value_bump_pct": 1.2,
+        "currently_applied": false
+      },
+      {
+        "action_id": "CA_IBHS_WPH_PLUS",
+        "title": "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1+B2; IBHS WPH Plus",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": -193.45,
+        "score_delta_pts": 259,
+        "annual_premium_savings_usd": 3071.96,
+        "payback_years": 4.88,
+        "resale_value_bump_pct": 1.5,
+        "currently_applied": false
+      },
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -5.36,
+        "score_delta_pts": 4,
+        "annual_premium_savings_usd": 75.09,
+        "payback_years": 119.86,
+        "resale_value_bump_pct": 0.8,
         "currently_applied": false
       }
     ],
@@ -859,7 +904,7 @@
       "dataset_vintages": {
         "USGS_3DEP": "2025-05-01",
         "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
-        "OpenFEMA": "FimaNfipClaims_v2",
+        "OpenFEMA": "NfipClaims_v3",
         "LANDFIRE": "LF2024_FBFM40",
         "USGS_HAND": "NHDPlusHR_2024",
         "FEMA_NFHL": "2026-03",
@@ -1194,31 +1239,61 @@
       "parcel_raw_lcr": 0.001361,
       "credibility_weight_z": 0.97,
       "posterior_lcr": 0.0018,
-      "expected_annual_loss_usd": 1296.0,
+      "expected_annual_loss_usd": 1296.3,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.1,
-          "expected_freq_n": 0.004,
-          "expected_sev_s": 210000.0,
-          "peril_aal_usd": 756.0
+          "zip_immunity_pi": 0.451,
+          "expected_freq_n": 0.00559,
+          "expected_sev_s": 159100.87,
+          "peril_aal_usd": 889.27
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.4,
-          "expected_freq_n": 0.006,
-          "expected_sev_s": 150000.0,
-          "peril_aal_usd": 540.0
+          "zip_immunity_pi": 0.6225,
+          "expected_freq_n": 0.00379,
+          "expected_sev_s": 107254.91,
+          "peril_aal_usd": 407.03
         }
       ],
       "resili_score": 815,
       "baseline_macro_score": 465,
       "underwriting_tier": "TIER_1_AUTO_BIND",
-      "statutory_discount_pct": 23.23,
+      "statutory_discount_pct": 26.79,
       "annual_base_premium_usd": 3900.0,
-      "annual_discounted_premium_usd": 2994.0
+      "annual_discounted_premium_usd": 2855.34
     },
     "prescriptive_mitigations": [
+      {
+        "action_id": "CA_ZONE0_1_CLEARANCE",
+        "title": "Zone 0/1 clearance: noncombustible 0-5 ft, prune canopy, relocate shed",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1; CA PRC 4291",
+        "gross_capex_usd": 1800.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 1800.0,
+        "lcr_delta_bps": -12.96,
+        "score_delta_pts": 90,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": true
+      },
+      {
+        "action_id": "CA_EMBER_VENTS_EAVES",
+        "title": "1/4-inch ember vents + enclosed eaves",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B2; CBC Chapter 7A",
+        "gross_capex_usd": 3200.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3200.0,
+        "lcr_delta_bps": -11.57,
+        "score_delta_pts": 83,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.6,
+        "currently_applied": true
+      },
       {
         "action_id": "CA_IBHS_WPH_PLUS",
         "title": "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
@@ -1227,10 +1302,10 @@
         "gross_capex_usd": 15000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 15000.0,
-        "lcr_delta_bps": -42.0,
-        "score_delta_pts": 150,
-        "annual_premium_savings_usd": 720.0,
-        "payback_years": 20.83,
+        "lcr_delta_bps": -7.14,
+        "score_delta_pts": 57,
+        "annual_premium_savings_usd": 159.39,
+        "payback_years": 94.11,
         "resale_value_bump_pct": 1.5,
         "currently_applied": true
       },
@@ -1242,10 +1317,10 @@
         "gross_capex_usd": 9000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 9000.0,
-        "lcr_delta_bps": -12.0,
-        "score_delta_pts": 40,
-        "annual_premium_savings_usd": 186.0,
-        "payback_years": 48.39,
+        "lcr_delta_bps": -6.21,
+        "score_delta_pts": 51,
+        "annual_premium_savings_usd": 88.31,
+        "payback_years": 101.92,
         "resale_value_bump_pct": 0.8,
         "currently_applied": true
       }
@@ -1276,7 +1351,7 @@
       "dataset_vintages": {
         "USGS_3DEP": "2025-05-01",
         "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
-        "OpenFEMA": "FimaNfipClaims_v2",
+        "OpenFEMA": "NfipClaims_v3",
         "LANDFIRE": "LF2024_FBFM40",
         "USGS_HAND": "NHDPlusHR_2024",
         "FEMA_NFHL": "2026-03",
@@ -1643,34 +1718,64 @@
     },
     "actuarial_breakdown": {
       "tract_prior_lcr": 0.016,
-      "parcel_raw_lcr": 0.001361,
+      "parcel_raw_lcr": 0.001778,
       "credibility_weight_z": 0.97,
-      "posterior_lcr": 0.0018,
-      "expected_annual_loss_usd": 1296.0,
+      "posterior_lcr": 0.002205,
+      "expected_annual_loss_usd": 1587.55,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.1,
-          "expected_freq_n": 0.004,
-          "expected_sev_s": 210000.0,
-          "peril_aal_usd": 756.0
+          "zip_immunity_pi": 0.3107,
+          "expected_freq_n": 0.00702,
+          "expected_sev_s": 171863.44,
+          "peril_aal_usd": 1205.99
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.4,
-          "expected_freq_n": 0.006,
-          "expected_sev_s": 150000.0,
-          "peril_aal_usd": 540.0
+          "zip_immunity_pi": 0.6225,
+          "expected_freq_n": 0.00379,
+          "expected_sev_s": 100544.43,
+          "peril_aal_usd": 381.56
         }
       ],
-      "resili_score": 815,
+      "resili_score": 780,
       "baseline_macro_score": 465,
       "underwriting_tier": "TIER_1_AUTO_BIND",
-      "statutory_discount_pct": 23.23,
+      "statutory_discount_pct": 26.79,
       "annual_base_premium_usd": 3900.0,
-      "annual_discounted_premium_usd": 2994.0
+      "annual_discounted_premium_usd": 2855.34
     },
     "prescriptive_mitigations": [
+      {
+        "action_id": "CA_ZONE0_1_CLEARANCE",
+        "title": "Zone 0/1 clearance: noncombustible 0-5 ft, prune canopy, relocate shed",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1; CA PRC 4291",
+        "gross_capex_usd": 1800.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 1800.0,
+        "lcr_delta_bps": -12.96,
+        "score_delta_pts": 90,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": false
+      },
+      {
+        "action_id": "CA_EMBER_VENTS_EAVES",
+        "title": "1/4-inch ember vents + enclosed eaves",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B2; CBC Chapter 7A",
+        "gross_capex_usd": 3200.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3200.0,
+        "lcr_delta_bps": -13.58,
+        "score_delta_pts": 77,
+        "annual_premium_savings_usd": 0.0,
+        "payback_years": 99.0,
+        "resale_value_bump_pct": 0.6,
+        "currently_applied": true
+      },
       {
         "action_id": "CA_IBHS_WPH_PLUS",
         "title": "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
@@ -1679,10 +1784,10 @@
         "gross_capex_usd": 15000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 15000.0,
-        "lcr_delta_bps": -42.0,
-        "score_delta_pts": 150,
-        "annual_premium_savings_usd": 720.0,
-        "payback_years": 20.83,
+        "lcr_delta_bps": -10.98,
+        "score_delta_pts": 80,
+        "annual_premium_savings_usd": 255.03,
+        "payback_years": 58.82,
         "resale_value_bump_pct": 1.5,
         "currently_applied": true
       },
@@ -1694,10 +1799,10 @@
         "gross_capex_usd": 9000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 9000.0,
-        "lcr_delta_bps": -12.0,
-        "score_delta_pts": 40,
-        "annual_premium_savings_usd": 186.0,
-        "payback_years": 48.39,
+        "lcr_delta_bps": -6.21,
+        "score_delta_pts": 41,
+        "annual_premium_savings_usd": 88.31,
+        "payback_years": 101.92,
         "resale_value_bump_pct": 0.8,
         "currently_applied": true
       }
@@ -1717,8 +1822,8 @@
         "cat_a_shelter_in_place": false,
         "cat_b1_under_deck_clearing": false,
         "cat_b1_zone0_clear_0_5ft": true,
-        "cat_b1_no_sheds_within_30ft": true,
-        "cat_b1_prc_4291_compliance": true,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
         "cat_b2_class_a_roof": true,
         "cat_b2_enclosed_eaves": true,
         "cat_b2_ember_vents": true,
@@ -1728,7 +1833,7 @@
       "dataset_vintages": {
         "USGS_3DEP": "2025-05-01",
         "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
-        "OpenFEMA": "FimaNfipClaims_v2",
+        "OpenFEMA": "NfipClaims_v3",
         "LANDFIRE": "LF2024_FBFM40",
         "USGS_HAND": "NHDPlusHR_2024",
         "FEMA_NFHL": "2026-03",
