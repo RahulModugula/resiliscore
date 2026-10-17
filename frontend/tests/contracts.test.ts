@@ -19,11 +19,7 @@ test("every golden response validates against the canonical JSON Schema", () => 
 test("scenario selector exposes the six demo journeys and returns independent payloads", () => {
   assert.equal(scenarios.length, 6);
   for (const { id } of scenarios) {
-    if (!goldenScenarios[id]) {
-      assert.ok(id.startsWith("NYC_"));
-      assert.equal(findScenario(id), null);
-      continue;
-    }
+    assert.ok(findScenario(id), `${id} must be supplied by the canonical golden contract`);
     const first = getScenario(id);
     const second = getScenario(id);
     assert.deepEqual(first, goldenScenarios[id]);
@@ -36,6 +32,9 @@ test("scenario selector exposes the six demo journeys and returns independent pa
 test("the unpermitted variant preserves score while explicitly holding auto-bind", () => {
   const clear = getScenario("SCENARIO_3_ESCONDIDO_HITL");
   const alerted = getScenario("SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED");
+  assert.equal(clear.actuarial_breakdown.underwriting_tier, "TIER_1_AUTO_BIND");
+  assert.ok(clear.actuarial_breakdown.resili_score >= 720);
+  assert.equal(clear.actuarial_breakdown.resili_score, fixtures.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown.resili_score);
   assert.equal(alerted.actuarial_breakdown.resili_score, clear.actuarial_breakdown.resili_score);
   assert.equal(clear.hitl_status.escalated, false);
   assert.equal(alerted.hitl_status.escalated, true);
@@ -44,7 +43,7 @@ test("the unpermitted variant preserves score while explicitly holding auto-bind
   assert.ok(alerted.parcel_identity.geometries.features.some(feature => /240 sq ft/.test(feature.properties.label ?? "")));
 });
 
-test("NYC selector IDs and addresses match the pending contract", () => {
+test("NYC selector IDs and lookup aliases match the canonical demos", () => {
   assert.deepEqual(scenarios.filter(s => s.id.startsWith("NYC_")).map(s => [s.id, s.address]), [
     ["NYC_RED_HOOK", "5 Luquer St"], ["NYC_HOLLIS", "81-52 192 St"], ["NYC_ROCKAWAY", "74-02 Beach Channel Dr"],
   ]);

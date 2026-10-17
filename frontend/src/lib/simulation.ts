@@ -87,7 +87,13 @@ export function actionTotals(base: ParcelScoreResponse, ids: string[], projected
     grants: total.grants + a.grant_subsidy_usd, savings: 0,
   }), { net: 0, gross: 0, grants: 0, savings: 0 });
   if (!actions.length) return totals;
-  const summary = selectedSummary(base, actions.map(action => action.action_id), scenarioId);
+  let summary;
+  try { summary = selectedSummary(base, actions.map(action => action.action_id), scenarioId); }
+  catch (error) {
+    if (!projected) throw error;
+    totals.savings = base.actuarial_breakdown.annual_discounted_premium_usd - projected.actuarial_breakdown.annual_discounted_premium_usd;
+    return totals;
+  }
   totals.net = summary.net_capex_usd;
   totals.gross = totals.net + totals.grants;
   totals.savings = base.actuarial_breakdown.annual_discounted_premium_usd - (projected?.actuarial_breakdown.annual_discounted_premium_usd ?? summary.annual_discounted_premium_usd);

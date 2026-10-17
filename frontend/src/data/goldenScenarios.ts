@@ -27,6 +27,6 @@ export function getScenario(id: GoldenScenarioKey) {
   return parcel;
 }
 
-export function getGoldenSimulation(id: string, actionIds: string[]) {
+export function getGoldenSimulation(id: GoldenScenarioKey, actionIds: string[]) {
   return goldenSimulations[id]?.[[...new Set(actionIds)].sort().join("+")];
 }

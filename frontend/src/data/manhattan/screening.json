@@ -9,6 +9,7 @@
     "backend/app/actuarial/constants.py",
     "backend/app/actuarial/credibility.py",
     "backend/app/actuarial/insurance.py",
+    "backend/app/actuarial/nyc.py",
     "backend/app/actuarial/optimizer.py",
     "backend/app/actuarial/score_map.py",
     "backend/app/actuarial/uncertainty.py",
@@ -17,44 +18,44 @@
     "backend/app/pipeline.py",
     "backend/data/nri_reference_tracts.json"
   ],
-  "engineSha256": "ad36d30e6922cc1660253db7961c611afc1f073843f93c69154f2e818e2980cb",
+  "engineSha256": "fb5b1551d859eb1505ec012ab6ee540e8262f219cbc16ba6a2b39d4b86eeb0a6",
   "method": "Canonical backend optimizer.simulate, NY state, national-default hazards, no property verification, default $350,000 RCV, nearest reference NRI stand-in. No live geographic hazard lookup. Model assumes a LiDAR weight even though local evidence is absent. Not a production underwriting model or filed quote.",
   "screens": {
     "post2002": {
       "actuarial_breakdown": {
         "annual_base_premium_usd": 0.0,
         "annual_discounted_premium_usd": 0.0,
-        "baseline_macro_score": 692,
+        "baseline_macro_score": 831,
         "credibility_weight_z": 0.4286,
-        "expected_annual_loss_usd": 1126.49,
-        "parcel_raw_lcr": 0.002443,
+        "expected_annual_loss_usd": 109.22,
+        "parcel_raw_lcr": 6.3e-05,
         "peril_split": [
           {
-            "expected_freq_n": 0.01377,
-            "expected_sev_s": 81779.5,
+            "expected_freq_n": 0.00035,
+            "expected_sev_s": 307971.12,
             "peril": "WIND_HAIL",
-            "peril_aal_usd": 1126.49,
+            "peril_aal_usd": 109.22,
             "zip_immunity_pi": 0.4013
           }
         ],
-        "posterior_lcr": 0.003219,
-        "resili_score": 719,
+        "posterior_lcr": 0.000312,
+        "resili_score": 836,
         "statutory_discount_pct": 0.0,
-        "tract_prior_lcr": 0.0038003750792206035,
-        "underwriting_tier": "TIER_2_CONDITIONAL"
+        "tract_prior_lcr": 0.0004989146437508605,
+        "underwriting_tier": "TIER_1_AUTO_BIND"
       },
       "evidence_log": [],
       "factor_contributions": [
         {
           "factor": "Construction era",
           "input_value": 2002.0,
-          "score_points": 17.0433,
+          "score_points": 0.3605,
           "source": "parcel identity"
         },
         {
           "factor": "In-hazard reference home vs tract-wide average",
           "input_value": null,
-          "score_points": 9.2334,
+          "score_points": 5.3221,
           "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
         }
       ],
@@ -188,7 +189,7 @@
         },
         {
           "field": "actuarial_breakdown.base_rates",
-          "source_name": "FEMA NRI reference tract 22051028900 used as a stand-in: no tract was supplied for this parcel",
+          "source_name": "FEMA NRI reference tract 36047005900 used as a stand-in: no tract was supplied for this parcel",
           "value_source": "REFERENCE_PARCEL",
           "vintage": "v1.20"
         }
@@ -249,12 +250,12 @@
       },
       "premium_build": {
         "deductible_usd": 3500.0,
-        "expected_loss_usd": 1126.49,
+        "expected_loss_usd": 109.22,
         "expense_load_pct": 30.0,
         "filed_mitigation_credit_pct": 0.0,
-        "indicated_premium_usd": 1635.24,
+        "indicated_premium_usd": 158.54,
         "modeled_mitigation_credit_pct": 0.0,
-        "net_expected_loss_usd": 1062.9,
+        "net_expected_loss_usd": 103.05,
         "profit_load_pct": 5.0
       },
       "prescriptive_mitigations": [
@@ -264,12 +265,12 @@
           "currently_applied": false,
           "grant_subsidy_usd": 0.0,
           "gross_capex_usd": 9000.0,
-          "lcr_delta_bps": -3.14,
+          "lcr_delta_bps": -0.08,
           "net_capex_usd": 9000.0,
           "payback_years": 99.0,
           "peril": "WIND_HAIL",
           "resale_value_bump_pct": 0.8,
-          "score_delta_pts": 16,
+          "score_delta_pts": 1,
           "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
           "title": "Class 4 impact-resistant roof (12.4% hail discount)"
         }
@@ -327,45 +328,45 @@
       },
       "request_id": "00000000-0000-4000-8000-000000000001",
       "uncertainty": {
-        "aal_p05_usd": 911.92,
-        "aal_p50_usd": 1085.8,
-        "aal_p95_usd": 1470.11,
-        "loss_1_in_100_usd": 12057.27,
-        "loss_1_in_250_usd": 23539.54,
-        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0143",
-        "score_p05": 676.5,
-        "score_p95": 752.0
+        "aal_p05_usd": 103.69,
+        "aal_p50_usd": 108.17,
+        "aal_p95_usd": 118.06,
+        "loss_1_in_100_usd": 99.78,
+        "loss_1_in_250_usd": 99.78,
+        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0000",
+        "score_p05": 835.3,
+        "score_p95": 836.8
       }
     },
     "pre2002": {
       "actuarial_breakdown": {
         "annual_base_premium_usd": 0.0,
         "annual_discounted_premium_usd": 0.0,
-        "baseline_macro_score": 692,
+        "baseline_macro_score": 831,
         "credibility_weight_z": 0.4286,
-        "expected_annual_loss_usd": 1254.69,
-        "parcel_raw_lcr": 0.003297,
+        "expected_annual_loss_usd": 112.52,
+        "parcel_raw_lcr": 8.5e-05,
         "peril_split": [
           {
-            "expected_freq_n": 0.01859,
-            "expected_sev_s": 67478.17,
+            "expected_freq_n": 0.00048,
+            "expected_sev_s": 235045.05,
             "peril": "WIND_HAIL",
-            "peril_aal_usd": 1254.69,
+            "peril_aal_usd": 112.52,
             "zip_immunity_pi": 0.4013
           }
         ],
-        "posterior_lcr": 0.003585,
-        "resili_score": 702,
+        "posterior_lcr": 0.000321,
+        "resili_score": 836,
         "statutory_discount_pct": 0.0,
-        "tract_prior_lcr": 0.0038003750792206035,
-        "underwriting_tier": "TIER_2_CONDITIONAL"
+        "tract_prior_lcr": 0.0004989146437508605,
+        "underwriting_tier": "TIER_1_AUTO_BIND"
       },
       "evidence_log": [],
       "factor_contributions": [
         {
           "factor": "In-hazard reference home vs tract-wide average",
           "input_value": null,
-          "score_points": 9.2334,
+          "score_points": 5.3221,
           "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
         }
       ],
@@ -499,7 +500,7 @@
         },
         {
           "field": "actuarial_breakdown.base_rates",
-          "source_name": "FEMA NRI reference tract 22051028900 used as a stand-in: no tract was supplied for this parcel",
+          "source_name": "FEMA NRI reference tract 36047005900 used as a stand-in: no tract was supplied for this parcel",
           "value_source": "REFERENCE_PARCEL",
           "vintage": "v1.20"
         }
@@ -560,12 +561,12 @@
       },
       "premium_build": {
         "deductible_usd": 3500.0,
-        "expected_loss_usd": 1254.69,
+        "expected_loss_usd": 112.52,
         "expense_load_pct": 30.0,
         "filed_mitigation_credit_pct": 0.0,
-        "indicated_premium_usd": 1821.33,
+        "indicated_premium_usd": 163.33,
         "modeled_mitigation_credit_pct": 0.0,
-        "net_expected_loss_usd": 1183.86,
+        "net_expected_loss_usd": 106.17,
         "profit_load_pct": 5.0
       },
       "prescriptive_mitigations": [
@@ -575,12 +576,12 @@
           "currently_applied": false,
           "grant_subsidy_usd": 0.0,
           "gross_capex_usd": 9000.0,
-          "lcr_delta_bps": -4.24,
+          "lcr_delta_bps": -0.11,
           "net_capex_usd": 9000.0,
           "payback_years": 99.0,
           "peril": "WIND_HAIL",
           "resale_value_bump_pct": 0.8,
-          "score_delta_pts": 19,
+          "score_delta_pts": 0,
           "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
           "title": "Class 4 impact-resistant roof (12.4% hail discount)"
         }
@@ -638,14 +639,14 @@
       },
       "request_id": "00000000-0000-4000-8000-000000000001",
       "uncertainty": {
-        "aal_p05_usd": 965.05,
-        "aal_p50_usd": 1199.75,
-        "aal_p95_usd": 1718.52,
-        "loss_1_in_100_usd": 18472.47,
-        "loss_1_in_250_usd": 40971.78,
-        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0190",
-        "score_p05": 651.8,
-        "score_p95": 743.1
+        "aal_p05_usd": 105.06,
+        "aal_p50_usd": 111.1,
+        "aal_p95_usd": 124.46,
+        "loss_1_in_100_usd": 99.78,
+        "loss_1_in_250_usd": 99.78,
+        "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0001",
+        "score_p05": 834.6,
+        "score_p95": 836.7
       }
     }
   },

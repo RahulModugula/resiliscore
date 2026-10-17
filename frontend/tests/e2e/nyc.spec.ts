@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
+import simulations from "../../../contracts/golden_simulations.json";
+import { money } from "../../src/lib/format";
 import fixtures from "../../../contracts/golden_scenarios.json";
 import { scenarios } from "../../src/data/goldenScenarios";
 import type { ParcelScoreResponse } from "../../src/types/resiliscore";
@@ -58,19 +60,35 @@ for (const scenario of nycScenarios) {
     expect(requests).toContainEqual({ path: "/v1/parcel/simulate-mitigation", body: { apn_uid: "03000000000001", action_ids: ["NYC_TEST_0"] } });
   });
 
-  test(`${scenario.id} loads supplied offline data or an explicit pending state`, async ({ page }) => {
+  test(`${scenario.id} runs its canonical offline baseline and complete retrofit plan without a backend`, async ({ page }) => {
     const requests: string[] = [];
     page.on("request", request => { if (/\/v1\//.test(request.url())) requests.push(request.url()); });
+    const fixture = fixtures[scenario.id as keyof typeof fixtures];
+    const actions = fixture.prescriptive_mitigations.filter(action => !action.currently_applied);
+    const key = actions.map(action => action.action_id).sort().join("+");
+    const expected = simulations[scenario.id as keyof typeof simulations][key];
     await page.goto("/assessment?demo=true");
     await page.getByRole("button", { name: new RegExp(scenario.title) }).click();
-    const fixture = (fixtures as Record<string, ParcelScoreResponse>)[scenario.id];
-    if (fixture) {
-      await expect(page.getByTestId("score")).toHaveText(String(fixture.actuarial_breakdown.resili_score));
-      await expect(page.getByRole("heading", { name: "NYC Lot", exact: true })).toBeVisible();
-    } else {
-      await expect(page.getByText(/NYC golden data has not landed yet/)).toBeVisible();
-      await expect(page.getByTestId("score")).toHaveCount(0);
+    await expect(page.getByTestId("score")).toHaveText(String(fixture.actuarial_breakdown.resili_score));
+    await expect(page.getByRole("heading", { name: fixture.parcel_identity.address.split(",")[0], exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "NYC Lot", exact: true })).toBeVisible();
+    const lot = page.getByRole("region", { name: "NYC Lot", exact: true });
+    await expect(lot).toContainText(fixture.nyc!.bbl!);
+    await expect(page.getByText("Street/rain flooding", { exact: true })).toBeVisible();
+    await expect(page.getByText("Sewer backup", { exact: true })).toBeVisible();
+    await page.getByRole("tab", { name: "Mitigation & grant ROI" }).click();
+    for (const action of actions) {
+      await page.locator("label.mitigation-row").filter({ hasText: action.title }).getByRole("checkbox").check();
     }
+    await expect(page.getByTestId("score")).toHaveText(String(expected.resili_score));
+    await expect(page.getByTestId("net-investment")).toHaveText(money(expected.net_capex_usd));
+    await expect(page.getByTestId("annual-savings")).toHaveText(money(fixture.actuarial_breakdown.annual_discounted_premium_usd - expected.annual_discounted_premium_usd));
+    await expect(page.getByText("Offline projections retain the baseline peril allocation.")).toBeVisible();
+    await page.getByRole("tab", { name: "Model Validation" }).click();
+    await expect(page.getByRole("heading", { name: "Model Validation", exact: true })).toBeVisible();
+    await page.getByRole("tab", { name: "Mitigation & grant ROI" }).click();
+    await page.getByRole("button", { name: "Reset plan" }).click();
+    await expect(page.getByTestId("score")).toHaveText(String(fixture.actuarial_breakdown.resili_score));
     expect(requests).toEqual([]);
   });
 }
