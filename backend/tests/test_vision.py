@@ -1,4 +1,4 @@
-"""Vision lane: ring geometry, zone classifier and the inspector (golden fallback + mocked live path)."""
+"""Vision: ring geometry, zone classifier and the inspector (golden fallback + mocked live path)."""
 
 import asyncio
 import json

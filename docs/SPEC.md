@@ -95,7 +95,7 @@ You are a Principal Insurtech Architect. Generate two files that form the strict
 
 ## 4\. Builder 1 Prompts: Backend, Spatial Pipeline, Actuarial Engine & MCP
 
-**Builder 1** owns `/backend`. Feed these four prompts sequentially into your coding assistant (Cursor, Claude Code, or Windsurf).
+**Builder 1** owns `/backend`. Feed these four prompts sequentially into your coding assistant.
 
 ### Prompt 1A: Public Spatial & Federal API Ingestion Engine
 
@@ -172,7 +172,7 @@ You are a Staff Enterprise Systems Architect building `backend/app/main.py` and 
    * Expose `POST /v1/guidewire/submissions/{submission_id}/quote` and `/issue` simulating a Guidewire Integration Gateway & PricingCenter BYOM webhook.  
    * Return a realistic Guidewire REST response payload showing `ResiliScore_Ext` data model extension fields, Integration Data Manager (IDM) document ID, applied Gosu rule IDs (e.g., `CA_CCR_2644_9_CAT_B1_B2`, `LA_FORTIFIED_ROOF_CREDIT`), and auto-bind policy number.  
 3. `mcp_server.py` (Model Context Protocol Server):  
-   * Using the Python `mcp` SDK (`FastMCP`), expose 4 deterministic tools so AI agents (such as Guidewire Underwriting Assistant or Claude Desktop) can invoke ResiliScore natively:  
+   * Using the Python `mcp` SDK (`FastMCP`), expose 4 deterministic tools so AI agents (such as Guidewire Underwriting Assistant or any MCP client) can invoke ResiliScore natively:  
      * `get_parcel_resiliscore(address: str)`  
      * `verify_zone0_clearance(apn_uid: str)`  
      * `query_usgs_freeboard(lat: float, lng: float)`  
@@ -180,7 +180,7 @@ You are a Staff Enterprise Systems Architect building `backend/app/main.py` and 
 
 ## 5\. Builder 2 Prompts: Frontend, Map Canvas, Copilot UI & HITL Flows
 
-**Builder 2** owns `/frontend`. Feed these four prompts sequentially into v0, Cursor, or Claude Code to build a high-impact, institutional-grade Insurtech UI.
+**Builder 2** owns `/frontend`. Feed these four prompts sequentially into your coding assistant to build a high-impact, institutional-grade Insurtech UI.
 
 ### Prompt 2A: Next.js 15 Enterprise Underwriting Copilot Cockpit & Scenario Switcher
 
