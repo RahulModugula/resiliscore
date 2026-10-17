@@ -4,6 +4,7 @@ The only timing assertion is that direct simulate() p95 stays under 50 ms.
 """
 
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -32,9 +33,24 @@ def test_percentile_rejects_empty(benchmark):
         benchmark.percentile([], 50)
 
 
-def test_benchmark_runs_with_n_5_and_returns_numbers(benchmark, capsys):
+def test_benchmark_runs_with_n_5_and_returns_numbers(benchmark, capsys, tmp_path):
+    json_out = tmp_path / "benchmarks.json"
     rows = benchmark.main(
-        ["--n", "5", "--warmup", "1", "--direct-n", "5", "--mc-n", "2", "--concurrency", "1", "2"]
+        [
+            "--n",
+            "5",
+            "--warmup",
+            "1",
+            "--direct-n",
+            "5",
+            "--mc-n",
+            "2",
+            "--concurrency",
+            "1",
+            "2",
+            "--json-out",
+            str(json_out),
+        ]
     )
 
     # 4 scenarios + 3 simulate counts + 1 evidence, for each of 2 concurrency levels, plus direct and Monte Carlo.
@@ -53,3 +69,9 @@ def test_benchmark_runs_with_n_5_and_returns_numbers(benchmark, capsys):
 
     out = capsys.readouterr().out
     assert out.startswith("| Benchmark | n | Concurrency |")
+
+    written = json.loads(json_out.read_text())
+    assert len(written) == len(rows)
+    assert set(written[0]) == {"name", "n", "concurrency", "p50_ms", "p95_ms", "p99_ms", "rps"}
+    assert written[-1]["concurrency"] is None
+    assert written[0]["concurrency"] == 1
