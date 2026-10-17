@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Building2, ChevronRight, CircleHelp, Layers3, LoaderCircle, MapPin, RotateCcw, Search, ShieldCheck, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, ChevronRight, CircleHelp, Layers3, LoaderCircle, MapPin, Mountain, RotateCcw, Search, ShieldCheck, X } from "lucide-react";
 import { assessManhattanProperty, propertyLabel, saveManhattanAssessment } from "@/lib/manhattan/assessment";
 import { loadManhattan, loadNeighborhood } from "@/lib/manhattan/data";
 import type { Building, NeighborhoodDetail } from "@/lib/manhattan/types";
@@ -25,6 +25,8 @@ export default function ManhattanExplorer() {
   const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(60);
   const [underground, setUnderground] = useState(false);
+  const [terrainMode, setTerrainMode] = useState(false);
+  const [reliefScale, setReliefScale] = useState(1);
   const [sceneError, setSceneError] = useState("");
   const [sceneReady, setSceneReady] = useState(false);
   const [pending, setPending] = useState<Building | null>(null);
@@ -84,6 +86,12 @@ export default function ManhattanExplorer() {
   }
 
   const infrastructure = (activeDetail ?? data?.overview)?.infrastructure;
+  const terrain = (activeDetail ?? data?.overview)?.terrain;
+  const elevationRange = useMemo(() => {
+    let min = Infinity, max = -Infinity;
+    for (const value of terrain?.elevationsM ?? []) if (value !== null) { min = Math.min(min, value); max = Math.max(max, value); }
+    return Number.isFinite(min) ? [Math.floor(min), Math.ceil(max)] : null;
+  }, [terrain]);
   return <div className={`app-shell ${styles.explorer}`}>
     <a className="skip-link" href="#map-directory">Skip to neighborhood and property list</a>
     <header className={styles.header}>
@@ -117,14 +125,21 @@ export default function ManhattanExplorer() {
         <div className={styles.directoryFoot}><MapPin size={14} /><span>NYC mapped footprints, not surveyed parcel boundaries</span></div>
       </aside>
       <section className={styles.map} aria-label="Interactive 3D Manhattan map" aria-describedby="map-instructions">
-        {data && <Scene neighborhoods={data.neighborhoods} overview={data.overview} detail={activeDetail} selectedNeighborhoodId={neighborhoodId} selectedBuildingId={pending?.id} showUnderground={underground} onNeighborhoodSelect={selectNeighborhood} onBuildingSelect={building => void selectBuilding(building)} onReady={ready} onError={failScene} />}
+        {data && <Scene neighborhoods={data.neighborhoods} overview={data.overview} detail={activeDetail} selectedNeighborhoodId={neighborhoodId} selectedBuildingId={pending?.id} showUnderground={underground} showTerrain={terrainMode} verticalScale={terrainMode ? reliefScale : 1} onNeighborhoodSelect={selectNeighborhood} onBuildingSelect={building => void selectBuilding(building)} onReady={ready} onError={failScene} />}
         {!data && <div className={styles.mapLoading}><Layers3 size={28} /><p>{loadError ? "Map data unavailable" : "Loading the island…"}</p></div>}
         <div className={styles.mapToolbar}><div className={styles.breadcrumb}><span>New York</span><ChevronRight size={13} /><button onClick={() => selectNeighborhood(null)}>Manhattan</button>{neighborhood && <><ChevronRight size={13} /><span>{neighborhood.name}</span></>}</div><button className={styles.reset} aria-label="Return to all Manhattan" onClick={() => selectNeighborhood(null)}><RotateCcw size={16} /><span>Island view</span></button></div>
         <div className={styles.layerControls}>
+          <label className={styles.layerToggle}><Mountain size={17} /><span>Terrain relief</span><input type="checkbox" checked={terrainMode} onChange={event => setTerrainMode(event.target.checked)} /></label>
+          {terrainMode && <div className={styles.terrainLegend}>
+            <p>USGS ground elevation · metres</p>
+            {elevationRange && <div className={styles.elevationLabels}><span>{elevationRange[0]} m</span><span>{elevationRange[1]} m</span></div>}
+            <fieldset className={styles.reliefScale}><legend>Ground height scale</legend>{[1, 3].map(scale => <label key={scale}><input type="radio" name="relief-scale" value={scale} checked={reliefScale === scale} onChange={() => setReliefScale(scale)} /><span>{scale === 1 ? "1× actual" : "3× relief"}</span></label>)}</fieldset>
+            <p className={styles.reliefNote} role="status">{reliefScale === 1 ? "Actual ground heights. Buildings fade to reveal slopes." : "Ground heights exaggerated 3× for viewing. Assessment inputs stay unchanged."}</p>
+          </div>}
           <label className={styles.layerToggle}><Layers3 size={17} /><span>Underground drainage</span><input type="checkbox" checked={underground} onChange={event => setUnderground(event.target.checked)} /></label>
           {underground && <div className={styles.undergroundLegend} role="status"><div><i className={styles.drainSwatch} /><span>DEP storm drains · {infrastructure?.stormDrains.length.toLocaleString() ?? 0}</span></div><div><i className={styles.pipeSwatch} /><span>Historic illustrative interceptors</span></div><p>Incomplete, not DEP-verified. Depths unavailable; vertical offset is schematic. No drain-to-pipe connections inferred.</p></div>}
         </div>
-        <div className={styles.mapBottom}><p id="map-instructions" className={styles.instructions}>{sceneError || (!sceneReady && data ? "Preparing 3D view. The directory is ready to use." : neighborhood ? "Click a building to assess · Drag to orbit · Scroll to zoom" : "Click a neighborhood to explore · Drag to orbit · Scroll to zoom")}</p><details className={styles.sources}><summary><CircleHelp size={15} />Map sources & accuracy</summary><div className={styles.sourceContent}><h2>About this map</h2><p>Geographic building massing from NYC footprints and roof heights. Ground elevations are interpolated from building-base observations, not a surveyed terrain model. Missing heights remain flat footprints.</p><p>Neighborhoods follow NYC 2020 statistical boundaries. Open Sewer Atlas lines are historical, partial, and illustrative. Drain depths and pipe connections are unknown. This map is not suitable for excavation or engineering design.</p><ul>{data?.manifest.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.name}</a><small>Retrieved {source.retrievedAt.slice(0, 10)}</small></li>)}</ul></div></details></div>
+        <div className={styles.mapBottom}><p id="map-instructions" className={styles.instructions}>{sceneError || (!sceneReady && data ? "Preparing 3D view. The directory is ready to use." : neighborhood ? "Click a building to assess · Drag to orbit · Scroll to zoom" : "Click a neighborhood to explore · Drag to orbit · Scroll to zoom")}</p><details className={styles.sources}><summary><CircleHelp size={15} />Map sources & accuracy</summary><div className={styles.sourceContent}><h2>About this map</h2><p>Geographic building massing from NYC footprints and roof heights, placed on sampled USGS 3DEP bare-earth terrain. Missing heights remain flat footprints. Terrain relief can exaggerate ground heights 3× for inspection; the default 1× scale uses actual elevations. Visual scale does not change risk inputs.</p><p>Neighborhoods follow NYC 2020 statistical boundaries. Open Sewer Atlas lines are historical, partial, and illustrative. Drain depths and pipe connections are unknown. This map is not suitable for excavation or engineering design.</p><ul>{data?.manifest.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.name}</a><small>Retrieved {source.retrievedAt.slice(0, 10)}</small></li>)}</ul></div></details></div>
         {(pending || assessmentError) && <div className={styles.assessing} role="status">{pending ? <><LoaderCircle size={20} className={styles.spinner} /><div><strong>Assessing {propertyLabel(pending)}</strong><p>Checking the risk API. Cached model screening is available offline.</p></div><button aria-label="Cancel assessment" onClick={() => { assessmentController.current?.abort(); setPending(null); }}><X size={18} /></button></> : <><p>{assessmentError}</p><button aria-label="Dismiss assessment error" onClick={() => setAssessmentError("")}><X size={18} /></button></>}</div>}
       </section>
     </main>
