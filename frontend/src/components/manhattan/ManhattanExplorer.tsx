@@ -123,7 +123,7 @@ export default function ManhattanExplorer() {
         </div>
         <label className={styles.search}><Search size={17} /><span className={styles.srOnly}>{neighborhood ? "Find a property by address, BIN, or BBL" : "Find a neighborhood"}</span><input type="search" value={query} placeholder={neighborhood ? "Search address, BIN, or BBL" : "Find a neighborhood"} onChange={event => { setQuery(event.target.value); setLimit(60); }} /></label>
         <div className={styles.listHeading}><span>{neighborhood ? "Mapped buildings" : "Neighborhoods & park areas"}</span><span>{neighborhood ? activeDetail ? matchingBuildings.length.toLocaleString() : "…" : visibleNeighborhoods.length || "…"}</span></div>
-        {addressError && <p className={styles.addressNotice} role="status">Street addresses could not be loaded. Unresolved addresses remain unknown.</p>}
+        {addressError && <div className={styles.addressNotice} role="status"><p>Street addresses could not be loaded. Unresolved addresses remain unknown.</p><button className="text-button" onClick={() => setRetry(value => value + 1)}>Retry addresses</button></div>}
         <div className={styles.list} aria-busy={(!data && !loadError) || detailPending}>
           {loadError ? <div className={styles.listMessage} role="alert"><p>{loadError}</p><button className="secondary-button" onClick={() => setRetry(value => value + 1)}>Reload map data</button></div>
             : !data ? <p className={styles.listMessage} role="status">Loading Manhattan data…</p>
