@@ -1,7 +1,8 @@
-"""Raster lookup tables and dataset vintages (SPEC Prompt 1A, item 3).
+"""Golden reference sites, dataset vintages and the documented national defaults (SPEC Prompt 1A, item 3).
 
-The values are keyed by the golden scenario centroids (contracts/golden_scenarios.json) and any other point
-resolves to the nearest centroid, preferring a scenario in the same county.
+The golden scenarios (contracts/golden_scenarios.json) are served only for the demo parcels themselves.
+No other parcel ever borrows a value from them: a layer with no live source gets a NATIONAL_DEFAULT below,
+and the response marks it DEFAULT.
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from app.models.schemas import ParcelScoreResponse
 
 GOLDEN_PATH = Path(__file__).resolve().parents[3] / "contracts" / "golden_scenarios.json"
 
-# SPEC line 116: stamp every response with exact dataset vintages. State layers are added per state.
+# SPEC line 116: the vintages stamped on the golden scenarios (app.fixtures regenerates them from this dict).
 VINTAGES: dict[str, str] = {
     "USGS_3DEP": "2025-05-01",
     "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
@@ -25,20 +26,33 @@ VINTAGES: dict[str, str] = {
     "USGS_HAND": "NHDPlusHR_2024",
     "FEMA_NFHL": "2026-03",
 }
-STATE_VINTAGES: dict[str, dict[str, str]] = {
-    "LA": {"LA_FORTIFY_HOMES": "2026-Q2"},
-    "CA": {"CAL_FIRE_FHSZ": "2025"},
+
+# Vintages of what the live path actually queries. NOAA is Atlas 14: Atlas 15 has no API, so the golden
+# files' "Atlas15" label does not apply to live data.
+LIVE_VINTAGES: dict[str, str] = {
+    "USGS_3DEP": "EPQS_current",
+    "NOAA_PFDS": "Atlas14",
+    "OpenFEMA": "NfipClaims_NfipPolicies_v3",
+    "LANDFIRE": "LF2025_FBFM40",
+    "FEMA_NFHL": "live",
+    "FEMA_NRI": "December 2025",
+    "CENSUS_GEOCODER": "Public_AR_Current",
 }
 
-
-@dataclass(frozen=True)
-class RasterValues:
-    noaa_atlas15_p24h_100yr_in: float
-    atlas15_cmip6_mult: float
-    landfire_fbfm40_code: str
-    slope_deg: float
-    hand_rel_elev_ft: float
-    twi_index: float
+# Documented national defaults for layers with no live source. Each is a neutral mid-range value, not a
+# regional one, and every use is marked DEFAULT in input_provenance.
+NATIONAL_DEFAULTS: dict[str, float | str] = {
+    "fema_flood_zone": "D",  # FEMA: "possible but undetermined flood hazard"
+    "hand_rel_elev_ft": 5.0,  # USGS HAND needs a raster; none is served live
+    "twi_index": 8.0,
+    "slope_deg": 5.0,
+    "noaa_atlas15_p24h_100yr_in": 8.0,
+    "atlas15_cmip6_mult": 1.1,  # assumed climate multiplier on Atlas 14 (golden range 1.08 to 1.12)
+    "landfire_fbfm40_code": "NB1",
+    "wui_class": "NON_WUI",  # no WUI source is served live
+    "tract_prior_lcr": 0.01,
+    "foundation_offset_ft": 2.0,
+}
 
 
 @dataclass(frozen=True)
@@ -48,10 +62,6 @@ class GoldenSite:
     lng: float
     lat: float
     response: ParcelScoreResponse
-
-
-def vintages_for(state: str) -> dict[str, str]:
-    return {**VINTAGES, **STATE_VINTAGES.get(state, {})}
 
 
 @lru_cache(maxsize=1)
@@ -80,15 +90,3 @@ def nearest_site(lat: float, lng: float, county_fips: str | None = None) -> Gold
     sites = golden_sites()
     pool = [s for s in sites if s.county_fips == county_fips] or list(sites)
     return min(pool, key=lambda s: distance_m(lat, lng, s.lat, s.lng))
-
-
-def lookup_rasters(lat: float, lng: float, county_fips: str | None = None) -> RasterValues:
-    h = nearest_site(lat, lng, county_fips).response.public_hazard_layer
-    return RasterValues(
-        noaa_atlas15_p24h_100yr_in=h.noaa_atlas15_p24h_100yr_in,
-        atlas15_cmip6_mult=h.atlas15_cmip6_mult,
-        landfire_fbfm40_code=h.landfire_fbfm40_code,
-        slope_deg=h.slope_deg,
-        hand_rel_elev_ft=h.hand_rel_elev_ft,
-        twi_index=h.twi_index,
-    )

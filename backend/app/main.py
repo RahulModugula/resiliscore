@@ -1,15 +1,18 @@
+import logging
 import os
 import time
 import uuid
 from collections.abc import Mapping
 
+import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 
-from app import pipeline
+from app import http, pipeline
 from app.actuarial.optimizer import simulate
 from app.fixtures import by_address, by_apn, by_scenario
+from app.ingestion.geocode import GeocodeError
 from app.ingestion.openfema import OPENFEMA_URL
 from app.ingestion.usgs_3dep import EPQS_URL
 from app.integrations.guidewire_mock import router as guidewire_router
@@ -29,7 +32,8 @@ def cors_origins(env: Mapping[str, str]) -> list[str]:
 
 
 configure_logging()
-app = FastAPI(title="ResiliScore API", version="0.1.0")
+log = logging.getLogger(__name__)
+app = FastAPI(title="ResiliScore API", version="0.1.0", lifespan=http.lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins(os.environ),
@@ -108,6 +112,18 @@ async def score_parcel(body: ScoreRequest) -> ParcelScoreResponse:
                 body.address or "", body.lat, body.lng, body.county_fips, body.state,  # type: ignore[arg-type]
                 footprint=body.footprint, rcv_usd=body.rcv_usd, year_built=body.year_built,
             )  # fmt: skip
+        elif found is None:
+            try:
+                found = await pipeline.build_parcel_for_address(
+                    body.address or "", footprint=body.footprint, rcv_usd=body.rcv_usd, year_built=body.year_built
+                )
+            except GeocodeError as exc:
+                raise HTTPException(status_code=404, detail=f"address not found by the Census Geocoder: {exc}") from exc
+            except (TimeoutError, httpx.HTTPError) as exc:
+                log.warning("Census Geocoder unavailable for address lookup: %s: %s", type(exc).__name__, exc)
+                raise HTTPException(
+                    status_code=502, detail="Census Geocoder unavailable; send lat, lng, county_fips and state"
+                ) from exc
     if found is None:
         raise HTTPException(status_code=404, detail="no golden scenario matches and no coordinates to resolve")
     return _fresh(simulate(found, []), started)

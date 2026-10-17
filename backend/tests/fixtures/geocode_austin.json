@@ -1,0 +1,33 @@
+{
+ "result": {
+  "addressMatches": [
+   {
+    "matchedAddress": "1100 CONGRESS AVE, AUSTIN, TX, 78701",
+    "coordinates": {
+     "x": -97.739754035328,
+     "y": 30.27644199222
+    },
+    "geographies": {
+     "States": [
+      {
+       "GEOID": "48",
+       "NAME": "Texas"
+      }
+     ],
+     "Counties": [
+      {
+       "GEOID": "48453",
+       "NAME": "Travis County"
+      }
+     ],
+     "Census Tracts": [
+      {
+       "GEOID": "48453000700",
+       "NAME": "Census Tract 7"
+      }
+     ]
+    }
+   }
+  ]
+ }
+}
