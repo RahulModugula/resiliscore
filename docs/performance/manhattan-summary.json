@@ -1,0 +1,509 @@
+{
+  "browser": "156.0.8078.4",
+  "loads": {
+    "before": {
+      "island": {
+        "median": 7112.533875000001,
+        "min": 6982.818667,
+        "max": 7274.353332999999,
+        "samples": 5
+      },
+      "MN0101": {
+        "median": 1714.6828749999986,
+        "min": 1628.0895840000003,
+        "max": 1762.888874999997,
+        "samples": 5
+      },
+      "MN1292": {
+        "median": 1559.6271669999987,
+        "min": 1546.5049159999999,
+        "max": 1627.3942500000048,
+        "samples": 5
+      }
+    },
+    "after": {
+      "island": {
+        "median": 3890.0516249999964,
+        "min": 3728.504417,
+        "max": 3898.611708999997,
+        "samples": 5
+      },
+      "MN0101": {
+        "median": 1577.3827079999974,
+        "min": 1478.9428749999988,
+        "max": 1696.2970830000013,
+        "samples": 5
+      },
+      "MN1292": {
+        "median": 1477.0665829999925,
+        "min": 1392.4925410000014,
+        "max": 1576.1441250000062,
+        "samples": 5
+      }
+    }
+  },
+  "toggles": {
+    "before": {
+      "island": {
+        "terrain-on": {
+          "median": 4889.199999988079,
+          "min": 4782.699999988079,
+          "max": 4956.5,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 4832.600000023842,
+          "min": 4754.300000011921,
+          "max": 4856.100000023842,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 64,
+          "min": 29.399999976158142,
+          "max": 79.60000002384186,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 19,
+          "min": 13.599999964237213,
+          "max": 24.30000001192093,
+          "samples": 5
+        }
+      },
+      "financial": {
+        "terrain-on": {
+          "median": 266.89999997615814,
+          "min": 263.0999999642372,
+          "max": 300.89999997615814,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 258.80000001192093,
+          "min": 254.5,
+          "max": 265.69999998807907,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 32.90000003576279,
+          "min": 28.5,
+          "max": 43,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 25.900000035762787,
+          "min": 22.69999998807907,
+          "max": 31.69999998807907,
+          "samples": 5
+        }
+      },
+      "inwood": {
+        "terrain-on": {
+          "median": 184.0999999642372,
+          "min": 183.30000001192093,
+          "max": 199.80000001192093,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 176.29999995231628,
+          "min": 175.5,
+          "max": 180.89999997615814,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 30,
+          "min": 22,
+          "max": 34.59999996423721,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 27.100000023841858,
+          "min": 16.80000001192093,
+          "max": 28.5,
+          "samples": 5
+        }
+      }
+    },
+    "after": {
+      "island": {
+        "terrain-on": {
+          "median": 28.299999952316284,
+          "min": 22.5,
+          "max": 89.39999997615814,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 28.599999964237213,
+          "min": 27.900000035762787,
+          "max": 28.700000047683716,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 28.30000001192093,
+          "min": 27.69999998807907,
+          "max": 259.5,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 28.400000035762787,
+          "min": 23.899999976158142,
+          "max": 29.19999998807907,
+          "samples": 5
+        }
+      },
+      "financial": {
+        "terrain-on": {
+          "median": 31.399999976158142,
+          "min": 30.399999976158142,
+          "max": 40,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 30.899999976158142,
+          "min": 30.30000001192093,
+          "max": 31.30000001192093,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 31.19999998807907,
+          "min": 27,
+          "max": 31.400000035762787,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 28.80000001192093,
+          "min": 17.30000001192093,
+          "max": 31.69999998807907,
+          "samples": 5
+        }
+      },
+      "inwood": {
+        "terrain-on": {
+          "median": 30.600000023841858,
+          "min": 29,
+          "max": 35,
+          "samples": 5
+        },
+        "terrain-off": {
+          "median": 30.600000023841858,
+          "min": 30.30000001192093,
+          "max": 31.100000023841858,
+          "samples": 5
+        },
+        "drainage-on": {
+          "median": 31.100000023841858,
+          "min": 29.69999998807907,
+          "max": 32.09999996423721,
+          "samples": 5
+        },
+        "drainage-off": {
+          "median": 30.69999998807907,
+          "min": 30.19999998807907,
+          "max": 33.60000002384186,
+          "samples": 5
+        }
+      }
+    }
+  },
+  "camera": {
+    "before": {
+      "island": {
+        "cpuMs": {
+          "median": 0.5,
+          "min": 0.3999999761581421,
+          "max": 0.699999988079071,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 0.6000000238418579,
+          "min": 0.5,
+          "max": 0.800000011920929,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 7.834375,
+          "min": 6.654749,
+          "max": 8.770833,
+          "samples": 5
+        },
+        "calls": [
+          39,
+          40,
+          41
+        ]
+      },
+      "financial": {
+        "cpuMs": {
+          "median": 0.3999999761581421,
+          "min": 0.30000001192092896,
+          "max": 0.40000003576278687,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 0.5,
+          "min": 0.40000003576278687,
+          "max": 0.5999999642372131,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 1.616708,
+          "min": 1.3244995,
+          "max": 2.109125,
+          "samples": 5
+        },
+        "calls": [
+          6
+        ]
+      },
+      "inwood": {
+        "cpuMs": {
+          "median": 0.40000003576278687,
+          "min": 0.3999999761581421,
+          "max": 0.6000000238418579,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 0.6000000238418579,
+          "min": 0.5,
+          "max": 0.699999988079071,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 0.711437,
+          "min": 0.688895,
+          "max": 1.491145,
+          "samples": 5
+        },
+        "calls": [
+          5
+        ]
+      }
+    },
+    "after": {
+      "island": {
+        "cpuMs": {
+          "median": 0.800000011920929,
+          "min": 0.5,
+          "max": 0.800000011920929,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 1,
+          "min": 0.5999999940395355,
+          "max": 1,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 8.116083,
+          "min": 7.8653955,
+          "max": 8.710875,
+          "samples": 5
+        },
+        "calls": [
+          39,
+          40,
+          41
+        ]
+      },
+      "financial": {
+        "cpuMs": {
+          "median": 0.3999999761581421,
+          "min": 0.3999999761581421,
+          "max": 0.5,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 0.5,
+          "min": 0.5,
+          "max": 0.6000000238418579,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 2.257041,
+          "min": 1.875437,
+          "max": 2.5799785,
+          "samples": 5
+        },
+        "calls": [
+          6
+        ]
+      },
+      "inwood": {
+        "cpuMs": {
+          "median": 0.40000003576278687,
+          "min": 0.30000001192092896,
+          "max": 0.5999999642372131,
+          "samples": 5
+        },
+        "frameCpuMs": {
+          "median": 0.5,
+          "min": 0.5,
+          "max": 0.6500000059604645,
+          "samples": 5
+        },
+        "gpuMs": {
+          "median": 0.727583,
+          "min": 0.702937,
+          "max": 0.782874,
+          "samples": 5
+        },
+        "calls": [
+          5
+        ]
+      }
+    }
+  },
+  "screenshots": [
+    {
+      "name": "financial-angle-0.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "financial-angle-1.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "financial-default.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "financial-drainage-on.png",
+      "meanAbsoluteChannelError": 5.586841870027711e-05,
+      "changedPixelsAbove2": 2,
+      "totalPixels": 1044120,
+      "maxChannelError": 33
+    },
+    {
+      "name": "financial-terrain-on.png",
+      "meanAbsoluteChannelError": 6.608435811975636e-05,
+      "changedPixelsAbove2": 2,
+      "totalPixels": 1044120,
+      "maxChannelError": 38
+    },
+    {
+      "name": "inwood-angle-0.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "inwood-angle-1.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "inwood-default.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "inwood-drainage-on.png",
+      "meanAbsoluteChannelError": 0.0002563562298075572,
+      "changedPixelsAbove2": 6,
+      "totalPixels": 1044120,
+      "maxChannelError": 49
+    },
+    {
+      "name": "inwood-terrain-on.png",
+      "meanAbsoluteChannelError": 0.00022506991533540206,
+      "changedPixelsAbove2": 6,
+      "totalPixels": 1044120,
+      "maxChannelError": 49
+    },
+    {
+      "name": "island-angle-0.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "island-angle-1.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "island-default.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "island-drainage-on.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    },
+    {
+      "name": "island-terrain-on.png",
+      "meanAbsoluteChannelError": 0,
+      "changedPixelsAbove2": 0,
+      "totalPixels": 1044120,
+      "maxChannelError": 0
+    }
+  ],
+  "backend": {
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "vendor": "Google Inc. (Apple)",
+    "gpuTimer": true
+  },
+  "stationary": {
+    "before": {
+      "cpuMs": {
+        "median": 0.4000000059604645,
+        "min": 0.30000001192092896,
+        "max": 0.40000003576278687,
+        "samples": 5
+      },
+      "frameCpuMs": {
+        "median": 0.5,
+        "min": 0.3999999761581421,
+        "max": 0.5,
+        "samples": 5
+      },
+      "gpuMs": {
+        "median": 1.1311455,
+        "min": 0.9874995,
+        "max": 1.1828120000000002,
+        "samples": 5
+      }
+    },
+    "after": {
+      "cpuMs": {
+        "median": 0.45000001788139343,
+        "min": 0.3999999761581421,
+        "max": 0.5,
+        "samples": 5
+      },
+      "frameCpuMs": {
+        "median": 0.5,
+        "min": 0.45000001788139343,
+        "max": 0.5999999642372131,
+        "samples": 5
+      },
+      "gpuMs": {
+        "median": 1.363791,
+        "min": 1.251687,
+        "max": 1.7279165,
+        "samples": 5
+      }
+    }
+  }
+}

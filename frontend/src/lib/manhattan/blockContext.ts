@@ -1,5 +1,6 @@
+import { loadManhattan, loadMapAsset, loadNeighborhood } from "./data";
 import { projectLngLat, unprojectMeters } from "./geo";
-import type { Bounds, Building, LngLat, ManhattanManifest, ManhattanOverview, NeighborhoodDetail, TerrainGrid } from "./types";
+import type { Bounds, Building, LngLat, TerrainGrid } from "./types";
 
 export type AddressIndex = Record<string, string>;
 export interface ContextStreet { id: string; name: string; coordinates: LngLat[]; widthM: number | null }
@@ -21,17 +22,8 @@ export function resolveBuildingAddress(building: Pick<Building, "bbl" | "address
   return building.address?.trim() || (building.bbl ? index[building.bbl]?.trim() : null) || null;
 }
 export async function loadAddressIndex(signal?: AbortSignal): Promise<AddressIndex> {
-  const value=await localJson<unknown>("/manhattan/context/addresses.json", signal);
-  if(!value || typeof value!=="object" || Array.isArray(value) || !Object.entries(value).every(([bbl,address])=>/^1\d{9}$/.test(bbl) && typeof address==="string" && address.trim().length>0)) {
-    throw new Error("The local address index is malformed");
-  }
-  return value as AddressIndex;
-}
-async function localJson<T>(url: string, signal?: AbortSignal): Promise<T> {
-  if (!/^\/manhattan\/[a-zA-Z0-9_/-]+\.json$/.test(url)) throw new Error("Context assets must be local");
-  const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error(`Map context unavailable (${response.status})`);
-  return response.json();
+  return loadMapAsset<AddressIndex>("/manhattan/context/addresses.json", signal, value =>
+    !!value && typeof value === "object" && !Array.isArray(value) && Object.entries(value).every(([bbl, address]) => /^1\d{9}$/.test(bbl) && typeof address === "string" && address.trim().length > 0), "The local address index is malformed");
 }
 function intersects(a: Bounds, b: Bounds) { return a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1]; }
 function pointBounds(points: LngLat[]): Bounds {
@@ -76,15 +68,15 @@ export function cropTerrain(terrain: TerrainGrid, bounds: Bounds): TerrainGrid {
   };
 }
 export async function loadBuildingContext(property: {id: string; neighborhoodId: string}, signal?: AbortSignal): Promise<BlockContext> {
-  const [manifest, overview, addresses, streets] = await Promise.all([
-    localJson<ManhattanManifest>("/manhattan/manifest.json",signal), localJson<ManhattanOverview>("/manhattan/overview.json",signal),
-    loadAddressIndex(signal),localJson<ContextStreet[]>("/manhattan/context/streets.json",signal),
+  // Reuse parsed geography when arriving from the map. Start independent block
+  // assets together rather than downloading the DEM after all other work.
+  const [map, addresses, streets, measured] = await Promise.all([
+    loadManhattan(signal), loadAddressIndex(signal),
+    loadMapAsset<ContextStreet[]>("/manhattan/context/streets.json", signal, value => Array.isArray(value)),
+    loadMapAsset<TerrainGrid>("/manhattan/terrain-10m.json", signal, value => !!value && typeof value === "object" && "elevationsM" in value && Array.isArray(value.elevationsM) && "width" in value && typeof value.width === "number" && "height" in value && typeof value.height === "number" && value.elevationsM.length === value.width * value.height && "bounds" in value && Array.isArray(value.bounds) && value.bounds.length === 4 && value.bounds.every(Number.isFinite)),
   ]);
-  if(!manifest || typeof manifest.details!=="object" || !Array.isArray(overview?.buildings) || !Array.isArray(streets)) throw new Error("The local context assets are malformed");
-  const detailUrl=manifest.details[property.neighborhoodId];
-  if(!detailUrl) throw new Error("The selected neighborhood is missing from the local map");
-  const detail=await localJson<NeighborhoodDetail>(detailUrl,signal);
-  if(!Array.isArray(detail?.buildings)) throw new Error("The local building detail is malformed");
+  const { overview } = map;
+  const detail = await loadNeighborhood(map.manifest, property.neighborhoodId, signal);
   const selected=detail.buildings.find(b=>b.id===property.id);
   if(!selected) throw new Error("The selected building is missing from the local map");
   const {bounds,taxBlock,wholeBlock}=contextBounds(selected,overview.buildings);
@@ -92,7 +84,6 @@ export async function loadBuildingContext(property: {id: string; neighborhoodId:
   const buildings=selectBlockBuildings(overview.buildings,selected,bounds).map(b=>({...b,address:resolveBuildingAddress(b,addresses)}));
   const resolved=buildings.find(b=>b.id===selected.id)!;
   // The 50m overview is too coarse at block scale. The common 10m DEM also covers NTA edges.
-  const measured=await localJson<TerrainGrid>("/manhattan/terrain-10m.json",signal);
   const terrain=cropTerrain(measured,bounds);
   return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock,wholeBlock };
 }

@@ -1,4 +1,5 @@
-import { BufferGeometry, Color, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
+import { BufferAttribute, BufferGeometry, Color, DynamicDrawUsage, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
+import { groundScaleGeometry } from "./geometryUpdates";
 import polygonClipping, { type MultiPolygon } from "polygon-clipping";
 import { geometryPolygons, projectLngLat } from "./geo";
 import type { Geometry, LngLat, TerrainGrid } from "./types";
@@ -197,9 +198,11 @@ export function terrainSurface(terrain: TerrainGrid, geometries: Geometry[], opt
   }
   const positions = Float32Array.from(layout.positions);
   const colors = new Float32Array(positions.length);
+  const elevations = new Float64Array(positions.length / 3);
   const low = new Color(TERRAIN_PALETTE.low), high = new Color(TERRAIN_PALETTE.high), base = new Color(options.color ?? "#829181");
   const scale = Number.isFinite(options.verticalScale) && options.verticalScale! > 0 ? options.verticalScale! : 1;
   for (let i = 0; i < positions.length; i += 3) {
+    elevations[i / 3] = positions[i + 1];
     const t = Math.max(0, Math.min((positions[i + 1] - TERRAIN_PALETTE.minM) / (TERRAIN_PALETTE.maxM - TERRAIN_PALETTE.minM), 1));
     colors[i] = options.showTerrain ? low.r + (high.r - low.r) * t : base.r;
     colors[i + 1] = options.showTerrain ? low.g + (high.g - low.g) * t : base.g;
@@ -213,5 +216,18 @@ export function terrainSurface(terrain: TerrainGrid, geometries: Geometry[], opt
   geometry.computeVertexNormals();
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
-  return geometry;
+  (geometry.getAttribute("color") as BufferAttribute).setUsage(DynamicDrawUsage);
+  return groundScaleGeometry(geometry, elevations, Array(positions.length / 3).fill(options.lift ?? 0), scale);
+}
+
+/** Terrain mode only changes color. Keep positions, indices, normals and the BVH. */
+export function updateTerrainColors(geometry: BufferGeometry, showTerrain: boolean, color = "#829181") {
+  const data = geometry.userData.groundScale as { elevations: Float64Array };
+  const colors = geometry.getAttribute("color") as BufferAttribute;
+  const low = new Color(TERRAIN_PALETTE.low), high = new Color(TERRAIN_PALETTE.high), base = new Color(color);
+  for (let i = 0; i < colors.count; i++) {
+    const t = Math.max(0, Math.min((data.elevations[i] - TERRAIN_PALETTE.minM) / (TERRAIN_PALETTE.maxM - TERRAIN_PALETTE.minM), 1));
+    colors.setXYZ(i, showTerrain ? low.r + (high.r - low.r) * t : base.r, showTerrain ? low.g + (high.g - low.g) * t : base.g, showTerrain ? low.b + (high.b - low.b) * t : base.b);
+  }
+  colors.needsUpdate = true;
 }

@@ -1,4 +1,5 @@
 import { BufferGeometry, Color, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
+import { groundScaleGeometry } from "./geometryUpdates";
 import { geometryPolygons, projectLngLat } from "./geo";
 import type { Bounds, Building, Geometry, LngLat, Neighborhood, Park, TerrainGrid } from "./types";
 
@@ -64,6 +65,7 @@ export function buildingGeometry(buildings: Building[], options: BuildingGeometr
   const colors: number[] = [];
   const indices: number[] = [];
   const triangleEnds: number[] = [];
+  const elevations: number[] = [], offsets: number[] = [];
   const base = new Color("#c8cebf");
   const tall = new Color("#eff0d9");
   for (const building of buildings) {
@@ -72,11 +74,19 @@ export function buildingGeometry(buildings: Building[], options: BuildingGeometr
     // Missing height stays a flat footprint. Never infer a storey count or a roof height.
     const roof = ground * verticalScale + (building.heightM ?? 0) + 0.2;
     const roofStart = positions.length / 3;
-    for (const point of points) positions.push(...worldPoint(point, building.heightM == null ? (terrainElevation(point, gridAt(point)) ?? ground) * verticalScale + 0.2 : roof));
+    for (const point of points) {
+      const elevation = building.heightM == null ? terrainElevation(point, gridAt(point)) ?? ground : ground;
+      elevations.push(elevation); offsets.push((building.heightM ?? 0) + 0.2);
+      positions.push(...worldPoint(point, building.heightM == null ? elevation * verticalScale + 0.2 : roof));
+    }
     for (const [a, b, c] of faces) indices.push(roofStart + a, roofStart + b, roofStart + c);
     if (building.heightM != null && building.heightM > 0) {
       const groundStart = positions.length / 3;
-      for (const point of points) positions.push(...worldPoint(point, (terrainElevation(point, gridAt(point)) ?? ground) * verticalScale));
+      for (const point of points) {
+        const elevation = terrainElevation(point, gridAt(point)) ?? ground;
+        elevations.push(elevation); offsets.push(0);
+        positions.push(...worldPoint(point, elevation * verticalScale));
+      }
       let ringStart = 0;
       for (const ring of rings) for (let i = 0; i < ring.length; i++) {
         const a = ringStart + i;
@@ -89,7 +99,7 @@ export function buildingGeometry(buildings: Building[], options: BuildingGeometr
     for (let i = roofStart; i < positions.length / 3; i++) colors.push(color.r, color.g, color.b);
     triangleEnds.push(indices.length / 3);
   }
-  return { geometry: geometryFromPositions(positions, colors, indices), triangleEnds };
+  return { geometry: groundScaleGeometry(geometryFromPositions(positions, colors, indices), elevations, offsets, verticalScale), triangleEnds };
 }
 
 /** Binary lookup keeps a merged city mesh interactive without one React node per property. */
@@ -115,6 +125,7 @@ export function polygonGeometry(geometry: Geometry, elevation: (point: LngLat) =
 
 export function outlineGeometry(geometry: Geometry, terrain?: TerrainGrid | null, lift = 4, verticalScale = 1) {
   const positions: number[] = [];
+  const elevations: number[] = [];
   for (const polygon of geometryPolygons(geometry)) for (const sourceRing of polygon) {
     const ring = openRing(sourceRing);
     for (let i = 0; i < ring.length; i++) {
@@ -138,11 +149,14 @@ export function outlineGeometry(geometry: Geometry, terrain?: TerrainGrid | null
         const first: LngLat = [a[0] + (b[0] - a[0]) * cuts[j], a[1] + (b[1] - a[1]) * cuts[j]];
         const second: LngLat = [a[0] + (b[0] - a[0]) * cuts[j + 1], a[1] + (b[1] - a[1]) * cuts[j + 1]];
         const h1 = terrain ? terrainElevation(first, terrain) : 0, h2 = terrain ? terrainElevation(second, terrain) : 0;
-        if (h1 != null && h2 != null) positions.push(...worldPoint(first, h1 * verticalScale + lift), ...worldPoint(second, h2 * verticalScale + lift));
+        if (h1 != null && h2 != null) {
+          elevations.push(h1, h2);
+          positions.push(...worldPoint(first, h1 * verticalScale + lift), ...worldPoint(second, h2 * verticalScale + lift));
+        }
       }
     }
   }
-  return geometryFromPositions(positions);
+  return groundScaleGeometry(geometryFromPositions(positions), elevations, Array(elevations.length).fill(lift), verticalScale);
 }
 
 export function parkGeometry(parks: Park[], terrain?: TerrainGrid | null, verticalScale = 1) {

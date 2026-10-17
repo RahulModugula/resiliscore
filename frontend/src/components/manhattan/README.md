@@ -19,10 +19,25 @@ viewport aspect, with reduced motion respected. Passing a null neighborhood
 resets the full-island view. Drag, wheel, pinch and two-finger gestures are
 provided by Drei CameraControls. Lists outside the canvas provide keyboard access.
 
-Buildings share one geometry draw call with a triangle-to-property lookup. Drei's
-indirect BVH keeps triangle identities intact during accelerated picking. The
-renderer uses demand frames and a device pixel ratio cap of 1.5. Geometries and
+Buildings share one indexed geometry with a triangle-to-property lookup. The
+existing opaque and transparent material passes remain unchanged. Drei's
+indirect BVH keeps triangle identities intact during accelerated picking. Each
+interactive geometry owns its tree, using the faster CENTER construction strategy.
+The renderer uses demand frames and a device pixel ratio cap of 1.5. Geometries and
 BVHs are disposed when replaced.
+
+Terrain and drainage toggles retain meshes, attributes, materials and picking
+trees. Terrain mode updates only the color buffer; drainage changes visibility
+and opacity. Relief updates existing position/normal attributes and refits trees,
+keeping building heights and overlay offsets separate from ground elevation.
+Frequently updated attributes use DynamicDrawUsage. Cached source elevations
+prevent rounding drift after repeated 1x/3x changes. Parsed local assets are shared
+between the map and selected-property block view, including repeated tab visits.
+
+Add `?scenePerf=1` to opt into renderer diagnostics. Normal sessions do not mount
+its frame callback, timer queries or polling timer. Reproduction scripts are in
+`scripts/performance/`; measurements and limits are in
+[`docs/performance/manhattan.md`](../../../../docs/performance/manhattan.md).
 
 `showUnderground` makes land, parks and buildings transparent and displays the
 active data's infrastructure. Cyan points are supplied storm-drain locations;

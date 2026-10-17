@@ -63,6 +63,12 @@ test("neighboring street geometry follows nonplanar DEM instead of one flat plan
 });
 
 
+test("a malformed address asset fails clearly before labels can crash",async()=>{
+  const original=globalThis.fetch;
+  globalThis.fetch=async()=>new Response(JSON.stringify({"1000010001":42}));
+  try {await assert.rejects(loadAddressIndex(),/address index is malformed/);} finally {globalThis.fetch=original;}
+});
+
 test("selected block loads local assets, keeps property identity and includes measured cross-boundary context",async()=>{
   const original=globalThis.fetch;
   const urls:string[]=[];
@@ -88,15 +94,17 @@ test("selected block loads local assets, keeps property identity and includes me
     assert.equal(context.terrain.raster?.nominalSpacingM,10);
     assert.ok(context.terrain.raster!.extent[0]<context.terrain.bounds[0]);
     assert.ok(context.terrain.raster!.extent[2]>context.terrain.bounds[2]);
+    const requests = urls.length;
+    const again = await loadBuildingContext({id:"441",neighborhoodId:"MN0101"});
+    assert.equal(again.selected.id, context.selected.id);
+    assert.equal(urls.length, requests, "reopening the block fetched and reparsed map assets");
+    const controller = new AbortController(); controller.abort();
+    await assert.rejects(loadBuildingContext({id:"441",neighborhoodId:"MN0101"}, controller.signal), { name: "AbortError" });
   } finally {globalThis.fetch=original;}
 });
 
 
-test("a malformed address asset fails clearly before labels can crash",async()=>{
-  const original=globalThis.fetch;
-  globalThis.fetch=async()=>new Response(JSON.stringify({"1000010001":42}));
-  try {await assert.rejects(loadAddressIndex(),/address index is malformed/);} finally {globalThis.fetch=original;}
-});
+
 
 
 test("exceptionally large tax blocks use a clearly bounded local part",()=>{
