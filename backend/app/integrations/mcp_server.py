@@ -20,23 +20,13 @@ from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 
+from app.actuarial.optimizer import simulate
 from app.fixtures import by_address, by_apn, load_golden
-from app.models.schemas import ParcelScoreResponse, UnderwritingTier
+from app.models.schemas import ParcelScoreResponse
 
 mcp = MCPServer("resiliscore")  # `FastMCP` was renamed `MCPServer` in mcp 2.x (locked at 2.3.0)
 
-TIER_1_MIN = 720
-TIER_2_MIN = 580
 MAX_MATCH_DEG = 0.01  # about 1 km; the golden parcels are far apart
-
-
-def band(score: int) -> UnderwritingTier:
-    """Re-band a ResiliScore: 720+ Tier 1, 580-719 Tier 2, below 580 Tier 3 (SPEC Prompt 1B, item 2)."""
-    if score >= TIER_1_MIN:
-        return "TIER_1_AUTO_BIND"
-    if score >= TIER_2_MIN:
-        return "TIER_2_CONDITIONAL"
-    return "TIER_3_DECLINE_ESCALATE"
 
 
 def _parcel(apn_uid: str) -> ParcelScoreResponse:
@@ -59,7 +49,7 @@ def get_parcel_resiliscore(address: str) -> dict[str, Any]:
     parcel = by_address(address)
     if parcel is None:
         raise ValueError(f"no golden parcel matches address {address!r}")
-    return parcel.model_dump(mode="json")
+    return simulate(parcel, []).model_dump(mode="json")
 
 
 @mcp.tool()
@@ -114,30 +104,28 @@ def simulate_mitigation_roi(apn_uid: str, actions: list[str]) -> dict[str, Any]:
     """Simulate the score, tier and payback if the homeowner completes the listed mitigations.
 
     `actions` are action_id values from the parcel's prescriptive_mitigations (for example
-    "CA_ZONE0_1_CLEARANCE"). Already-applied actions add nothing; unknown ids error. Returns the new
-    score (capped 300-850) and tier, net capex, annual premium savings and simple payback in years.
+    "CA_ZONE0_1_CLEARANCE"). Already-applied actions add nothing; unknown ids error. Scored by the same
+    engine as every other path: returns the new score and tier, net capex, annual premium savings and
+    simple payback in years.
     """
     scenario = _parcel(apn_uid)
-    catalog = {m.action_id: m for m in scenario.prescriptive_mitigations}
-    unknown = sorted(set(actions) - catalog.keys())
-    if unknown:
-        raise ValueError(f"unknown action_ids {unknown}; valid: {sorted(catalog)}")
-    chosen = [catalog[a] for a in dict.fromkeys(actions) if not catalog[a].currently_applied]
-    base = scenario.actuarial_breakdown.resili_score
-    new_score = min(850, max(300, base + sum(m.score_delta_pts for m in chosen)))
+    before, after = simulate(scenario, []), simulate(scenario, actions)
+    was_applied = {m.action_id for m in before.prescriptive_mitigations if m.currently_applied}
+    chosen = [m for m in after.prescriptive_mitigations if m.currently_applied and m.action_id not in was_applied]
+    b, a = before.actuarial_breakdown, after.actuarial_breakdown
     capex = sum(m.net_capex_usd for m in chosen)
-    savings = sum(m.annual_premium_savings_usd for m in chosen)
+    savings = round(b.annual_discounted_premium_usd - a.annual_discounted_premium_usd, 2)
     return {
         "apn_uid": apn_uid,
         "applied_actions": [m.action_id for m in chosen],
-        "baseline_score": base,
-        "new_score": new_score,
-        "score_delta_pts": new_score - base,
-        "baseline_tier": scenario.actuarial_breakdown.underwriting_tier,
-        "new_tier": band(new_score),
+        "baseline_score": b.resili_score,
+        "new_score": a.resili_score,
+        "score_delta_pts": a.resili_score - b.resili_score,
+        "baseline_tier": b.underwriting_tier,
+        "new_tier": a.underwriting_tier,
         "net_capex_usd": capex,
         "annual_premium_savings_usd": savings,
-        "payback_years": round(capex / savings, 1) if savings else None,
+        "payback_years": round(capex / savings, 1) if savings > 0 else None,
     }
 
 

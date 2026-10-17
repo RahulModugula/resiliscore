@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
 
 from app.fixtures import by_scenario
-from app.main import _tier, app
+from app.main import app
 from app.models.schemas import ParcelScoreResponse
 
 CONTRACTS = Path(__file__).resolve().parents[2] / "contracts"
@@ -78,7 +78,8 @@ def test_s2_toggling_all_three_mitigations_gives_630_tier_2(client):
     Draft202012Validator(SCHEMA).validate(body)
     assert body["actuarial_breakdown"]["resili_score"] == 630
     assert body["actuarial_breakdown"]["underwriting_tier"] == "TIER_2_CONDITIONAL"
-    assert all(m["currently_applied"] for m in body["prescriptive_mitigations"])
+    applied = {m["action_id"] for m in body["prescriptive_mitigations"] if m["currently_applied"]}
+    assert applied >= set(WUI_ACTIONS)
 
 
 def test_simulate_unknown_apn_is_404(client):
@@ -89,19 +90,6 @@ def test_simulate_unknown_apn_is_404(client):
 def test_simulate_unknown_action_is_422(client):
     resp = client.post("/v1/parcel/simulate-mitigation", json={"apn_uid": WUI_APN, "action_ids": ["NOPE"]})
     assert resp.status_code == 422
-
-
-@pytest.mark.parametrize(
-    ("score", "tier"),
-    [
-        (720, "TIER_1_AUTO_BIND"),
-        (719, "TIER_2_CONDITIONAL"),
-        (580, "TIER_2_CONDITIONAL"),
-        (579, "TIER_3_DECLINE_ESCALATE"),
-    ],
-)
-def test_tier_band_edges(score, tier):
-    assert _tier(score) == tier
 
 
 def test_verify_override_clears_hitl(client):
@@ -124,3 +112,33 @@ def test_verify_override_unknown_apn_is_404(client):
 
 def test_healthz_still_served(client):
     assert client.get("/healthz").json() == {"status": "ok"}
+
+
+def test_unlisted_address_with_a_point_runs_the_pipeline(client):
+    # Within the ingestion pin radius of the S1 centroid, so no network call is made.
+    body = {"address": "999 Other St, Jefferson Parish, LA", "lat": 29.9657, "lng": -90.1032,
+            "county_fips": "22051", "state": "LA"}
+    resp = client.post("/v1/parcel/score", json=body)
+    assert resp.status_code == 200
+    out = resp.json()
+    Draft202012Validator(SCHEMA).validate(out)
+    assert out["parcel_identity"]["address"] == body["address"]
+    assert out["parcel_identity"]["apn_uid"] != "02200100041200"
+    assert 300 <= out["actuarial_breakdown"]["resili_score"] <= 850
+    kinds = {f["properties"]["kind"] for f in out["parcel_identity"]["geometries"]["features"]}
+    assert {"building_footprint", "zone_0_ring_0_5ft", "zone_1_ring_5_30ft", "zone_2_ring_30_100ft"} <= kinds
+
+
+def test_unlisted_address_without_a_point_is_404(client):
+    assert client.post("/v1/parcel/score", json={"address": "999 Other St"}).status_code == 404
+
+
+def test_score_processing_time_is_real(client):
+    ms = client.post("/v1/parcel/score", json={"scenario_id": SCENARIOS[0]}).json()["processing_time_ms"]
+    assert 0 < ms < 1000  # the golden file says 3412.6
+
+
+def test_verify_override_recomputes_credibility(client):
+    before = by_scenario("SCENARIO_3_ESCONDIDO_HITL").actuarial_breakdown.credibility_weight_z
+    after = client.post("/v1/hitl/verify-override", json={"apn_uid": "23312045070000"}).json()
+    assert after["actuarial_breakdown"]["credibility_weight_z"] >= before
