@@ -2,6 +2,7 @@
 
 import { Activity, ArrowUpRight, Droplets, Flame, MapPin, Moon, Search, ShieldCheck, Sun } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { goldenScenarios, scenarios } from "@/data/goldenScenarios";
 import type { GoldenScenarioKey } from "@/types/resiliscore";
 
@@ -17,7 +18,7 @@ export function HeaderScenarioBar({ active, onSelect, live, onLive, dark, onThem
   const icons = [Droplets, Flame, ShieldCheck];
   return <>
     <header className="topbar">
-      <a className="brand" href="/" aria-label="ResiliScore home"><span className="brand-mark"><Activity size={23} /></span>ResiliScore<span className="trademark">™</span></a>
+      <Link className="brand" href="/" aria-label="ResiliScore home"><span className="brand-mark"><Activity size={23} /></span>ResiliScore<span className="trademark">™</span></Link>
       <span className="brand-description">Property resilience<br /><strong>Underwriting copilot</strong></span>
       <div className="connection"><span className={`status-dot ${loading ? "loading" : ""}`} /><span>{live ? "Live API selected" : "Guidewire & MCP · Demo"}</span></div>
       <div className="header-actions"><label className="mode-switch"><input type="checkbox" checked={live} onChange={e => onLive(e.target.checked)} />Live API</label>
