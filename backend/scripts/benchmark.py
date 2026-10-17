@@ -14,7 +14,10 @@ from dataclasses import dataclass
 
 import httpx
 
-from app.actuarial.optimizer import simulate
+from app.actuarial import uncertainty
+from app.actuarial.base_rates import resolve
+from app.actuarial.constants import get as c
+from app.actuarial.optimizer import evaluate, simulate
 from app.fixtures import by_apn
 from app.main import app
 from app.verification import evidence
@@ -120,19 +123,45 @@ def bench_simulate_direct(n: int) -> Row:
     return _row("simulate() direct, S2, 0 actions", latencies, time.perf_counter() - start, None)
 
 
-async def run_all(n: int, warmup: int, direct_n: int, concurrencies: list[int]) -> list[Row]:
+def bench_monte_carlo(n: int) -> Row:
+    """Times uncertainty.simulate_losses alone. Inputs are built the way optimizer.simulate builds them for S2."""
+    base = by_apn(S2_APN)
+    assert base is not None, "golden S2 parcel missing"
+    tract, _ = resolve(base, None)
+    ev = evaluate(base, base.private_verification_layer, nri=tract)
+    freeboard_missing = base.public_hazard_layer.freeboard_delta_h_ft is None and "FLOOD" in {
+        t.peril for t in ev.terms
+    }
+    kwargs = {
+        "state": base.parcel_identity.state,
+        "rcv_usd": base.parcel_identity.rcv_usd,
+        "tract_prior_lcr": tract.tract_prior_lcr,
+        "z": ev.credibility.z,
+        "freeboard_known": not freeboard_missing,
+    }
+    latencies: list[float] = []
+    start = time.perf_counter()
+    for _ in range(n):
+        t0 = time.perf_counter()
+        uncertainty.simulate_losses(ev.terms, **kwargs)
+        latencies.append((time.perf_counter() - t0) * 1000)
+    name = f"Monte Carlo alone, S2 ({int(c('mc.draws')):,} draws)"
+    return _row(name, latencies, time.perf_counter() - start, None)
+
+
+async def run_all(n: int, warmup: int, direct_n: int, concurrencies: list[int], mc_n: int = 100) -> list[Row]:
     # The JSON access log writes one line per request. Silence it so it neither floods the table nor adds
     # handler time to every sample. BENCHMARKS.md says so; the logger level is restored afterwards.
     logger = logging.getLogger("resiliscore")
     previous = logger.level
     logger.setLevel(logging.WARNING)
     try:
-        return await _run_all(n, warmup, direct_n, concurrencies)
+        return await _run_all(n, warmup, direct_n, concurrencies, mc_n)
     finally:
         logger.setLevel(previous)
 
 
-async def _run_all(n: int, warmup: int, direct_n: int, concurrencies: list[int]) -> list[Row]:
+async def _run_all(n: int, warmup: int, direct_n: int, concurrencies: list[int], mc_n: int) -> list[Row]:
     rows: list[Row] = []
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://benchmark.local") as client:
@@ -175,6 +204,7 @@ async def _run_all(n: int, warmup: int, direct_n: int, concurrencies: list[int])
                 )
             )
     rows.append(bench_simulate_direct(direct_n))
+    rows.append(bench_monte_carlo(mc_n))
     return rows
 
 
@@ -198,9 +228,10 @@ def main(argv: list[str] | None = None) -> list[Row]:
     parser.add_argument("--n", type=int, default=500, help="measured HTTP requests per benchmark")
     parser.add_argument("--warmup", type=int, default=50, help="unmeasured requests before each benchmark")
     parser.add_argument("--direct-n", type=int, default=1000, help="direct simulate() calls")
+    parser.add_argument("--mc-n", type=int, default=100, help="Monte Carlo calls (10k draws each)")
     parser.add_argument("--concurrency", type=int, nargs="+", default=[1, 16], help="worker counts")
     args = parser.parse_args(argv)
-    rows = asyncio.run(run_all(args.n, args.warmup, args.direct_n, args.concurrency))
+    rows = asyncio.run(run_all(args.n, args.warmup, args.direct_n, args.concurrency, args.mc_n))
     print(to_markdown(rows))
     return rows
 
