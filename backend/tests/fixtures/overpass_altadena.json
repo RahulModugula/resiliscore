@@ -1,0 +1,127 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-17T17:36:10Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "way",
+  "id": 471767024,
+  "bounds": {
+    "minlat": 34.1919786,
+    "minlon": -118.1433001,
+    "maxlat": 34.1920691,
+    "maxlon": -118.1431952
+  },
+  "nodes": [
+    4659214666,
+    4659215190,
+    4659215327,
+    4659215303,
+    4659214666
+  ],
+  "geometry": [
+    { "lat": 34.1919786, "lon": -118.1432249 },
+    { "lat": 34.1920014, "lon": -118.1433001 },
+    { "lat": 34.1920691, "lon": -118.1432704 },
+    { "lat": 34.1920463, "lon": -118.1431952 },
+    { "lat": 34.1919786, "lon": -118.1432249 }
+  ],
+  "tags": {
+    "building": "house",
+    "building:units": "1",
+    "ele": "405.5",
+    "height": "4.4",
+    "lacounty:ain": "5835042032",
+    "lacounty:bld_id": "518351892291",
+    "start_date": "1960"
+  }
+},
+{
+  "type": "way",
+  "id": 471767165,
+  "bounds": {
+    "minlat": 34.1921666,
+    "minlon": -118.1435911,
+    "maxlat": 34.1923688,
+    "maxlon": -118.1433786
+  },
+  "nodes": [
+    4659215506,
+    4659215720,
+    4659215696,
+    4659215608,
+    4659215471,
+    4659214544,
+    4659215506
+  ],
+  "geometry": [
+    { "lat": 34.1922122, "lon": -118.1435911 },
+    { "lat": 34.1923688, "lon": -118.1435316 },
+    { "lat": 34.1923480, "lon": -118.1434520 },
+    { "lat": 34.1922928, "lon": -118.1434730 },
+    { "lat": 34.1922681, "lon": -118.1433786 },
+    { "lat": 34.1921666, "lon": -118.1434171 },
+    { "lat": 34.1922122, "lon": -118.1435911 }
+  ],
+  "tags": {
+    "addr:housenumber": "216",
+    "addr:street": "Highlawn Place",
+    "building": "detached",
+    "building:units": "1",
+    "ele": "407.5",
+    "height": "5.2",
+    "lacounty:ain": "5835042036",
+    "lacounty:bld_id": "518277892371",
+    "start_date": "1964"
+  }
+},
+{
+  "type": "way",
+  "id": 471767359,
+  "bounds": {
+    "minlat": 34.1921207,
+    "minlon": -118.1433340,
+    "maxlat": 34.1922794,
+    "maxlon": -118.1431401
+  },
+  "nodes": [
+    4659215251,
+    4659215467,
+    4659215485,
+    4659215473,
+    4659215483,
+    4659214576,
+    4659214563,
+    4659215271,
+    4659215251
+  ],
+  "geometry": [
+    { "lat": 34.1921207, "lon": -118.1433052 },
+    { "lat": 34.1922648, "lon": -118.1433340 },
+    { "lat": 34.1922794, "lon": -118.1432282 },
+    { "lat": 34.1922697, "lon": -118.1432263 },
+    { "lat": 34.1922790, "lon": -118.1431585 },
+    { "lat": 34.1921870, "lon": -118.1431401 },
+    { "lat": 34.1921769, "lon": -118.1432133 },
+    { "lat": 34.1921346, "lon": -118.1432048 },
+    { "lat": 34.1921207, "lon": -118.1433052 }
+  ],
+  "tags": {
+    "addr:housenumber": "222",
+    "addr:street": "Highlawn Place",
+    "building": "detached",
+    "building:units": "1",
+    "ele": "407.7",
+    "height": "5.2",
+    "lacounty:ain": "5835042037",
+    "lacounty:bld_id": "518345892362",
+    "start_date": "1962"
+  }
+}
+
+  ]
+}
