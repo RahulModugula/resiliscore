@@ -323,4 +323,4 @@ export type GoldenScenarioKey =
   | "NYC_HOLLIS"
   | "NYC_ROCKAWAY";
 
-export type GoldenScenarios = Record<GoldenScenarioKey, ParcelScoreResponse>;
+export type GoldenScenarios = Partial<Record<GoldenScenarioKey, ParcelScoreResponse>>;

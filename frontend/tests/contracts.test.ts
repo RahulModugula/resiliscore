@@ -4,8 +4,8 @@ import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import schema from "../../contracts/parcel_score_schema.json";
 import fixtures from "../../contracts/golden_scenarios.json";
-import { getScenario, goldenScenarios, scenarios } from "../src/data/goldenScenarios";
 import { goldenSimulations } from "../src/data/goldenSimulations";
+import { findScenario, getScenario, goldenScenarios, scenarios } from "../src/data/goldenScenarios";
 
 test("every golden response validates against the canonical JSON Schema", () => {
   const ajv = new Ajv2020({ allErrors: true, strict: false });
@@ -16,16 +16,16 @@ test("every golden response validates against the canonical JSON Schema", () => 
   }
 });
 
-test("scenario selector exposes the three demo journeys and returns independent payloads", () => {
-  assert.equal(scenarios.length, 3);
+test("scenario selector exposes the six demo journeys and returns independent payloads", () => {
+  assert.equal(scenarios.length, 6);
   for (const { id } of scenarios) {
+    assert.ok(findScenario(id), `${id} must be supplied by the canonical golden contract`);
     const first = getScenario(id);
     const second = getScenario(id);
-    assert.deepEqual(first, fixtures[id]);
+    assert.deepEqual(first, goldenScenarios[id]);
     first.parcel_identity.address = "Modified copy";
     first.parcel_identity.geometries.features.length = 0;
-    assert.deepEqual(second, fixtures[id]);
-    assert.deepEqual(goldenScenarios[id], fixtures[id]);
+    assert.deepEqual(second, goldenScenarios[id]);
   }
 });
 
@@ -43,11 +43,17 @@ test("the unpermitted variant preserves score while explicitly holding auto-bind
   assert.ok(alerted.parcel_identity.geometries.features.some(feature => /240 sq ft/.test(feature.properties.label ?? "")));
 });
 
+test("NYC selector IDs and lookup aliases match the canonical demos", () => {
+  assert.deepEqual(scenarios.filter(s => s.id.startsWith("NYC_")).map(s => [s.id, s.address]), [
+    ["NYC_RED_HOOK", "5 Luquer St"], ["NYC_HOLLIS", "81-52 192 St"], ["NYC_ROCKAWAY", "74-02 Beach Channel Dr"],
+  ]);
+});
+
 test("scenario summaries reflect the current backend-generated score anchors", () => {
-  const flood = goldenScenarios.SCENARIO_1_LA_FLOOD.actuarial_breakdown;
-  const wildfire = goldenScenarios.SCENARIO_2_CA_WUI.actuarial_breakdown;
+  const flood = getScenario("SCENARIO_1_LA_FLOOD").actuarial_breakdown;
+  const wildfire = getScenario("SCENARIO_2_CA_WUI").actuarial_breakdown;
   const planned = goldenSimulations.SCENARIO_2_CA_WUI["CA_EMBER_VENTS_EAVES+CA_IBHS_WPH_CLASS_A_ROOF+CA_ZONE0_1_CLEARANCE"];
   assert.equal(scenarios[0].summary, `${flood.baseline_macro_score} → ${flood.resili_score} · Verified freeboard`);
   assert.equal(scenarios[1].summary, `${wildfire.resili_score} → ${planned.resili_score} · Mitigation plan`);
-  assert.equal(scenarios[2].summary, `${goldenScenarios.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown.resili_score} · Human review workflow`);
+  assert.equal(scenarios[2].summary, `${getScenario("SCENARIO_3_ESCONDIDO_HITL").actuarial_breakdown.resili_score} · Human review workflow`);
 });

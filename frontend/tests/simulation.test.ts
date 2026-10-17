@@ -5,12 +5,12 @@ import { goldenSimulations } from "../src/data/goldenSimulations";
 import { actionTotals, applyStructureLoading, simulateMitigations, tierForScore } from "../src/lib/simulation";
 
 const wildfireId = "SCENARIO_2_CA_WUI";
-const allActions = goldenScenarios[wildfireId].prescriptive_mitigations.map(action => action.action_id);
+const allActions = getScenario(wildfireId).prescriptive_mitigations.map(action => action.action_id);
 const closeTo = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-10, `${actual} differs from ${expected}`);
 
 test("every committed action combination matches backend scores, premiums, capital, and review status", () => {
   for (const [scenario, table] of Object.entries(goldenSimulations)) {
-    const baseline = Object.entries(goldenScenarios).find(([key]) => key === scenario)![1];
+    const baseline = getScenario(scenario as Parameters<typeof getScenario>[0]);
     for (const [key, summary] of Object.entries(table)) {
       const actions = key ? key.split("+") : [];
       const result = simulateMitigations(baseline, actions);

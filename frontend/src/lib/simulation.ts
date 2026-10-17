@@ -1,4 +1,4 @@
-import type { ParcelScoreResponse, UnderwritingTier } from "@/types/resiliscore";
+import type { GoldenScenarioKey, ParcelScoreResponse, UnderwritingTier } from "@/types/resiliscore";
 import { goldenScenarios } from "../data/goldenScenarios";
 import { goldenSimulations } from "../data/goldenSimulations";
 
@@ -6,8 +6,8 @@ export function tierForScore(score: number): UnderwritingTier {
   return score >= 720 ? "TIER_1_AUTO_BIND" : score >= 580 ? "TIER_2_CONDITIONAL" : "TIER_3_DECLINE_ESCALATE";
 }
 
-function selectedSummary(base: ParcelScoreResponse, actionIds: string[]) {
-  const scenario = (Object.keys(goldenScenarios) as Array<keyof typeof goldenScenarios>).find(key => goldenScenarios[key].request_id === base.request_id);
+function selectedSummary(base: ParcelScoreResponse, actionIds: string[], scenarioId?: GoldenScenarioKey) {
+  const scenario = scenarioId ?? (Object.keys(goldenScenarios) as Array<keyof typeof goldenScenarios>).find(key => goldenScenarios[key]?.request_id === base.request_id);
   const summary = scenario && goldenSimulations[scenario][[...actionIds].sort().join("+")];
   if (!summary) throw new Error("This action combination has no offline model result");
   return summary;
@@ -15,11 +15,11 @@ function selectedSummary(base: ParcelScoreResponse, actionIds: string[]) {
 
 // Combined outcomes come from the backend-generated table, as required by D2.
 // Per-action credits are not additive, and existing verified actions earn no second credit.
-export function simulateMitigations(base: ParcelScoreResponse, actionIds: string[]): ParcelScoreResponse {
+export function simulateMitigations(base: ParcelScoreResponse, actionIds: string[], scenarioId?: GoldenScenarioKey): ParcelScoreResponse {
   const result = structuredClone(base);
   const actions = base.prescriptive_mitigations.filter(a => actionIds.includes(a.action_id));
   if (actions.length === 0) return result;
-  const summary = selectedSummary(base, actions.map(action => action.action_id));
+  const summary = selectedSummary(base, actions.map(action => action.action_id), scenarioId);
   const a = result.actuarial_breakdown;
   const outcomeChanged = Object.entries(summary).some(([field, value]) => Object.hasOwn(a, field) && Reflect.get(a, field) !== value) || result.hitl_status.trigger_code !== summary.trigger_code;
   if (actions.every(action => action.currently_applied) && !outcomeChanged) return result;
@@ -80,16 +80,22 @@ export function applyStructureLoading(base: ParcelScoreResponse): ParcelScoreRes
   return result;
 }
 
-export function actionTotals(base: ParcelScoreResponse, ids: string[]) {
+export function actionTotals(base: ParcelScoreResponse, ids: string[], projected?: ParcelScoreResponse, scenarioId?: GoldenScenarioKey) {
   const actions = base.prescriptive_mitigations.filter(a => ids.includes(a.action_id));
   const totals = actions.filter(action => !action.currently_applied).reduce((total, a) => ({
     net: total.net + a.net_capex_usd, gross: total.gross + a.gross_capex_usd,
     grants: total.grants + a.grant_subsidy_usd, savings: 0,
   }), { net: 0, gross: 0, grants: 0, savings: 0 });
   if (!actions.length) return totals;
-  const summary = selectedSummary(base, actions.map(action => action.action_id));
+  let summary;
+  try { summary = selectedSummary(base, actions.map(action => action.action_id), scenarioId); }
+  catch (error) {
+    if (!projected) throw error;
+    totals.savings = base.actuarial_breakdown.annual_discounted_premium_usd - projected.actuarial_breakdown.annual_discounted_premium_usd;
+    return totals;
+  }
   totals.net = summary.net_capex_usd;
   totals.gross = totals.net + totals.grants;
-  totals.savings = base.actuarial_breakdown.annual_discounted_premium_usd - summary.annual_discounted_premium_usd;
+  totals.savings = base.actuarial_breakdown.annual_discounted_premium_usd - (projected?.actuarial_breakdown.annual_discounted_premium_usd ?? summary.annual_discounted_premium_usd);
   return totals;
 }

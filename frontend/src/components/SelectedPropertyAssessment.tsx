@@ -1,5 +1,6 @@
 import { FileCheck2, ShieldAlert } from "lucide-react";
 import type { ParcelScoreResponse } from "@/types/resiliscore";
+import { PerilBreakdown } from "@/components/PerilBreakdown";
 import { bps, money } from "@/lib/format";
 
 /** Selected properties never inherit the golden demo's verified/bindable presentation. */
@@ -8,6 +9,7 @@ export function SelectedPropertySummary({ parcel, offline }: { parcel: ParcelSco
   return <section className="score-panel panel"><div className="panel-heading"><h2>Property risk assessment</h2><span className="badge warning">{offline ? "Offline model screening" : parcel.indicative_only ? "Indicative only" : "Live model result"}</span></div>
     <div className="gauge-wrap warning"><p className="tier-text">{`ResiliScore ${a.resili_score} / 850`}</p><p className="section-description">{offline ? "Indicative screening from the canonical risk engine using national defaults and a nonlocal NRI reference tract. Buildings share these assumptions; this does not rank local geographic risk." : "Computed by the parcel risk engine for the selected building. This is an assessment, with no authority to bind a policy."}</p></div>
     <dl className="audit-details"><div><dt>Expected annual loss {offline && "(default inputs)"}</dt><dd>{money(a.expected_annual_loss_usd)}</dd></div><div><dt>Posterior loss cost</dt><dd>{bps(a.posterior_lcr)}</dd></div><div><dt>Premium</dt><dd>No filed quote supplied</dd></div><div><dt>Verified mitigation credit</dt><dd>Not established</dd></div><div><dt>Elevation certificate</dt><dd>{parcel.private_verification_layer.elev_cert_verified ? "Recorded verified by API" : "Not verified"}</dd></div></dl>
+    <PerilBreakdown perils={a.peril_split} />
     <p className="status-notice warning"><ShieldAlert size={17} />Binding unavailable. Evidence and underwriting review required.</p>
     <p className="footnote">NYC map elevation is not certified first-floor height. A building footprint is not a parcel boundary. Missing inputs remain unknown.</p>
   </section>;
