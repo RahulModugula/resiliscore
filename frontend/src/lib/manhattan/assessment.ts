@@ -14,7 +14,10 @@ const STORAGE_PREFIX = "resiliscore:manhattan:assessment:v1:";
 const MAX_AGE_MS = 6 * 60 * 60 * 1000;
 const NYC_SOURCE = "NYC OTI Building Footprints cached map data; not a verification channel";
 export function propertyLabel(building: Pick<Building, "address" | "name" | "bin" | "id">): string {
-  return building.address || building.name || (building.bin ? `BIN ${building.bin}` : `Building ${building.id}`);
+  return building.address?.trim() || "Address unavailable";
+}
+function assessmentAddress(building: Building): string {
+  return `${building.address?.trim() || `Address unavailable for NYC source building ${building.id}${building.bin ? ` BIN ${building.bin}` : ""}`}, Manhattan, NY`;
 }
 /** A contract-required numeric id, explicitly synthetic. Never a NYC BBL or assessor APN. */
 function syntheticId(id: string): string {
@@ -32,7 +35,7 @@ function localScreening(building: Building): ParcelScoreResponse {
   parcel.request_id = crypto.randomUUID();
   parcel.parcel_identity = {
     ...parcel.parcel_identity,
-    apn_uid: syntheticId(building.id), address: `${propertyLabel(building)}, Manhattan, NY`,
+    apn_uid: syntheticId(building.id), address: assessmentAddress(building),
     centroid: building.center, year_built: year,
     geometries: { type: "FeatureCollection", features: [{ type: "Feature", geometry: { type: "Polygon", coordinates: building.footprint }, properties: { kind: "building_footprint", label: "NYC mapped building footprint; not a surveyed parcel boundary" } }] },
   };
@@ -58,7 +61,7 @@ export async function assessManhattanProperty(building: Building, options: { sig
       const timeout = AbortSignal.timeout(10_000);
       const response = await fetch(`${base.replace(/\/$/, "")}/v1/parcel/score`, {
         method: "POST", headers: { "Content-Type": "application/json" }, signal: options.signal ? AbortSignal.any([options.signal, timeout]) : timeout,
-        body: JSON.stringify({ address: `${propertyLabel(building)}, Manhattan, NY`, lat: building.center[1], lng: building.center[0], county_fips: "36061", state: "NY", footprint: building.footprint[0], ...(building.yearBuilt === null ? {} : { year_built: building.yearBuilt }) }),
+        body: JSON.stringify({ address: assessmentAddress(building), lat: building.center[1], lng: building.center[0], county_fips: "36061", state: "NY", footprint: building.footprint[0], ...(building.yearBuilt === null ? {} : { year_built: building.yearBuilt }) }),
       });
       if (!response.ok) throw new Error(`API returned ${response.status}`);
       const parcel = parseParcel(await response.json());

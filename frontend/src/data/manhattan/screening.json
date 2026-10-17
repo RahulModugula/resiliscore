@@ -17,7 +17,7 @@
     "backend/app/pipeline.py",
     "backend/data/nri_reference_tracts.json"
   ],
-  "engineSha256": "63164c39ed25b7b63406db0568e6ac5d4095446f4cdd1a60a7e2c5d345756e7f",
+  "engineSha256": "ad36d30e6922cc1660253db7961c611afc1f073843f93c69154f2e818e2980cb",
   "method": "Canonical backend optimizer.simulate, NY state, national-default hazards, no property verification, default $350,000 RCV, nearest reference NRI stand-in. No live geographic hazard lookup. Model assumes a LiDAR weight even though local evidence is absent. Not a production underwriting model or filed quote.",
   "screens": {
     "post2002": {
@@ -193,6 +193,7 @@
           "vintage": "v1.20"
         }
       ],
+      "nyc": null,
       "parcel_identity": {
         "address": "Offline NY default-input model screen",
         "apn_uid": "00000000000000",
@@ -503,6 +504,7 @@
           "vintage": "v1.20"
         }
       ],
+      "nyc": null,
       "parcel_identity": {
         "address": "Offline NY default-input model screen",
         "apn_uid": "00000000000000",
