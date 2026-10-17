@@ -1,3 +1,4 @@
 *.tsbuildinfo
 playwright-report/
 test-results/
+.impeccable/review/
