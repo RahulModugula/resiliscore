@@ -1,0 +1,18 @@
+--- a/frontend/src/components/manhattan/ManhattanScene.tsx
++++ b/frontend/src/components/manhattan/ManhattanScene.tsx
+@@ -5,6 +5,7 @@
+ import { Bvh, CameraControls, Html } from "@react-three/drei";
+ import { BufferGeometry, DoubleSide, Float32BufferAttribute } from "three";
+ import { buildingAtFace, buildingGeometry, buildingGroundElevation, cameraFrame, outlineGeometry, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
++import { SceneDiagnostics } from "./SceneDiagnostics";
+ import { sceneScope, type SceneScope } from "@/lib/manhattan/sceneScope";
+ import { terrainSurface } from "@/lib/manhattan/terrainSurface";
+ import { pointInGeometry, unprojectMeters } from "@/lib/manhattan/geo";
+@@ -213,6 +214,7 @@
+     {label && labelPoint && <Html position={labelPoint} center style={{ pointerEvents: "none", whiteSpace: "nowrap" }} zIndexRange={[20, 0]}>
+       <span style={{ display: "block", background: "#101f25", border: "1px solid #59756e", color: "#eaf1f3", padding: "6px 9px", borderRadius: 4, fontSize: 12, boxShadow: "0 4px 12px #0005" }}>{label}</span>
+     </Html>}
++    <SceneDiagnostics />
+     <WebGLStatus onReady={props.onReady} onError={props.onError} />
+   </>;
+ }

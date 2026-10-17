@@ -35,6 +35,17 @@ test("assessment shows street address, adjoining buildings and measured block el
   await page.getByRole("tab",{name:"Underwriting copilot",exact:true}).click();
   await expect(block.getByRole("heading",{name:"207 FRONT STREET",exact:true})).toBeVisible();
   await expect(block.getByTestId("selected-building-marker")).toHaveAttribute("data-property-id",building.id);
+  const requests: string[] = [];
+  page.on("request", request => { if (request.url().includes("/manhattan/")) requests.push(request.url()); });
+  await page.getByRole("button", { name: "Use light theme", exact: true }).click();
+  await expect(page.locator(".app-shell")).toHaveAttribute("data-theme", "light");
+  await expect(block.getByTestId("selected-building-marker")).toBeVisible();
+  await page.getByRole("button", { name: "Use dark theme", exact: true }).click();
+  await expect(page.locator(".app-shell")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("tab", { name: "Model Validation", exact: true }).click();
+  await page.getByRole("tab", { name: "Underwriting copilot", exact: true }).click();
+  await expect(block.getByTestId("selected-building-marker")).toBeVisible();
+  expect(requests).toEqual([]);
 });
 
 test("street and elevation details survive WebGL unavailability",async({page})=>{
