@@ -29,6 +29,12 @@ test("assessment shows street address, adjoining buildings and measured block el
   await expect(block.getByText(/Streets:.*FULTON/)).toBeVisible();
   await expect(block.getByText(/Ground and buildings are shown at true scale/)).toBeVisible();
   await expect(page.getByRole("button",{name:/auto-bind|conditional bind/i})).toHaveCount(0);
+  await page.getByRole("tab",{name:"Model Validation",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"Model Validation",exact:true})).toBeVisible();
+  await expect(block).toHaveCount(0);
+  await page.getByRole("tab",{name:"Underwriting copilot",exact:true}).click();
+  await expect(block.getByRole("heading",{name:"207 FRONT STREET",exact:true})).toBeVisible();
+  await expect(block.getByTestId("selected-building-marker")).toHaveAttribute("data-property-id",building.id);
 });
 
 test("street and elevation details survive WebGL unavailability",async({page})=>{

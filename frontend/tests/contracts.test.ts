@@ -4,6 +4,7 @@ import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import schema from "../../contracts/parcel_score_schema.json";
 import fixtures from "../../contracts/golden_scenarios.json";
+import { goldenSimulations } from "../src/data/goldenSimulations";
 import { findScenario, getScenario, goldenScenarios, scenarios } from "../src/data/goldenScenarios";
 
 test("every golden response validates against the canonical JSON Schema", () => {
@@ -47,4 +48,13 @@ test("NYC selector IDs and addresses match the pending contract", () => {
   assert.deepEqual(scenarios.filter(s => s.id.startsWith("NYC_")).map(s => [s.id, s.address]), [
     ["NYC_RED_HOOK", "5 Luquer St"], ["NYC_HOLLIS", "81-52 192 St"], ["NYC_ROCKAWAY", "74-02 Beach Channel Dr"],
   ]);
+});
+
+test("scenario summaries reflect the current backend-generated score anchors", () => {
+  const flood = getScenario("SCENARIO_1_LA_FLOOD").actuarial_breakdown;
+  const wildfire = getScenario("SCENARIO_2_CA_WUI").actuarial_breakdown;
+  const planned = goldenSimulations.SCENARIO_2_CA_WUI["CA_EMBER_VENTS_EAVES+CA_IBHS_WPH_CLASS_A_ROOF+CA_ZONE0_1_CLEARANCE"];
+  assert.equal(scenarios[0].summary, `${flood.baseline_macro_score} → ${flood.resili_score} · Verified freeboard`);
+  assert.equal(scenarios[1].summary, `${wildfire.resili_score} → ${planned.resili_score} · Mitigation plan`);
+  assert.equal(scenarios[2].summary, `${getScenario("SCENARIO_3_ESCONDIDO_HITL").actuarial_breakdown.resili_score} · Human review workflow`);
 });

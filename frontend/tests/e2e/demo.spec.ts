@@ -1,13 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
-import simulations from "../../../contracts/golden_simulations.json";
-import { money } from "../../src/lib/format";
 import fixtures from "../../../contracts/golden_scenarios.json";
+import simulations from "../../../contracts/golden_simulations.json";
 
-const la = fixtures.SCENARIO_1_LA_FLOOD.actuarial_breakdown;
-const ca = fixtures.SCENARIO_2_CA_WUI.actuarial_breakdown;
-const escondido = fixtures.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown;
-const caPlans: Record<string, { resili_score: number; annual_discounted_premium_usd: number; net_capex_usd: number }> = simulations.SCENARIO_2_CA_WUI;
-const plan = (ids: string[]) => caPlans[ids.sort().join("+")];
+const money = (value: number) => value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const floodBase = fixtures.SCENARIO_1_LA_FLOOD.actuarial_breakdown;
+const fireBase = fixtures.SCENARIO_2_CA_WUI.actuarial_breakdown;
+const verifiedBase = fixtures.SCENARIO_3_ESCONDIDO_HITL.actuarial_breakdown;
+const firePlan = simulations.SCENARIO_2_CA_WUI["CA_EMBER_VENTS_EAVES+CA_IBHS_WPH_CLASS_A_ROOF+CA_ZONE0_1_CLEARANCE"];
+
 const apiPattern = "**/v1/**";
 
 async function openOfflineDemo(page: Page) {
@@ -17,7 +17,7 @@ async function openOfflineDemo(page: Page) {
   });
   await page.route(apiPattern, route => route.abort("connectionrefused"));
   await page.goto("/assessment?demo=true");
-  await expect(page.getByTestId("score")).toHaveText(String(la.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
   return apiRequests;
 }
 
@@ -33,7 +33,7 @@ test("coastal flood binds a demo receipt without a backend or a second verified 
   await expect(receipt).toContainText("Demo policy issued");
   await expect(receipt).toContainText("No policy has been purchased or sent to Guidewire");
   await expect(receipt).toContainText('"demo": true');
-  await expect(receipt).toContainText(`"annual_premium_usd": ${la.annual_discounted_premium_usd}`);
+  await expect(receipt).toContainText(`"annual_premium_usd": ${floodBase.annual_discounted_premium_usd}`);
   const downloadEvent = page.waitForEvent("download");
   await receipt.getByRole("button", { name: "Download IDM receipt" }).click();
   expect((await downloadEvent).suggestedFilename()).toMatch(/^DEMO-LA-.*\.json$/);
@@ -42,26 +42,25 @@ test("coastal flood binds a demo receipt without a backend or a second verified 
   expect(apiRequests).toEqual([]);
 });
 
-test("wildfire remediation uses combined-action results and resets to baseline", async ({ page }) => {
+test("wildfire remediation matches the backend plan and resets to its baseline", async ({ page }) => {
   const apiRequests = await openOfflineDemo(page);
   await page.getByRole("button", { name: /Wildfire remediation/ }).click();
-  await expect(page.getByTestId("score")).toHaveText(String(ca.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(fireBase.resili_score));
   await page.getByRole("tab", { name: "Mitigation & grant ROI" }).click();
   await page.getByRole("checkbox", { name: /Zone 0\/1 clearance/ }).check();
-  await expect(page.getByTestId("score")).toHaveText(String(plan(["CA_ZONE0_1_CLEARANCE"]).resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(simulations.SCENARIO_2_CA_WUI.CA_ZONE0_1_CLEARANCE.resili_score));
   await page.getByRole("checkbox", { name: /1\/4-inch ember vents/ }).check();
-  await expect(page.getByTestId("score")).toHaveText(String(plan(["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES"]).resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(simulations.SCENARIO_2_CA_WUI["CA_EMBER_VENTS_EAVES+CA_ZONE0_1_CLEARANCE"].resili_score));
   await page.getByRole("checkbox", { name: /IBHS Wildfire Prepared Home Class A roof/ }).check();
-  await expect(page.getByTestId("score")).toHaveText(String(plan(["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]).resili_score));
-  await expect(page.getByText("Offline projections retain the baseline peril allocation.")).toBeVisible();
-  await expect(page.getByTestId("annual-savings")).toHaveText(money(ca.annual_discounted_premium_usd - plan(["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]).annual_discounted_premium_usd));
-  await expect(page.getByTestId("net-investment")).toHaveText(money(plan(["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]).net_capex_usd));
+  await expect(page.getByTestId("score")).toHaveText(String(firePlan.resili_score));
+  await expect(page.getByTestId("annual-savings")).toHaveText(money(fireBase.annual_discounted_premium_usd - firePlan.annual_discounted_premium_usd));
+  await expect(page.getByTestId("net-investment")).toHaveText(money(firePlan.net_capex_usd));
   await page.getByRole("button", { name: "Issue 60-day conditional bind" }).click();
   await expect(page.getByRole("dialog")).toContainText('"status": "CONDITIONAL_60_DAY"');
   await expect(page.getByRole("dialog")).toContainText('"review_due_days": 60');
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Reset plan" }).click();
-  await expect(page.getByTestId("score")).toHaveText(String(ca.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(fireBase.resili_score));
   await expect(page.getByTestId("annual-savings")).toHaveText("$0");
   await expect(page.getByRole("checkbox", { name: /Zone 0\/1 clearance/ })).not.toBeChecked();
   expect(apiRequests).toEqual([]);
@@ -70,7 +69,7 @@ test("wildfire remediation uses combined-action results and resets to baseline",
 test("Escondido holds auto-bind until demo smartphone evidence is reviewed", async ({ page }) => {
   const apiRequests = await openOfflineDemo(page);
   await page.getByRole("button", { name: /Verification guardrail/ }).click();
-  await expect(page.getByTestId("score")).toHaveText(String(escondido.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(verifiedBase.resili_score));
   await page.getByRole("checkbox", { name: /Simulate satellite change-detection alert/ }).check();
   await expect(page.getByRole("alert").filter({ hasText: "240 sq ft" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Binding paused for verification" })).toBeDisabled();
@@ -81,8 +80,8 @@ test("Escondido holds auto-bind until demo smartphone evidence is reviewed", asy
   await workbench.getByRole("button", { name: "Run demo capture" }).click();
   await workbench.getByRole("button", { name: "Verify & restore auto-bind" }).click();
   await expect(workbench).not.toBeVisible();
-  await expect(page.getByTestId("score")).toHaveText(String(escondido.resili_score));
-  await expect(page.getByRole("status")).toContainText(`Auto-bind restored at ${escondido.resili_score}`);
+  await expect(page.getByTestId("score")).toHaveText(String(verifiedBase.resili_score));
+  await expect(page.getByRole("status")).toContainText(`Auto-bind restored at ${verifiedBase.resili_score}`);
   await page.getByRole("button", { name: "Auto-bind in PolicyCenter" }).click();
   await expect(page.getByRole("dialog")).toContainText("Demo policy issued");
   expect(apiRequests).toEqual([]);
@@ -98,7 +97,7 @@ test("accepting the unpermitted structure only permits a conditional receipt", a
   await expect(page.getByRole("button", { name: "Auto-bind in PolicyCenter" })).not.toBeVisible();
   await page.getByRole("button", { name: "Issue 60-day conditional bind" }).click();
   await expect(page.getByRole("dialog")).toContainText('"status": "CONDITIONAL_60_DAY"');
-  await expect(page.getByRole("dialog")).toContainText(`"posterior_lcr": ${fixtures.SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED.actuarial_breakdown.posterior_lcr + .0035}`);
+  await expect(page.getByRole("dialog")).toContainText(`"posterior_lcr": ${fixtures.SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED.actuarial_breakdown.posterior_lcr + 35 / 10000}`);
 });
 
 test("regulatory audit keeps missing evidence explicit and exports the parcel dossier", async ({ page }) => {
@@ -120,10 +119,10 @@ for (const failure of ["unavailable", "invalid contract"] as const) {
     await page.goto("/assessment?demo=true");
     await page.getByRole("checkbox", { name: "Live API", exact: true }).check();
     await expect(page.getByRole("status")).toContainText("Showing the local demo. All controls remain available.");
-    await expect(page.getByTestId("score")).toHaveText(String(la.resili_score));
+    await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
     await page.getByRole("button", { name: /Wildfire remediation/ }).click();
     await page.getByRole("checkbox", { name: /Zone 0\/1 clearance/ }).check();
-    await expect(page.getByTestId("score")).toHaveText(String(plan(["CA_ZONE0_1_CLEARANCE"]).resili_score));
+    await expect(page.getByTestId("score")).toHaveText(String(simulations.SCENARIO_2_CA_WUI.CA_ZONE0_1_CLEARANCE.resili_score));
     await expect(page.getByRole("status")).toContainText("Showing the local demo");
   });
 }
@@ -141,11 +140,11 @@ test("a failed live reconnect discards the previous live response and shows the 
   await expect(page.getByRole("status")).toContainText("Live API response validated");
   await expect(page.getByTestId("score")).toHaveText("800");
   await liveToggle.uncheck();
-  await expect(page.getByTestId("score")).toHaveText(String(la.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
   available = false;
   await liveToggle.check();
   await expect(page.getByRole("status")).toContainText("Showing the local demo");
-  await expect(page.getByTestId("score")).toHaveText(String(la.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(floodBase.resili_score));
   await expect(page.getByText("Golden demo parcel", { exact: true })).toBeVisible();
 });
 
@@ -175,9 +174,9 @@ test("a late live response cannot overwrite a newly selected scenario", async ({
   await started;
   await page.getByRole("button", { name: /Wildfire remediation/ }).click();
   await expect(page.getByRole("status")).toContainText("Live API response validated");
-  await expect(page.getByTestId("score")).toHaveText(String(ca.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(fireBase.resili_score));
   releaseFirst();
   await settled;
   await expect(page.getByRole("heading", { name: "1840 Canyon Crest Dr" })).toBeVisible();
-  await expect(page.getByTestId("score")).toHaveText(String(ca.resili_score));
+  await expect(page.getByTestId("score")).toHaveText(String(fireBase.resili_score));
 });

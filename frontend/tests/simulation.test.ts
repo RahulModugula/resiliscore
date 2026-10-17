@@ -1,44 +1,54 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { getScenario, getGoldenSimulation, goldenScenarios } from "../src/data/goldenScenarios";
-import type { GoldenScenarioKey } from "../src/types/resiliscore";
-import simulations from "../../contracts/golden_simulations.json";
+import { getScenario, goldenScenarios } from "../src/data/goldenScenarios";
+import { goldenSimulations } from "../src/data/goldenSimulations";
 import { actionTotals, applyStructureLoading, simulateMitigations, tierForScore } from "../src/lib/simulation";
 
 const wildfireId = "SCENARIO_2_CA_WUI";
 const allActions = getScenario(wildfireId).prescriptive_mitigations.map(action => action.action_id);
 const closeTo = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-10, `${actual} differs from ${expected}`);
 
-test("every supplied action subset uses the engine summary without additive credits", () => {
-  for (const [id, plans] of Object.entries(simulations)) {
-    const baseline = getScenario(id as GoldenScenarioKey);
-    for (const [key, expected] of Object.entries(plans)) {
-      const ids = key ? key.split("+") : [];
-      if (ids.some(id => baseline.prescriptive_mitigations.some(a => a.action_id === id && a.currently_applied))) continue;
-      const result = simulateMitigations(baseline, ids);
-      const a = result.actuarial_breakdown;
-      for (const field of ["resili_score", "underwriting_tier", "posterior_lcr", "credibility_weight_z", "expected_annual_loss_usd", "statutory_discount_pct", "annual_discounted_premium_usd"] as const) {
-        assert.equal(a[field], expected[field], `${id} / ${key} / ${field}`);
+test("every committed action combination matches backend scores, premiums, capital, and review status", () => {
+  for (const [scenario, table] of Object.entries(goldenSimulations)) {
+    const baseline = getScenario(scenario as Parameters<typeof getScenario>[0]);
+    for (const [key, summary] of Object.entries(table)) {
+      const actions = key ? key.split("+") : [];
+      const result = simulateMitigations(baseline, actions);
+      for (const [field, value] of Object.entries(summary)) {
+        if (Object.hasOwn(result.actuarial_breakdown, field)) assert.equal(Reflect.get(result.actuarial_breakdown, field), value, `${scenario}/${key}: ${field}`);
       }
-      if (ids.some(action => baseline.prescriptive_mitigations.some(a => a.action_id === action && !a.currently_applied))) {
-        closeTo(a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0), a.expected_annual_loss_usd);
-      }
-      const totals = actionTotals(baseline, ids);
-      closeTo(totals.net, expected.net_capex_usd);
-      closeTo(totals.savings, baseline.actuarial_breakdown.annual_discounted_premium_usd - expected.annual_discounted_premium_usd);
-      assert.deepEqual(baseline, goldenScenarios[id as GoldenScenarioKey]);
+      assert.equal(result.hitl_status.trigger_code, summary.trigger_code, `${scenario}/${key}: review trigger`);
+      assert.equal(actionTotals(baseline, actions).net, summary.net_capex_usd, `${scenario}/${key}: net capital`);
     }
   }
+});
+
+test("wildfire plan reproduces the backend combined result and preserves financial consistency", () => {
+  const baseline = getScenario(wildfireId);
+  const result = simulateMitigations(baseline, allActions);
+  const a = result.actuarial_breakdown;
+  const expected = goldenSimulations[wildfireId][[...allActions].sort().join("+")];
+  assert.equal(a.resili_score, expected.resili_score);
+  assert.equal(a.underwriting_tier, expected.underwriting_tier);
+  assert.equal(a.annual_discounted_premium_usd, expected.annual_discounted_premium_usd);
+  closeTo(a.posterior_lcr, expected.posterior_lcr);
+  closeTo(a.expected_annual_loss_usd, expected.expected_annual_loss_usd);
+  closeTo(a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0), a.expected_annual_loss_usd);
+  closeTo(a.credibility_weight_z * a.parcel_raw_lcr + (1 - a.credibility_weight_z) * a.tract_prior_lcr, a.posterior_lcr);
+  assert.equal(actionTotals(baseline, allActions).net, expected.net_capex_usd);
+  closeTo(actionTotals(baseline, allActions).savings, baseline.actuarial_breakdown.annual_discounted_premium_usd - expected.annual_discounted_premium_usd);
+  assert.deepEqual(baseline, goldenScenarios[wildfireId]);
 });
 
 test("plans are reversible, deterministic, and count a selected action only once", () => {
   const baseline = getScenario(wildfireId);
   const selection = [allActions[0], allActions[0], "unknown-action"];
   const first = simulateMitigations(baseline, selection);
-  assert.equal(first.actuarial_breakdown.resili_score, getGoldenSimulation(wildfireId, [allActions[0]])?.resili_score);
+  assert.equal(first.actuarial_breakdown.resili_score, goldenSimulations[wildfireId][allActions[0]].resili_score);
   assert.deepEqual(first, simulateMitigations(baseline, [allActions[0]]));
   assert.deepEqual(first, simulateMitigations(baseline, selection));
-  assert.equal(actionTotals(baseline, selection).net, 1800);
+  assert.equal(actionTotals(baseline, selection).net, baseline.prescriptive_mitigations[0].net_capex_usd);
+  closeTo(actionTotals(baseline, selection).savings, baseline.actuarial_breakdown.annual_discounted_premium_usd - first.actuarial_breakdown.annual_discounted_premium_usd);
   assert.deepEqual(simulateMitigations(baseline, []), baseline);
   assert.deepEqual(simulateMitigations(baseline, ["unknown-action"]), baseline);
 });
@@ -85,9 +95,9 @@ test("structure review increases RCV and loss cost, and releases only a conditio
   const baseline = getScenario("SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED");
   const original = structuredClone(baseline);
   const result = applyStructureLoading(baseline);
-  assert.equal(result.parcel_identity.rcv_usd, 780000);
+  assert.equal(result.parcel_identity.rcv_usd, baseline.parcel_identity.rcv_usd + baseline.private_verification_layer.unpermitted_footprint_delta_sqft * 250);
   closeTo(result.actuarial_breakdown.posterior_lcr, baseline.actuarial_breakdown.posterior_lcr + 35 / 10000);
-  closeTo(result.actuarial_breakdown.expected_annual_loss_usd, (baseline.actuarial_breakdown.posterior_lcr + 35 / 10000) * 780000);
+  closeTo(result.actuarial_breakdown.expected_annual_loss_usd, result.actuarial_breakdown.posterior_lcr * result.parcel_identity.rcv_usd);
   assert.equal(result.actuarial_breakdown.underwriting_tier, "TIER_2_CONDITIONAL");
   const a = result.actuarial_breakdown;
   closeTo(a.peril_split.reduce((sum, item) => sum + item.peril_aal_usd, 0), a.expected_annual_loss_usd);
