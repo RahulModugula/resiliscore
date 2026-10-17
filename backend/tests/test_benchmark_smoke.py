@@ -33,18 +33,23 @@ def test_percentile_rejects_empty(benchmark):
 
 
 def test_benchmark_runs_with_n_5_and_returns_numbers(benchmark, capsys):
-    rows = benchmark.main(["--n", "5", "--warmup", "1", "--direct-n", "5", "--concurrency", "1", "2"])
+    rows = benchmark.main(
+        ["--n", "5", "--warmup", "1", "--direct-n", "5", "--mc-n", "2", "--concurrency", "1", "2"]
+    )
 
-    # 4 scenarios + 3 simulate counts + 1 evidence, for each of 2 concurrency levels, plus 1 direct row.
-    assert len(rows) == 2 * (4 + 3 + 1) + 1
-    for row in rows:
+    # 4 scenarios + 3 simulate counts + 1 evidence, for each of 2 concurrency levels, plus direct and Monte Carlo.
+    assert len(rows) == 2 * (4 + 3 + 1) + 2
+    for row in rows[:-2]:
         assert row.n == 5
         assert row.rps > 0
         assert 0 <= row.p50_ms <= row.p95_ms <= row.p99_ms
 
-    direct = rows[-1]
+    direct, monte_carlo = rows[-2], rows[-1]
     assert direct.name.startswith("simulate() direct")
     assert direct.p95_ms < 50
+    assert monte_carlo.name.startswith("Monte Carlo alone")
+    assert monte_carlo.n == 2
+    assert monte_carlo.rps > 0
 
     out = capsys.readouterr().out
     assert out.startswith("| Benchmark | n | Concurrency |")
