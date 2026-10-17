@@ -266,7 +266,7 @@ input::placeholder { color: var(--muted); opacity: 1; }
 .change-toggle input { width: 15px; height: 15px; min-height: 15px; margin: 3px 0 0; }
 .review-summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 16px 0; color: var(--muted); font-size: 12px; }
 .tab-content { min-width: 0; }
-.modal { width: min(780px, calc(100% - 40px)); max-height: calc(100svh - 48px); padding: 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); overflow-y: auto; overscroll-behavior: contain; }
+.modal { position: fixed; inset: 0; margin: auto; width: min(780px, calc(100% - 40px)); max-height: calc(100svh - 48px); padding: 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); box-shadow: var(--shadow); overflow-y: auto; overscroll-behavior: contain; }
 .modal::backdrop { background: rgb(2 9 14 / .76); }
 .modal-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-bottom: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
 .modal-heading h2 { font-size: 19px; font-weight: 500; }
@@ -477,4 +477,21 @@ input::placeholder { color: var(--muted); opacity: 1; }
   .vintage-table th, .vintage-table td { padding: 10px; }
   .vintage-table caption { padding: 10px; font-size: 10px; }
   .inspection-page { padding: 16px; }
+}
+
+.elevation-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(180px, 1fr); align-items: center; gap: 20px; }
+.elevation-layout > svg { width: 100%; height: auto; }
+.elevation-values { display: grid; gap: 12px; margin: 0; font-size: 12px; }
+.elevation-values div { padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.elevation-values dt { color: var(--muted); }
+.elevation-values dd { margin: 3px 0 0; font-size: 14px; font-weight: 500; }
+.elevation-values div:first-child dd { color: var(--accent); }
+.elevation-values div:nth-child(2) dd { color: var(--water); }
+.map-panel > .footnote { padding-inline: 16px; }
+@media (max-width: 650px) {
+  .elevation-layout { grid-template-columns: 1fr; gap: 0; }
+  .elevation-layout > svg { max-height: 190px; }
+  .elevation-values { grid-template-columns: 1fr; gap: 0; margin-bottom: 12px; }
+  .elevation-values div { display: flex; justify-content: space-between; gap: 8px; padding: 9px 0; }
+  .elevation-values dd { margin: 0; white-space: nowrap; }
 }
