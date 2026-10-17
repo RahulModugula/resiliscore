@@ -43,14 +43,24 @@ export interface TerrainGrid {
   source: string;
 }
 
+export interface StormDrain { id: string; position: LngLat; depthM: number | null }
+export interface SewerLine { id: string; coordinates: LngLat[]; depthM: number | null; type: string | null }
+export interface Infrastructure {
+  stormDrains: StormDrain[];
+  sewerLines: SewerLine[];
+  sewerAvailability: "unavailable" | "partial" | "available";
+  sewerStatus: string;
+}
+
 export interface NeighborhoodDetail {
   neighborhoodId: string;
   buildings: Building[];
   parks: Park[];
   terrain: TerrainGrid;
+  infrastructure?: Infrastructure;
 }
 
-export interface ManhattanOverview { buildings: Building[]; parks: Park[]; terrain: TerrainGrid }
+export interface ManhattanOverview { buildings: Building[]; parks: Park[]; terrain: TerrainGrid; infrastructure?: Infrastructure }
 export interface ManhattanSource { name: string; url: string; retrievedAt: string; license: string }
 export interface ManhattanManifest {
   version: number;
