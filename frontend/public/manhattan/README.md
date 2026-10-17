@@ -2,7 +2,7 @@
 
 This directory is a static snapshot for the frontend's Manhattan explorer. It requires no backend, map API key or runtime connection to NYC Open Data. All coordinates use longitude/latitude in WGS84. Heights and elevations use metres.
 
-`manifest.json` lists the snapshot sources, exact counts, detail URLs and limitations. `neighborhoods.json` contains the 38 Manhattan NTA2020 polygons, including park and island areas. `overview.json` keeps the two tallest real footprints in each 100 metre cell. Each file under `neighborhoods/` contains every matched, non-placeholder building footprint for that area, overlapping NYC Parks properties, and a local elevation grid. Roof and courtyard rings remain intact.
+`manifest.json` lists the snapshot sources, exact counts, detail URLs and limitations. `neighborhoods.json` contains the 38 Manhattan NTA2020 polygons, including park and island areas. `overview.json` contains every matched real footprint for the city view. Each file under `neighborhoods/` contains every matched, non-placeholder building footprint for that area, overlapping NYC Parks properties, and a local elevation grid. Roof and courtyard rings remain intact.
 
 ## Sources
 

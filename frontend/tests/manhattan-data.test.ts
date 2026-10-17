@@ -60,7 +60,7 @@ test("the bundled source cache covers every Manhattan NTA with real unique footp
   }
   assert.equal(count, manifest.counts.buildings);
   const overview = read<ManhattanOverview>(manifest.overviewUrl);
-  assert.ok(overview.buildings.length > 1000 && overview.buildings.length < count);
+  assert.equal(overview.buildings.length, count);
   assert.ok(overview.buildings.every((building) => ids.has(building.id)));
   assert.ok(overview.terrain.elevationsM.some((value) => value === null));
   const known = overview.terrain.elevationsM.filter((value): value is number => value !== null);
