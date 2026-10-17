@@ -41,15 +41,15 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     await page.getByRole("button", { name: new RegExp(district) }).click();
     const property = page.getByRole("button", { name: /^Assess / }).first();
     await property.waitFor();
-    const name = (await property.getAttribute("aria-label"))!.replace(/^Assess /, "");
+    const name = (await property.locator("strong").innerText()).trim();
     await property.click();
     await expect(page).toHaveURL(/\/assessment\?property=/);
-    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    await expect(page.locator(".property-heading").getByRole("heading", { name, exact: true })).toBeVisible();
     await expect(page.getByText("Offline model screening", { exact: true }).first()).toBeVisible();
-    await expect(page.getByRole("status")).toContainText(/national.default/);
+    await expect(page.getByRole("status").filter({ hasText: "Offline model screening." })).toContainText(/national.default/);
     await expect(page.getByRole("button", { name: /bind.*PolicyCenter|Issue.*bind/ })).toHaveCount(0);
     await page.reload();
-    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+    await expect(page.locator(".property-heading").getByRole("heading", { name, exact: true })).toBeVisible();
     await page.getByRole("link", { name: "Back to Manhattan map" }).click();
     await expect(page.getByRole("heading", { name: district, exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Return to all Manhattan" }).click();
@@ -89,6 +89,22 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     await expect(page).toHaveURL(/neighborhood=MN0102/);
   });
 
+  test("a failed address index can recover without losing the chosen neighborhood", async ({ page }) => {
+    let failAddresses = true;
+    await page.route("**/manhattan/context/addresses.json", route => failAddresses
+      ? route.fulfill({ status: 503, body: "unavailable" }) : route.continue());
+    await page.goto("/?neighborhood=MN0101");
+    await expect(page.getByRole("button", { name: "Retry addresses" })).toBeVisible();
+    await expect(page.getByRole("list", { name: "Properties", exact: true })).toBeVisible();
+    failAddresses = false;
+    await page.getByRole("button", { name: "Retry addresses" }).click();
+    await expect(page.getByRole("button", { name: "Retry addresses" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: district, exact: true })).toBeVisible();
+    await page.getByRole("searchbox", { name: "Find a property by address, BIN, or BBL" }).fill("207 FRONT STREET");
+    await expect(page.getByRole("button", { name: "Assess 207 FRONT STREET", exact: true }).first()).toBeVisible();
+    await expect(page).toHaveURL(/neighborhood=MN0101/);
+  });
+
   test("mobile directory and map controls fit the screen", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
@@ -112,7 +128,7 @@ test("real WebGL renderer loads and the transparent layer remains usable", async
   });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await expect(page.getByRole("button", { name: new RegExp(district) })).toBeVisible();
+  await expect(page.getByRole("button", { name: new RegExp(district) })).toBeVisible({ timeout: 30_000 });
   await expect(page.getByText("Click a neighborhood to explore", { exact: false })).toBeVisible({ timeout: 30_000 });
   await expect(page.locator("canvas")).toBeVisible({ timeout: 30_000 });
   const overview: ManhattanOverview = await (await page.request.get("/manhattan/overview.json")).json();
