@@ -31,3 +31,58 @@ hand-written numbers that assumed additive rows no longer apply. For example, S2
 saves $3,071.96/yr from the engine (the spec's $2,140 assumed additive rows), because credits are computed on the
 combined state, not summed per action. Clients must not sum `score_delta_pts` or per-row savings; they read
 `golden_simulations.json` offline or call `/v1/parcel/simulate-mitigation`.
+
+## D3 — Model v2: cited parameters and NRI-calibrated base rates (DECIDED: NRI-calibrated base rates, Rahul, 2026-10-17)
+
+Constants live in `backend/app/actuarial/constants.py` with source URL, date and a `validated` flag. Cited values
+replaced invented ones where a primary source exists: Hazus USACE-IWR RES1 depth-damage (flood body), the IBHS
+LA conflagration study (wildfire feature effect and near-total-loss tail), the Hurricane Sally study (FORTIFIED
+Roof frequency and severity), and Louisiana FORTIFIED discounts (South region). Wildfire and wind remain priors
+(`validated: false`).
+
+**Base rates.** Each peril's frequency intercept is solved in closed form so that a reference home in the tract
+(unmitigated, tract-typical era, no freeboard verification) matches the FEMA NRI building loss rate for the
+tract: FLOOD = IFLD + CFLD, WILDFIRE = WFIR, WIND_HAIL = HRCN + SWND + HAIL, as `EALB / EXPB` (loss rate among
+exposed buildings). The relativities then move a parcel away from the tract mean. Nothing is solved to a demo
+score, and no coefficient fitted to a golden output remains except the credibility channel weights (chosen in the
+pre-v2 build to hit the spec's published Z; flagged `internal:calibration` in the registry). The credibility prior
+is the tract-wide sum of NRI building loss rates (`EALB / BUILDVALUE`); OpenFEMA stays as a context row. NRI v1.20
+(`NRI_VER` field: December 2025), fetched 2026-10-17 for the three golden tracts into
+`backend/data/nri_reference_tracts.json`; `base_rates_for(nri_rates)` is the seam for the ingestion lane's client.
+
+Exposed-building basis (accepted by the coordinator): the target uses `EALB / EXPB`, not `EALB / BUILDVALUE`. The
+engine only runs a peril where the parcel is in that hazard, and the tract-wide denominator dilutes it with
+unexposed buildings. Example, S2 wildfire: 3.9 bps tract-wide against 84 bps among exposed buildings.
+`base_rates_for(nri, basis="all")` gives the tract-wide figure.
+
+| Case | v1 (pre-recalibration) | v2-stale (#18 at 70175a6) | v2-NRI |
+|---|---|---|---|
+| S1 baseline (tract prior) | 430 | 430 | 692 |
+| S1 verified | 765 | 726 | 823 |
+| S2 as found | 385 | 387 | 551 |
+| S2 + 3 golden actions | 630 | 585 (HITL 04) | 661 |
+| S3 | 815 | 746 | 850 |
+| S3 unpermitted | 780 (HITL 02) | 723 (HITL 02) | 850 (HITL 02) |
+| S2 3-action annual savings | $3,071.96 | $3,065.66 | $3,359.26 |
+
+Findings to read with the table:
+* **Escondido wildfire is zero in NRI** (WFIR_EALB = 0 for tract 06073020214). Wildfire for S3 therefore sits at the
+  0.01 bp rate floor, and S3 scores 850 with or without the unpermitted shed. This is kept, not tuned away. HITL 02
+  still fires because it keys on the detected shed, not on the score.
+* **S1 moved into Jefferson Parish.** The old centroid fell in an Orleans Parish tract (22071) although the address
+  and county FIPS say Jefferson (22051). The centroid is now in Metairie (tract 22051028900) so "412 Bayou Rd,
+  Jefferson Parish" is true; the ring geometries shifted with it. The H3 cell ids were not recomputed (no h3
+  library in the backend environment) and are stale for the new point.
+* **Mitigation rows are physical effects.** Each row holds credibility at the as-found weight, so no row is
+  negative (the S2 Class A roof row was -40 when its certificate's evidence was folded in; it is +11). Evidence
+  (more channels, a higher Z) is a separate effect that remains in the headline score for the selected actions: with
+  the Class A roof selected S2 still falls from 551 to 511, because the parcel is riskier than its tract.
+* **Freeboard is nullable** (`freeboard_delta_h_ft`, `est_ffe_ft`, `usgs_lag_ft`). A missing value is not read as
+  "at BFE": the model uses a documented default (-1.0 ft, `validated: false`), widens the flood uncertainty band
+  by 1.5x and sets `indicative_only`. The ingestion engine now writes `None` for a null BFE instead of 0.0.
+* **The "FAIR Plan underpricing" story is gone under NRI.** Indicated premium = net expected loss / (1 - 0.30 -
+  0.05). S2 as found: $11,987 indicated vs $11,200 filed (v2-stale showed $31k). S1: $619 vs $2,982. S3: $46 vs
+  $3,210. The expense and profit loads are placeholders (`validated: false`). The modeled mitigation credit uses
+  the non-flood raw `n * s` basis and sits beside, not in place of, the filed statutory credit.
+* The attribution rows are exact Shapley values over 8 factor groups plus one defined row, "in-hazard reference
+  home vs tract-wide average"; there is no remainder row.

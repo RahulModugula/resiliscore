@@ -112,9 +112,9 @@ export interface ParcelIdentity {
 export interface PublicHazardLayer {
   fema_flood_zone: string;
   bfe_ft_navd88: number | null;
-  usgs_lag_ft: number;
-  est_ffe_ft: number;
-  freeboard_delta_h_ft: number;
+  usgs_lag_ft: number | null;
+  est_ffe_ft: number | null;
+  freeboard_delta_h_ft: number | null; // null when BFE or elevation is unavailable
   hand_rel_elev_ft: number;
   twi_index: number;
   noaa_atlas15_p24h_100yr_in: number;

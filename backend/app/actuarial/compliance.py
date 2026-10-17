@@ -7,6 +7,7 @@ from dataclasses import replace
 from pydantic import BaseModel
 
 from app.actuarial import compound_model as cm
+from app.actuarial.base_rates import BaseRates
 from app.actuarial.credibility import posterior_lcr
 from app.actuarial.score_map import score_continuous
 from app.models.schemas import HitlStatus, ParcelScoreResponse, PrivateVerificationLayer, PublicHazardLayer
@@ -35,6 +36,7 @@ def numerical_jacobian(
     tract_prior_lcr: float,
     z: float,
     base: cm.Mitigations | None = None,
+    base_rates: BaseRates | None = None,
 ) -> dict[str, float]:
     """Central-difference d(score)/d(m_k) for every mitigation dose, holding Z and the prior fixed.
 
@@ -45,7 +47,8 @@ def numerical_jacobian(
 
     def score_at(m: cm.Mitigations) -> float:
         raw = cm.parcel_raw_lcr(
-            hazard, verification, state=state, year_built=year_built, firewise=firewise, mitigations=m
+            hazard, verification, state=state, year_built=year_built, firewise=firewise, mitigations=m,
+            base_rates=base_rates,
         )
         return score_continuous(posterior_lcr(raw, tract_prior_lcr, z))
 
@@ -72,7 +75,8 @@ def reference_jacobian() -> dict[str, float]:
         unpermitted_footprint_delta_sqft=0.0,
     )
     return numerical_jacobian(
-        hazard, verification, state="LA", year_built=1990, firewise=False, tract_prior_lcr=0.02, z=0.6
+        hazard, verification, state="LA", year_built=1990, firewise=False, tract_prior_lcr=0.02, z=0.6,
+        base_rates=BaseRates(flood=0.002, wildfire=0.004, wind=0.001),  # any positive rates: the proof is level-free
     )
 
 

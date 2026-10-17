@@ -74,9 +74,9 @@ class ParcelIdentity(_Strict):
 class PublicHazardLayer(_Strict):
     fema_flood_zone: str
     bfe_ft_navd88: float | None
-    usgs_lag_ft: float
-    est_ffe_ft: float
-    freeboard_delta_h_ft: float
+    usgs_lag_ft: float | None
+    est_ffe_ft: float | None
+    freeboard_delta_h_ft: float | None  # None when BFE or elevation is unavailable
     hand_rel_elev_ft: float
     twi_index: float
     noaa_atlas15_p24h_100yr_in: float

@@ -125,7 +125,7 @@ def test_verify_zone0_clearance():
 
 
 def test_query_usgs_freeboard():
-    out = mcp_server.query_usgs_freeboard(29.9657, -90.1032)
+    out = mcp_server.query_usgs_freeboard(29.984, -90.153)
     assert out["apn_uid"] == "02200100041200"
     assert out["freeboard_ft"] == 4.2
     with pytest.raises(ValueError):

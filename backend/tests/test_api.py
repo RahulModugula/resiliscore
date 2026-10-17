@@ -67,16 +67,16 @@ def test_score_needs_scenario_or_address(client):
     assert client.post("/v1/parcel/score", json={}).status_code == 422
 
 
-def test_s2_toggling_all_three_mitigations_gives_630_tier_2(client):
+def test_s2_toggling_all_three_mitigations_gives_661_tier_2(client):
     base = client.post("/v1/parcel/simulate-mitigation", json={"apn_uid": WUI_APN, "action_ids": []}).json()
-    assert base["actuarial_breakdown"]["resili_score"] == 385
+    assert base["actuarial_breakdown"]["resili_score"] == 551
     assert base["actuarial_breakdown"]["underwriting_tier"] == "TIER_3_DECLINE_ESCALATE"
 
     resp = client.post("/v1/parcel/simulate-mitigation", json={"apn_uid": WUI_APN, "action_ids": WUI_ACTIONS})
     assert resp.status_code == 200
     body = resp.json()
     Draft202012Validator(SCHEMA).validate(body)
-    assert body["actuarial_breakdown"]["resili_score"] == 630
+    assert body["actuarial_breakdown"]["resili_score"] == 661
     assert body["actuarial_breakdown"]["underwriting_tier"] == "TIER_2_CONDITIONAL"
     applied = {m["action_id"] for m in body["prescriptive_mitigations"] if m["currently_applied"]}
     assert applied >= set(WUI_ACTIONS)
@@ -116,7 +116,7 @@ def test_healthz_still_served(client):
 
 def test_unlisted_address_with_a_point_runs_the_pipeline(client):
     # Within the ingestion pin radius of the S1 centroid, so no network call is made.
-    body = {"address": "999 Other St, Jefferson Parish, LA", "lat": 29.9657, "lng": -90.1032,
+    body = {"address": "999 Other St, Jefferson Parish, LA", "lat": 29.984, "lng": -90.153,
             "county_fips": "22051", "state": "LA"}
     resp = client.post("/v1/parcel/score", json=body)
     assert resp.status_code == 200

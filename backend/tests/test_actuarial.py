@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator
 
 from app.actuarial import compliance
 from app.actuarial import compound_model as cm
+from app.actuarial.base_rates import context_for
 from app.actuarial.credibility import K, credibility, posterior_lcr
 from app.actuarial.optimizer import ACTIONS, evaluate, premium_discount, simulate
 from app.actuarial.score_map import score, score_continuous, spec_sigmoid, tier
@@ -44,15 +45,15 @@ def test_golden_reproduction(key):
 def test_simulate_baseline_matches_golden_headline_numbers():
     out = simulate(load(S1), [])
     b = out.actuarial_breakdown
-    assert (b.resili_score, b.underwriting_tier) == (765, "TIER_1_AUTO_BIND")
-    assert b.statutory_discount_pct == 38.0
-    assert b.annual_discounted_premium_usd == 2604.0
-    assert b.baseline_macro_score == 430
+    assert (b.resili_score, b.underwriting_tier) == (823, "TIER_1_AUTO_BIND")
+    assert b.statutory_discount_pct == 29.0
+    assert b.annual_discounted_premium_usd == 2982.0
+    assert b.baseline_macro_score == 692
 
 
-def test_s2_with_all_three_mitigations_scores_630_tier_2():
+def test_s2_with_all_three_mitigations_scores_661_tier_2():
     out = simulate(load(S2), S2_ALL)
-    assert out.actuarial_breakdown.resili_score == 630
+    assert out.actuarial_breakdown.resili_score == 661
     assert out.actuarial_breakdown.underwriting_tier == "TIER_2_CONDITIONAL"
     assert out.actuarial_breakdown.credibility_weight_z > load(S2).actuarial_breakdown.credibility_weight_z
     assert all(m.currently_applied for m in out.prescriptive_mitigations if m.action_id in S2_ALL)
@@ -68,10 +69,25 @@ def test_unknown_action_is_rejected():
         simulate(load(S2), ["NOT_AN_ACTION"])
 
 
-def test_each_selected_action_improves_s2():
-    base = simulate(load(S2), []).actuarial_breakdown.resili_score
-    for action in (a.action_id for a in ACTIONS if a.action_id in S2_ALL):
-        assert simulate(load(S2), [action]).actuarial_breakdown.resili_score > base
+def test_each_selected_action_lowers_s2_modeled_loss():
+    r = load(S2)
+    before = evaluate(r, r.private_verification_layer).raw_lcr
+    for action in (a for a in ACTIONS if a.action_id in S2_ALL):
+        assert evaluate(r, action.with_(r.private_verification_layer)).raw_lcr < before, action.action_id
+
+
+def test_verification_evidence_can_lower_the_headline_score_but_never_a_mitigation_row():
+    # Credibility is information, not mitigation. The WPH certificate raises Z, which moves the posterior toward
+    # S2's own (worse than tract) loss rate. The row holds Z at the as-found value, so it is the physical effect
+    # alone and positive; the headline score with the action selected carries the evidence leg and can fall.
+    r = load(S2)
+    row = next(m for m in simulate(r, []).prescriptive_mitigations if m.action_id == "CA_IBHS_WPH_CLASS_A_ROOF")
+    assert row.score_delta_pts > 0
+    before = evaluate(r, r.private_verification_layer)
+    action = next(a for a in ACTIONS if a.action_id == "CA_IBHS_WPH_CLASS_A_ROOF")
+    after = evaluate(r, action.with_(r.private_verification_layer))
+    assert after.raw_lcr < before.raw_lcr and after.credibility.z > before.credibility.z
+    assert after.score < before.score
 
 
 def test_s3_unpermitted_fires_hitl_02_and_base_s3_does_not():
@@ -95,9 +111,9 @@ def test_la_fortified_grant_payback_and_resale():
 
 def test_discount_caps_and_flood_excluded_from_homeowners_premium():
     r = load(S3)
-    assert 0.20 < premium_discount(r, r.private_verification_layer) <= 0.30  # wildfire cap 30%, wind 12.4%
+    assert 0.15 < premium_discount(r, r.private_verification_layer) <= 0.30  # wildfire cap 30%, wind 12.4%
     s1 = load(S1)
-    assert premium_discount(s1, s1.private_verification_layer) == 0.38  # wind only; flood is NFIP
+    assert premium_discount(s1, s1.private_verification_layer) == 0.29  # wind only; flood is NFIP
     s2 = load(S2)
     assert premium_discount(s2, s2.private_verification_layer) == 0.0
 
@@ -167,11 +183,14 @@ def test_posterior_is_the_credibility_weighted_blend():
 
 
 # --- compound model ---
-def test_ddf_is_zero_at_floor_and_increasing():
-    assert cm.ddf(-2.0) == 0.0 and cm.ddf(-5.0) == 0.0
-    depths = [-1.9 + 0.1 * i for i in range(200)]
-    assert all(cm.ddf(a) < cm.ddf(b) for a, b in itertools.pairwise(depths))
-    assert 0.09 < cm.ddf(0.0) < 0.11  # see module docstring: spec constants give ~10.2%, not 13.4%
+def test_ddf_matches_the_hazus_table_and_clamps():
+    # Hazus DmgFnId 129 (USACE-IWR RES1 one story, no basement, structure), percent at -2..+8 ft
+    table = {-2: 0, -1: 3, 0: 13, 1: 23, 2: 32, 3: 40, 4: 47, 5: 53, 6: 59, 7: 63, 8: 67}
+    for depth, pct in table.items():
+        assert cm.ddf(float(depth)) == pytest.approx(pct / 100)
+    assert cm.ddf(-5.0) == 0.0 and cm.ddf(30.0) == pytest.approx(0.81)
+    depths = [-2.0 + 0.1 * i for i in range(181)]
+    assert all(cm.ddf(a) <= cm.ddf(b) for a, b in itertools.pairwise(depths))
 
 
 def test_tgpd_mean_lies_inside_the_truncation_interval():
@@ -183,11 +202,11 @@ def test_peril_split_rows_are_consistent_and_dollar_valued():
     r = load(S2)
     rows = cm.peril_split(
         r.public_hazard_layer, r.private_verification_layer, r.parcel_identity.rcv_usd,
-        state="CA", year_built=r.parcel_identity.year_built, firewise=False,
+        state="CA", year_built=r.parcel_identity.year_built, firewise=False, base_rates=context_for(r)[0],
     )
     assert [x.peril for x in rows] == ["WILDFIRE", "WIND_HAIL"]
     for x in rows:
-        assert x.peril_aal_usd == pytest.approx(x.expected_freq_n * x.expected_sev_s, rel=1e-3)
+        assert x.peril_aal_usd == pytest.approx(x.expected_freq_n * x.expected_sev_s, rel=1e-3, abs=0.1)
 
 
 # --- HITL ---
@@ -248,27 +267,31 @@ def test_tx_parcel_does_not_crash_and_gets_no_grant():
 def test_aal_is_posterior_times_rcv_and_rows_sum_to_it(key):
     r = load(key)
     b = simulate(r, []).actuarial_breakdown
-    assert b.expected_annual_loss_usd == pytest.approx(b.posterior_lcr * r.parcel_identity.rcv_usd, rel=1e-3)
+    assert b.expected_annual_loss_usd == pytest.approx(b.posterior_lcr * r.parcel_identity.rcv_usd, rel=1e-3, abs=0.5)  # posterior is rounded to 6 dp
     assert sum(p.peril_aal_usd for p in b.peril_split) == pytest.approx(b.expected_annual_loss_usd, abs=0.05)
 
 
-def test_s1_aal_matches_golden_1080():
-    assert simulate(load(S1), []).actuarial_breakdown.expected_annual_loss_usd == pytest.approx(1080.0, abs=5)
+def test_s1_aal_is_the_nri_calibrated_engine_value_not_the_spec_1080():
+    assert simulate(load(S1), []).actuarial_breakdown.expected_annual_loss_usd == pytest.approx(430.91, abs=0.01)
 
 
 # --- id handling ---
 def test_ibhs_wph_plus_is_a_larger_action_than_the_class_a_roof_action():
     plus = simulate(load(S2), ["zone0_clear", "ember_vents_eaves", "ibhs_wph_plus"])
-    assert plus.actuarial_breakdown.resili_score == 644
-    assert plus.actuarial_breakdown.resili_score > simulate(load(S2), S2_ALL).actuarial_breakdown.resili_score
+    all_three = simulate(load(S2), S2_ALL).actuarial_breakdown
+    assert plus.actuarial_breakdown.resili_score == 658
+    # same physical flags, but the PLUS certificate carries more evidence weight and the full 30% wildfire credit
+    assert plus.actuarial_breakdown.credibility_weight_z > all_three.credibility_weight_z
+    assert plus.actuarial_breakdown.statutory_discount_pct >= all_three.statutory_discount_pct
 
 
 # --- full chain ---
 @pytest.mark.parametrize("key", [S1, S2, S3, S3_BAD])
-def test_no_applicable_action_lowers_the_score(key):
+def test_no_applicable_action_raises_the_modeled_loss(key):
     r = load(key)
-    base = simulate(r, []).actuarial_breakdown.resili_score
+    v = r.private_verification_layer
+    base = evaluate(r, v).raw_lcr
     applicable = [m.action_id for m in simulate(r, []).prescriptive_mitigations]
     assert applicable
-    for action in applicable:
-        assert simulate(r, [action]).actuarial_breakdown.resili_score >= base, action
+    for action in (a for a in ACTIONS if a.action_id in applicable):
+        assert evaluate(r, action.with_(v)).raw_lcr <= base + 1e-12, action.action_id

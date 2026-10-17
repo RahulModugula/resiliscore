@@ -35,6 +35,12 @@ def score_continuous(lcr: float) -> float:
     return float(np.interp(math.log(lcr), _LN_LCR, _SCORES))
 
 
+def score_continuous_array(lcr: np.ndarray) -> np.ndarray:
+    """Vectorised score_continuous for Monte Carlo draws."""
+    safe = np.maximum(lcr, 1e-12)
+    return np.where(lcr <= 0, float(SCORE_MAX), np.interp(np.log(safe), _LN_LCR, _SCORES))
+
+
 def score(lcr: float) -> int:
     return min(SCORE_MAX, max(SCORE_MIN, round(score_continuous(lcr))))
 

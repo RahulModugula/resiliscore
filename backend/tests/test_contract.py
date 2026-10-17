@@ -8,6 +8,7 @@ import pytest
 from jsonschema import Draft202012Validator
 from pydantic import BaseModel, ValidationError
 
+from app.actuarial.score_map import score
 from app.models.schemas import ParcelScoreResponse
 
 CONTRACTS = Path(__file__).resolve().parents[2] / "contracts"
@@ -134,26 +135,26 @@ def test_scenario_1_numbers():
     s = GOLDEN["SCENARIO_1_LA_FLOOD"]
     a, h = s["actuarial_breakdown"], s["public_hazard_layer"]
     assert s["parcel_identity"]["rcv_usd"] == 450000
-    assert a["baseline_macro_score"] == 430
-    assert a["resili_score"] == 765
+    assert a["baseline_macro_score"] == 692
+    assert a["resili_score"] == 823
     assert a["credibility_weight_z"] == 0.94
     assert a["underwriting_tier"] == "TIER_1_AUTO_BIND"
-    assert a["statutory_discount_pct"] == 38
-    assert a["tract_prior_lcr"] == 0.0185
-    assert a["posterior_lcr"] == pytest.approx(0.0024, abs=1e-5)
-    assert a["expected_annual_loss_usd"] == pytest.approx(1080, abs=5)
+    assert a["statutory_discount_pct"] == 29
+    assert a["tract_prior_lcr"] == pytest.approx(0.0038, abs=1e-6)
+    assert a["posterior_lcr"] == pytest.approx(0.000958, abs=1e-6)
+    assert a["expected_annual_loss_usd"] == pytest.approx(430.91, abs=0.01)
     assert (h["fema_flood_zone"], h["bfe_ft_navd88"], h["usgs_lag_ft"], h["est_ffe_ft"]) == ("AE", 9.0, 7.2, 13.2)
     assert h["freeboard_delta_h_ft"] == pytest.approx(h["est_ffe_ft"] - h["bfe_ft_navd88"])
     assert h["hand_rel_elev_ft"] == 6.4
-    assert a["annual_discounted_premium_usd"] == pytest.approx(a["annual_base_premium_usd"] * 0.62)
+    assert a["annual_discounted_premium_usd"] == pytest.approx(a["annual_base_premium_usd"] * 0.71)
 
 
 def test_scenario_2_numbers():
     s = GOLDEN["SCENARIO_2_CA_WUI"]
     a, p = s["actuarial_breakdown"], s["private_verification_layer"]
     assert s["parcel_identity"]["rcv_usd"] == 850000 and s["parcel_identity"]["year_built"] == 1974
-    assert a["resili_score"] == 385 and a["underwriting_tier"] == "TIER_3_DECLINE_ESCALATE"
-    assert a["tract_prior_lcr"] == 0.021 and a["posterior_lcr"] == pytest.approx(0.0245, abs=1e-5)
+    assert a["resili_score"] == 551 and a["underwriting_tier"] == "TIER_3_DECLINE_ESCALATE"
+    assert a["tract_prior_lcr"] == pytest.approx(0.002007, abs=1e-6) and a["posterior_lcr"] == pytest.approx(0.009308, abs=1e-6)
     assert s["public_hazard_layer"]["landfire_fbfm40_code"] == "SH7" and s["public_hazard_layer"]["slope_deg"] == 28
     assert p["cv_roof_class"] == "WOOD_SHAKE_UNRATED" and p["cv_overhang_ft"] == 16.5
     mits = s["prescriptive_mitigations"]
@@ -167,7 +168,7 @@ def test_scenario_3_numbers():
     s = GOLDEN["SCENARIO_3_ESCONDIDO_HITL"]
     a, p = s["actuarial_breakdown"], s["private_verification_layer"]
     assert s["parcel_identity"]["rcv_usd"] == 720000
-    assert a["resili_score"] == 815 and a["credibility_weight_z"] == 0.97 and a["posterior_lcr"] == pytest.approx(0.0018, abs=1e-5)
+    assert a["resili_score"] == 850 and a["credibility_weight_z"] == 0.97 and a["posterior_lcr"] == pytest.approx(0.000043, abs=1e-6)
     assert a["underwriting_tier"] == "TIER_1_AUTO_BIND"
     assert (p["ibhs_wph_tier"], p["cv_roof_class"], p["cv_zone0_clear"], p["iot_shutoff_active"]) == (
         "PLUS", "CLASS_A_IMPACT_4", True, True)
@@ -183,8 +184,9 @@ def test_scenario_3_unpermitted_variant():
     assert v["hitl_status"]["escalated"] is True
     assert v["hitl_status"]["trigger_code"] == "HITL_TRIGGER_02_UNPERMITTED_ADDITION"
     assert v["hitl_status"]["trigger_reason"] and v["hitl_status"]["recommended_underwriter_action"]
-    # The variant's missing shed is real wildfire exposure, so the engine scores it below the base parcel.
-    assert v["actuarial_breakdown"]["resili_score"] == 780 < base["actuarial_breakdown"]["resili_score"]
+    # NRI reports no wildfire loss in this tract, so the unpermitted shed barely moves the score (both sit at the cap).
+    assert v["actuarial_breakdown"]["resili_score"] == base["actuarial_breakdown"]["resili_score"] == 850
+    assert v["actuarial_breakdown"]["expected_annual_loss_usd"] > base["actuarial_breakdown"]["expected_annual_loss_usd"]
     assert v["parcel_identity"]["address"] == base["parcel_identity"]["address"]
 
 
@@ -224,12 +226,11 @@ def test_internal_arithmetic_consistency(key):
     assert a["annual_discounted_premium_usd"] == pytest.approx(
         a["annual_base_premium_usd"] * (1 - a["statutory_discount_pct"] / 100), abs=0.5)
     assert a["underwriting_tier"] == _band(a["resili_score"])
-    # Tract-prior-only baselines are all sub-580 in the goldens (prior LCRs are 160-210 bps).
-    assert _band(a["baseline_macro_score"]) == "TIER_3_DECLINE_ESCALATE"
+    assert a["baseline_macro_score"] == score(a["tract_prior_lcr"])
     for m in GOLDEN[key]["prescriptive_mitigations"]:
         assert m["net_capex_usd"] == pytest.approx(m["gross_capex_usd"] - m["grant_subsidy_usd"])
         if m["annual_premium_savings_usd"] > 0:
-            assert m["payback_years"] == pytest.approx(m["net_capex_usd"] / m["annual_premium_savings_usd"], abs=0.01)
+            assert m["payback_years"] == pytest.approx(m["net_capex_usd"] / m["annual_premium_savings_usd"], rel=0.05)  # savings are rounded to cents
 
 
 def _v2_payload():
@@ -266,7 +267,8 @@ def test_v2_fields_validate_in_schema_and_model():
 
 
 def test_v2_defaults_when_absent():
-    model = ParcelScoreResponse.model_validate(GOLDEN[KEYS[0]])
+    bare = {k: v for k, v in GOLDEN[KEYS[0]].items() if k not in V2_OPTIONAL | {"factor_contributions"}}
+    model = ParcelScoreResponse.model_validate(bare)
     assert model.input_provenance == [] and model.uncertainty is None and model.indicative_only is False
 
 

@@ -22,7 +22,7 @@ from app.main import app
 
 FIXTURES = Path(__file__).parent / "fixtures"
 AUSTIN = {"lat": 30.2672, "lng": -97.7431, "county": "48453", "tract": "48453001103", "state": "TX"}
-NOLA = (29.9657, -90.1032)  # S1 golden centroid
+NOLA = (29.984, -90.153)  # S1 golden centroid
 
 
 def fixture(name: str) -> str:

@@ -1,0 +1,195 @@
+{
+  "source": "FEMA National Risk Index, Census Tracts",
+  "source_url": "https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0",
+  "nri_version": "v1.20",
+  "nri_ver_field": "December 2025",
+  "fetched": "2026-10-17",
+  "fields": "<HAZ>_EALB = expected annual loss, building value ($); <HAZ>_EXPB = exposed building value ($); <HAZ>_AFREQ = annualized frequency; BUILDVALUE = total tract building value ($). Field names verified from the layer metadata (?f=json) on the fetch date.",
+  "tracts": [
+    {
+      "tractfips": "22051028900",
+      "stcofips": "22051",
+      "scenario_ids": [
+        "SCENARIO_1_LA_FLOOD"
+      ],
+      "point_lng_lat": [
+        -90.153,
+        29.984
+      ],
+      "buildvalue_usd": 1171280825,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 573995.757,
+          "expb_usd": 1170753335.1501005,
+          "afreq": 2.0357142857142856
+        },
+        "CFLD": {
+          "ealb_usd": 15094.355230000006,
+          "expb_usd": 1170270276.372131,
+          "afreq": 0.012
+        },
+        "WFIR": {
+          "ealb_usd": 0,
+          "expb_usd": 0,
+          "afreq": 0
+        },
+        "HRCN": {
+          "ealb_usd": 3816260.364452689,
+          "expb_usd": 1171280825,
+          "afreq": 0.27687250811188663
+        },
+        "SWND": {
+          "ealb_usd": 2350.83741995164,
+          "expb_usd": 1171280825,
+          "afreq": 1.024155236842837
+        },
+        "HAIL": {
+          "ealb_usd": 43605.143996308456,
+          "expb_usd": 1171280825,
+          "afreq": 0.9599399355141023
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "AE",
+        "bfe_ft_navd88": 9.0,
+        "usgs_lag_ft": 7.2,
+        "est_ffe_ft": 13.2,
+        "freeboard_delta_h_ft": 4.2,
+        "hand_rel_elev_ft": 6.4,
+        "twi_index": 9.8,
+        "noaa_atlas15_p24h_100yr_in": 13.1,
+        "atlas15_cmip6_mult": 1.12,
+        "landfire_fbfm40_code": "NB1",
+        "slope_deg": 0.4,
+        "wui_class": "NON_WUI",
+        "openfema_tract_claim_count": 1432,
+        "openfema_tract_mean_lcr": 0.0185,
+        "wrc_burn_probability": null
+      }
+    },
+    {
+      "tractfips": "06037460200",
+      "stcofips": "06037",
+      "scenario_ids": [
+        "SCENARIO_2_CA_WUI"
+      ],
+      "point_lng_lat": [
+        -118.1432,
+        34.192
+      ],
+      "buildvalue_usd": 915306337,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 1477623.5462999998,
+          "expb_usd": 915306098.5296999,
+          "afreq": 3.9642857142857144
+        },
+        "CFLD": {
+          "ealb_usd": 0,
+          "expb_usd": 0,
+          "afreq": 0
+        },
+        "WFIR": {
+          "ealb_usd": 357351.566083465,
+          "expb_usd": 42537142.788447276,
+          "afreq": 0.03090788462762825
+        },
+        "HRCN": {
+          "ealb_usd": 0,
+          "expb_usd": 915306337,
+          "afreq": 0
+        },
+        "SWND": {
+          "ealb_usd": 82.58337609640596,
+          "expb_usd": 915306337,
+          "afreq": 0.1810686129928778
+        },
+        "HAIL": {
+          "ealb_usd": 1600.5240372029152,
+          "expb_usd": 915306337,
+          "afreq": 0.12292265713342199
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "X",
+        "bfe_ft_navd88": null,
+        "usgs_lag_ft": 1342.0,
+        "est_ffe_ft": 1344.5,
+        "freeboard_delta_h_ft": 0.0,
+        "hand_rel_elev_ft": 210.0,
+        "twi_index": 4.1,
+        "noaa_atlas15_p24h_100yr_in": 6.4,
+        "atlas15_cmip6_mult": 1.08,
+        "landfire_fbfm40_code": "SH7",
+        "slope_deg": 28.0,
+        "wui_class": "INTERMIX",
+        "openfema_tract_claim_count": 3,
+        "openfema_tract_mean_lcr": 0.0004,
+        "wrc_burn_probability": null
+      }
+    },
+    {
+      "tractfips": "06073020214",
+      "stcofips": "06073",
+      "scenario_ids": [
+        "SCENARIO_3_ESCONDIDO_HITL",
+        "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED"
+      ],
+      "point_lng_lat": [
+        -117.0861,
+        33.1289
+      ],
+      "buildvalue_usd": 1426686220,
+      "hazards": {
+        "IFLD": {
+          "ealb_usd": 1989977.6466999997,
+          "expb_usd": 1426685883.7349005,
+          "afreq": 7.892857142857143
+        },
+        "CFLD": {
+          "ealb_usd": 0,
+          "expb_usd": 333002854.8270988,
+          "afreq": 0.002
+        },
+        "WFIR": {
+          "ealb_usd": 0,
+          "expb_usd": 0,
+          "afreq": 0
+        },
+        "HRCN": {
+          "ealb_usd": 1.7120234928,
+          "expb_usd": 1426686220,
+          "afreq": 0.01
+        },
+        "SWND": {
+          "ealb_usd": 928.9443021043431,
+          "expb_usd": 1426686220,
+          "afreq": 0.20598631202859494
+        },
+        "HAIL": {
+          "ealb_usd": 2225.032756992435,
+          "expb_usd": 1426686220,
+          "afreq": 0.10963372122710612
+        }
+      },
+      "reference_hazard": {
+        "fema_flood_zone": "X",
+        "bfe_ft_navd88": null,
+        "usgs_lag_ft": 702.0,
+        "est_ffe_ft": 704.0,
+        "freeboard_delta_h_ft": 0.0,
+        "hand_rel_elev_ft": 95.0,
+        "twi_index": 5.3,
+        "noaa_atlas15_p24h_100yr_in": 7.2,
+        "atlas15_cmip6_mult": 1.09,
+        "landfire_fbfm40_code": "GS2",
+        "slope_deg": 9.0,
+        "wui_class": "INTERFACE",
+        "openfema_tract_claim_count": 11,
+        "openfema_tract_mean_lcr": 0.0012,
+        "wrc_burn_probability": null
+      }
+    }
+  ],
+  "reference_hazard_note": "Hazard-layer values of the reference parcel in each tract (contracts/golden_scenarios.json). They stand in for tract-typical rain, terrain and fuel when the intercept is solved; the parcel's own values are then relativities. Not NRI data. Replace with tract medians when the ingestion lane supplies them."
+}

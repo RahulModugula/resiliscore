@@ -7,18 +7,20 @@ calibrated so the golden scenarios land on their published credibility factors (
 
 from dataclasses import dataclass
 
+from app.actuarial.constants import get as c
 from app.models.schemas import PrivateVerificationLayer
 
-SIGMA2_EVPV = 0.6  # expected process variance (within-parcel sensor noise)
-TAU2_VHM = 0.75  # variance of hypothetical means (between-parcel heterogeneity)
+SIGMA2_EVPV = c("credibility.sigma2_evpv")  # expected process variance (within-parcel sensor noise); prior
+TAU2_VHM = c("credibility.tau2_vhm")  # variance of hypothetical means (between-parcel heterogeneity); prior
 K = SIGMA2_EVPV / TAU2_VHM
 
-W_LIDAR = 0.6  # 1 m LiDAR is present for every parcel
-W_CV = 0.775  # scaled by cv_confidence
-W_ELEV_CERT = 7.0
-W_IOT = 8.0
-W_IBHS_FORTIFIED = {"NONE": 0.0, "ROOF": 4.2, "SILVER": 6.0, "GOLD": 8.0}
-W_IBHS_WPH = {"NONE": 0.0, "BASE": 9.0, "PLUS": 16.5}
+_W = c("credibility.channel_weights")
+W_LIDAR = _W["lidar"]  # 1 m LiDAR is present for every parcel
+W_CV = _W["cv"]  # scaled by cv_confidence
+W_ELEV_CERT = _W["elev_cert"]
+W_IOT = _W["iot"]
+W_IBHS_FORTIFIED = {"NONE": 0.0, **_W["fortified"]}
+W_IBHS_WPH = {"NONE": 0.0, **_W["wph"]}
 
 
 @dataclass(frozen=True)
