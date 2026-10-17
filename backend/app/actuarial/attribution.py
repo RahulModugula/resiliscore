@@ -21,12 +21,14 @@ from itertools import combinations
 from math import factorial
 
 from app.actuarial import compound_model as cm
+from app.actuarial import nyc
 from app.actuarial.base_rates import BaseRates
 from app.actuarial.constants import get as c
 from app.actuarial.credibility import K, channel_weights, posterior_lcr
 from app.actuarial.score_map import score_continuous
 from app.models.schemas import (
     FactorContribution,
+    NycLayer,
     ParcelScoreResponse,
     PrivateVerificationLayer,
     PublicHazardLayer,
@@ -52,6 +54,8 @@ class State:
     dropped_channels: frozenset[str]
     year_built: int
     firewise: bool
+    nyc_layer: NycLayer | None = None
+    nyc_installed: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -87,6 +91,7 @@ def shapley(n: int, value: Callable[[frozenset[int]], float]) -> list[float]:
 def _groups(
     r: ParcelScoreResponse, v: PrivateVerificationLayer, doses: cm.Mitigations, base_rates: BaseRates,
     firewise: bool,
+    installed: frozenset[str] = frozenset(),
 ) -> list[Group]:
     h = r.public_hazard_layer
     ref = base_rates.reference_hazard or h
@@ -120,6 +125,16 @@ def _groups(
             "Wildfire site (canopy overhang, Firewise)", v.cv_overhang_ft, "verification layer, regulatory factors",
             lambda s: replace(s, doses=replace(s.doses, canopy_trim=1.0), firewise=False),
         ))
+    if r.nyc is not None:
+        groups.append(Group(
+            "NYC site (DEP class, basement, 311, FloodNet, Sandy)", r.nyc.bbl, "NYC layer",
+            lambda s: replace(s, nyc_layer=nyc.reference_layer()),
+        ))
+        if installed:
+            groups.append(Group(
+                "NYC flood retrofits", True, "mitigation dose (NYC)",
+                lambda s: replace(s, nyc_installed=frozenset()),
+            ))
     ref_year = int(c("nri.reference_year_built"))
     if r.parcel_identity.year_built != ref_year:
         groups.append(Group(
@@ -130,23 +145,30 @@ def _groups(
 
 
 def contributions(
-    r: ParcelScoreResponse, v: PrivateVerificationLayer, *, base_rates: BaseRates, prior: float
+    r: ParcelScoreResponse,
+    v: PrivateVerificationLayer,
+    *,
+    base_rates: BaseRates,
+    prior: float,
+    nyc_installed: frozenset[str] = frozenset(),
 ) -> list[FactorContribution]:
     doses = cm.mitigations_from(v)
     firewise = r.regulatory_compliance.ca_2644_9_factors.cat_a_firewise_usa
-    full_state = State(r.public_hazard_layer, doses, frozenset(), r.parcel_identity.year_built, firewise)
+    full_state = State(
+        r.public_hazard_layer, doses, frozenset(), r.parcel_identity.year_built, firewise, r.nyc, nyc_installed
+    )
     weights = channel_weights(v)
 
     def score_of(s: State) -> float:
         terms = cm.peril_terms(
             s.hazard, v, state=r.parcel_identity.state, year_built=s.year_built, firewise=s.firewise,
-            mitigations=s.doses, base_rates=base_rates,
+            mitigations=s.doses, base_rates=base_rates, nyc_layer=s.nyc_layer, nyc_installed=s.nyc_installed,
         )
         raw = sum(t.n * t.s for t in terms)
         w = sum(0.0 if k in s.dropped_channels else x for k, x in weights.items())
         return score_continuous(posterior_lcr(raw, prior, w / (w + K)))
 
-    groups = _groups(r, v, doses, base_rates, firewise)
+    groups = _groups(r, v, doses, base_rates, firewise, nyc_installed)
 
     def coalition(members: frozenset[int]) -> float:
         state = full_state

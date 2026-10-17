@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Literal
 
 from app.actuarial import constants
+from app.actuarial.constants import get as c_get
 from app.ingestion import nri
 from app.ingestion.rasters import distance_m
 from app.models.schemas import ParcelScoreResponse, PublicHazardLayer
@@ -69,16 +70,34 @@ class BaseRates:
     wildfire: float
     wind: float
     reference_hazard: PublicHazardLayer | None = None
+    pluvial: float = 0.0  # NYC only: the pluvial share of the NRI inland-flood rate
+    sewer: float = 0.0  # NYC only: the sewer-backup share
 
     def for_peril(self, peril: str) -> float:
-        return {"FLOOD": self.flood, "WILDFIRE": self.wildfire, "WIND_HAIL": self.wind}[peril]
+        return {
+            "FLOOD": self.flood, "WILDFIRE": self.wildfire, "WIND_HAIL": self.wind,
+            "PLUVIAL": self.pluvial, "SEWER_BACKUP": self.sewer,
+        }[peril]
 
 
-def base_rates_for(nri: NriRates, basis: Literal["exposed", "all"] = "exposed") -> BaseRates:
-    """Seam for any NRI source: the reference-home loss rate per peril for a tract."""
+def base_rates_for(
+    nri: NriRates, basis: Literal["exposed", "all"] = "exposed", *, nyc: bool = False
+) -> BaseRates:
+    """Seam for any NRI source: the reference-home loss rate per peril for a tract.
+
+    With `nyc` the inland-flood (IFLD) rate is divided among the mapped-zone, pluvial and sewer-backup perils by the
+    registered shares and the coastal rate (CFLD) stays with FLOOD, so the tract flood total is unchanged."""
+    flood, wildfire, wind = (nri.loss_rate(p, basis) for p in ("FLOOD", "WILDFIRE", "WIND_HAIL"))
+    if not nyc:
+        return BaseRates(flood, wildfire, wind, reference_hazard=nri.reference_hazard)
+    ifld = nri.ealb_usd.get("IFLD", 0.0)
+    exposed = nri.expb_usd.get("IFLD", 0.0)
+    denominator = exposed if basis == "exposed" and exposed > 0 else nri.buildvalue_usd
+    inland = ifld / denominator if denominator > 0 else 0.0
+    share = c_get("nyc.ifld_split")
     return BaseRates(
-        *(nri.loss_rate(p, basis) for p in ("FLOOD", "WILDFIRE", "WIND_HAIL")),
-        reference_hazard=nri.reference_hazard,
+        flood=flood - inland + share["FLOOD"] * inland, wildfire=wildfire, wind=wind,
+        reference_hazard=nri.reference_hazard, pluvial=share["PLUVIAL"] * inland, sewer=share["SEWER_BACKUP"] * inland,
     )
 
 
@@ -137,7 +156,9 @@ def resolve(r: ParcelScoreResponse, nri: NriRates | None) -> tuple[NriRates, boo
     return tract, not exact
 
 
-def context_for(r: ParcelScoreResponse, nri: NriRates | None = None) -> tuple[BaseRates, float]:
+def context_for(
+    r: ParcelScoreResponse, nri: NriRates | None = None, *, nyc: bool = False
+) -> tuple[BaseRates, float]:
     """(base rates, tract prior LCR) for the parcel's tract: `nri` when given, else the nearest reference tract."""
     tract = resolve(r, nri)[0]
-    return base_rates_for(tract), tract.tract_prior_lcr
+    return base_rates_for(tract, nyc=nyc), tract.tract_prior_lcr

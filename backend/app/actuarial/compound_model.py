@@ -21,14 +21,16 @@ Notes.
 """
 
 import math
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, replace
 from statistics import NormalDist
 
 import numpy as np
 
+from app.actuarial import nyc
 from app.actuarial.base_rates import BaseRates, intercept_for
 from app.actuarial.constants import get as c
-from app.models.schemas import PerilSplit, PrivateVerificationLayer, PublicHazardLayer
+from app.actuarial.nyc import NycDoses
+from app.models.schemas import NycLayer, PerilSplit, PrivateVerificationLayer, PublicHazardLayer
 
 U_TAIL = c("tail.splice_u")  # catastrophic splice threshold u_p
 _PHI = NormalDist().cdf
@@ -83,9 +85,18 @@ class Mitigations:
     roof_impact_class4: float = 0.0
     roof_fortified: float = 0.0
     water_shutoff: float = 0.0
+    # NYC retrofits (nyc.py): not read from the verification layer; the caller passes them as installed.
+    backwater_valve: float = 0.0
+    sump_pump_battery: float = 0.0
+    flood_vents: float = 0.0
+    dry_floodproofing: float = 0.0
+    elevated_mechanicals: float = 0.0
+    cellar_reversal: float = 0.0
 
 
+FLOOD_FAMILY = ("FLOOD", "PLUVIAL", "SEWER_BACKUP")  # NFIP / flood coverage, outside the homeowners credits
 MITIGATION_NAMES = tuple(f.name for f in fields(Mitigations))
+NYC_DOSE_NAMES = tuple(f.name for f in fields(NycDoses))
 
 
 @dataclass(frozen=True)
@@ -144,15 +155,32 @@ def fuel_index(code: str) -> float:
     return FUEL_FAMILY.get(code[:2], FUEL_DEFAULT)
 
 
-def active_perils(hazard: PublicHazardLayer) -> list[str]:
-    """Flood in FEMA special flood hazard areas (A/V zones), wildfire in the WUI, wind/hail everywhere."""
+def active_perils(hazard: PublicHazardLayer, nyc_layer: NycLayer | None = None) -> list[str]:
+    """Flood in FEMA special flood hazard areas (A/V zones), wildfire in the WUI, wind/hail everywhere, and
+    pluvial and sewer backup wherever the NYC layer is present."""
     perils = []
     if hazard.fema_flood_zone[:1] in ("A", "V"):
         perils.append("FLOOD")
     if hazard.wui_class != "NON_WUI":
         perils.append("WILDFIRE")
     perils.append("WIND_HAIL")
+    if nyc_layer is not None:
+        perils.extend(nyc.NYC_PERILS)
     return perils
+
+
+def nyc_doses(m: Mitigations) -> NycDoses:
+    return NycDoses(**{name: getattr(m, name) for name in NYC_DOSE_NAMES})
+
+
+def effective_freeboard(h: PublicHazardLayer, nyc_layer: NycLayer | None) -> float | None:
+    """Freeboard (first floor minus BFE) in ft: the hazard layer's when present, otherwise from the NYC ground
+    elevation plus the first-floor height above grade, otherwise None (the caller uses a documented default)."""
+    if h.freeboard_delta_h_ft is not None:
+        return h.freeboard_delta_h_ft
+    if nyc_layer is not None and nyc_layer.ground_elevation_ft is not None and h.bfe_ft_navd88 is not None:
+        return nyc_layer.ground_elevation_ft + float(c("nyc.first_floor_above_grade_ft")) - h.bfe_ft_navd88
+    return None
 
 
 def _sigmoid(x: float) -> float:
@@ -211,15 +239,35 @@ def sev_params(peril: str, body: float, m: Mitigations, delta_h: float = 0.0) ->
     return SevParams(min(U_TAIL, body * psi), p_tail, sigma, xi, U_TAIL)
 
 
-def _flood(h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations, a: float) -> PerilTerm:
-    dh = h.freeboard_delta_h_ft if h.freeboard_delta_h_ft is not None else c("flood.freeboard_default_ft")
+def _flood(
+    h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations, a: float, nyc_layer: NycLayer | None = None
+) -> PerilTerm:
+    free = effective_freeboard(h, nyc_layer)
+    dh = free if free is not None else c("flood.freeboard_default_ft")
     d100 = h.noaa_atlas15_p24h_100yr_in * h.atlas15_cmip6_mult
     elevated = float(v.elev_cert_verified and dh >= ELEVATED_BLDG_FT)
     pi = _sigmoid(GAMMA0 + GAMMA1 * max(0.0, dh) + GAMMA2 * h.hand_rel_elev_ft + _sum("FLOOD", m, "eta"))
-    lam = math.exp(a + BETA1 * d100 + BETA2 * h.twi_index - BETA3 * dh - BETA4 * elevated)
+    sandy = c("nyc.sandy_relativity") if nyc_layer is not None and nyc_layer.sandy_inundated else 0.0
+    lam = math.exp(a + BETA1 * d100 + BETA2 * h.twi_index - BETA3 * dh - BETA4 * elevated + sandy)
     depth = FLOOD_STAGE0_FT + FLOOD_STAGE_PER_IN * d100 - dh
-    sp = sev_params("FLOOD", ddf(depth), m, dh)
+    doses = nyc_doses(m)
+    shifted = depth - float(c("nyc.dry_floodproof_depth_ft")) * doses.dry_floodproofing
+    kind = nyc.basement_kind(nyc_layer)[0] if nyc_layer is not None else "NONE"
+    body = ddf(shifted)
+    if kind != "NONE":  # the basement adds to the first-floor damage, as in the pluvial peril
+        water = shifted + float(c("nyc.first_floor_above_grade_ft")) + float(c("nyc.basement_depth_ft")[kind])
+        body += nyc.basement_damage(water, kind, nyc_layer, doses)
+    body = min(1.0, body) * (1.0 - nyc.mechanicals_cut(doses)) * (1.0 - c("nyc.sev_reduction")["flood_vents"] * doses.flood_vents)
+    sp = sev_params("FLOOD", body, m, dh)
     return PerilTerm("FLOOD", pi, (1 - pi) * lam, sp.mean, depth, sp)
+
+
+def _nyc_term(peril: str, nyc_layer: NycLayer, m: Mitigations, a: float) -> PerilTerm:
+    """PLUVIAL or SEWER_BACKUP: exp(a) times the relativity rate; severity per event from nyc.py."""
+    doses = nyc_doses(m)
+    n_raw, severity = nyc.pluvial_rate(nyc_layer, doses) if peril == "PLUVIAL" else nyc.sewer_rate(nyc_layer, doses)
+    s = min(1.0, severity)
+    return PerilTerm(peril, 0.0, math.exp(a) * n_raw, s, None, SevParams(s, 0.0, 1.0, 1.0, 1.0))
 
 
 def burn_probability_multiplier(bp: float | None) -> float:
@@ -256,7 +304,12 @@ def _wind(state: str, year_built: int, m: Mitigations, a: float) -> PerilTerm:
 
 
 def _reference_intercept(
-    peril: str, base_rates: BaseRates, h: PublicHazardLayer, v: PrivateVerificationLayer, state: str
+    peril: str,
+    base_rates: BaseRates,
+    h: PublicHazardLayer,
+    v: PrivateVerificationLayer,
+    state: str,
+    nyc_layer: NycLayer | None = None,
 ) -> float:
     """Closed-form intercept so the reference home's loss rate (E[N] * E[S]) equals `rate`.
 
@@ -268,8 +321,10 @@ def _reference_intercept(
     ref_h = (base_rates.reference_hazard or h).model_copy(update={"freeboard_delta_h_ft": 0.0, "wrc_burn_probability": None})
     ref_v = v.model_copy(update={"elev_cert_verified": False, "cv_overhang_ft": 0.0})
     zero = Mitigations()
-    if peril == "FLOOD":
-        t = _flood(ref_h, ref_v, zero, 0.0)
+    if peril in nyc.NYC_PERILS:
+        t = _nyc_term(peril, nyc.reference_layer(), zero, 0.0)
+    elif peril == "FLOOD":
+        t = _flood(ref_h, ref_v, zero, 0.0, nyc.reference_layer() if nyc_layer is not None else None)
     elif peril == "WILDFIRE":
         t = _wildfire(ref_h, ref_v, zero, False, 0.0)
     else:
@@ -286,20 +341,26 @@ def peril_terms(
     firewise: bool = False,
     mitigations: Mitigations | None = None,
     base_rates: BaseRates,
+    nyc_layer: NycLayer | None = None,
+    nyc_installed: frozenset[str] = frozenset(),
 ) -> list[PerilTerm]:
     """Per-peril (pi, E[N], E[S]); `mitigations` overrides the doses read from `verification`.
 
     Each intercept is solved so the reference home matches the tract loss rate in `base_rates` (NRI).
     """
     m = mitigations if mitigations is not None else mitigations_from(verification)
+    if nyc_installed:  # installed NYC retrofits are full doses
+        m = replace(m, **dict.fromkeys([k for k in nyc_installed if k in NYC_DOSE_NAMES], 1.0))
 
     def a(peril: str) -> float:
-        return _reference_intercept(peril, base_rates, hazard, verification, state)
+        return _reference_intercept(peril, base_rates, hazard, verification, state, nyc_layer)
 
     terms = []
-    for peril in active_perils(hazard):
-        if peril == "FLOOD":
-            terms.append(_flood(hazard, verification, m, a(peril)))
+    for peril in active_perils(hazard, nyc_layer):
+        if peril in nyc.NYC_PERILS and nyc_layer is not None:
+            terms.append(_nyc_term(peril, nyc_layer, m, a(peril)))
+        elif peril == "FLOOD":
+            terms.append(_flood(hazard, verification, m, a(peril), nyc_layer))
         elif peril == "WILDFIRE":
             terms.append(_wildfire(hazard, verification, m, firewise, a(peril)))
         else:

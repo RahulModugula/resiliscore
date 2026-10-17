@@ -1,0 +1,523 @@
+{
+ "adopt_rule": "paired error vs Hazus 129 on the held-out event, 95% interval (tract bootstrap) wholly below zero in both directions; mae is the rule of docs/validation/flood.md, mse is reported beside it",
+ "directions": [
+  {
+   "train": "Sandy 2012",
+   "test": "Ida 2021 NY/NJ",
+   "n_train": 27014,
+   "n_test": 2572,
+   "observed_mean": 0.17530661082991505,
+   "rows": [
+    {
+     "candidate": "Hazus 129",
+     "fitted_parameter": null,
+     "mae": 0.13865678418190272,
+     "mse": 0.044365950267753376,
+     "bias": -0.018515527366980894,
+     "mae_vs_hazus": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0
+     },
+     "mse_vs_hazus": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0
+     }
+    },
+    {
+     "candidate": "Hazus 129 x k (mae fit)",
+     "fitted_parameter": 0.7100000000000004,
+     "mae": 0.13030933219266574,
+     "mse": 0.044589828582853284,
+     "bias": -0.06398494157123173,
+     "mae_vs_hazus": {
+      "diff": -0.008347451989236965,
+      "lo": -0.01260184761189732,
+      "hi": -0.004322396391751165
+     },
+     "mse_vs_hazus": {
+      "diff": 0.00022387831509991304,
+      "lo": -0.0020122110798252114,
+      "hi": 0.0023871105136639647
+     }
+    },
+    {
+     "candidate": "Hazus 129 x k (mse fit)",
+     "fitted_parameter": 0.9100000000000006,
+     "mae": 0.13497189344060867,
+     "mse": 0.0438572001278238,
+     "bias": -0.03262672487864487,
+     "mae_vs_hazus": {
+      "diff": -0.0036848907412940658,
+      "lo": -0.005038804589116212,
+      "hi": -0.002397050110695223
+     },
+     "mse_vs_hazus": {
+      "diff": -0.0005087501399295731,
+      "lo": -0.0012189609305627237,
+      "hi": 0.00016079085497598948
+     }
+    },
+    {
+     "candidate": "FIA 121 one floor + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.171092920833808,
+     "mse": 0.06596343866908116,
+     "bias": -0.169065034883829,
+     "mae_vs_hazus": {
+      "diff": 0.03243613665190528,
+      "lo": 0.02152006679141382,
+      "hi": 0.04247082348780164
+     },
+     "mse_vs_hazus": {
+      "diff": 0.021597488401327795,
+      "lo": 0.014424468452055339,
+      "hi": 0.028944240005479554
+     }
+    },
+    {
+     "candidate": "FIA 121 one floor + fitted finish",
+     "fitted_parameter": 0.315,
+     "mae": 0.16555090621978177,
+     "mse": 0.0629107321129103,
+     "bias": -0.15278717070549827,
+     "mae_vs_hazus": {
+      "diff": 0.02689412203787904,
+      "lo": 0.017077712120679572,
+      "hi": 0.03586813524790943
+     },
+     "mse_vs_hazus": {
+      "diff": 0.01854478184515692,
+      "lo": 0.012493459801251453,
+      "hi": 0.0248028620393444
+     }
+    },
+    {
+     "candidate": "FIA 122 two floors + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.17169473278982877,
+     "mse": 0.06597937478236711,
+     "bias": -0.1672046149771416,
+     "mae_vs_hazus": {
+      "diff": 0.033037948607926027,
+      "lo": 0.022267593672778693,
+      "hi": 0.042916066622808696
+     },
+     "mse_vs_hazus": {
+      "diff": 0.021613424514613743,
+      "lo": 0.014536095421906868,
+      "hi": 0.02886466501931441
+     }
+    },
+    {
+     "candidate": "FIA 122 two floors + fitted finish",
+     "fitted_parameter": 0.31,
+     "mae": 0.1670856534304252,
+     "mse": 0.06382838269339484,
+     "bias": -0.15126587296919275,
+     "mae_vs_hazus": {
+      "diff": 0.02842886924852248,
+      "lo": 0.018871420802667706,
+      "hi": 0.037310647008015556
+     },
+     "mse_vs_hazus": {
+      "diff": 0.01946243242564147,
+      "lo": 0.013461439586601802,
+      "hi": 0.02568066172872367
+     }
+    },
+    {
+     "candidate": "FIA(MOD) 108 two floors + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.14218978558042233,
+     "mse": 0.05429593207997221,
+     "bias": -0.1266913956925382,
+     "mae_vs_hazus": {
+      "diff": 0.003533001398519591,
+      "lo": -0.005880394963374317,
+      "hi": 0.012220238653156766
+     },
+     "mse_vs_hazus": {
+      "diff": 0.00992998181221883,
+      "lo": 0.004678392624982141,
+      "hi": 0.015241992886038466
+     }
+    },
+    {
+     "candidate": "FIA(MOD) 108 two floors + fitted finish",
+     "fitted_parameter": 0.23,
+     "mae": 0.14108821968386348,
+     "mse": 0.053494433847376927,
+     "bias": -0.11617860841069956,
+     "mae_vs_hazus": {
+      "diff": 0.0024314355019607356,
+      "lo": -0.00600051160217814,
+      "hi": 0.010344396070641396
+     },
+     "mse_vs_hazus": {
+      "diff": 0.00912848357962355,
+      "lo": 0.004573837381161064,
+      "hi": 0.013758269537604095
+     }
+    },
+    {
+     "candidate": "USACE-Chicago 133 + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.17160142019262814,
+     "mse": 0.06596521649886154,
+     "bias": -0.1673970722088679,
+     "mae_vs_hazus": {
+      "diff": 0.032944636010725406,
+      "lo": 0.022137214694200425,
+      "hi": 0.04282829967571276
+     },
+     "mse_vs_hazus": {
+      "diff": 0.021599266231108163,
+      "lo": 0.014510803340891599,
+      "hi": 0.028850140695208394
+     }
+    },
+    {
+     "candidate": "USACE-Chicago 133 + fitted finish",
+     "fitted_parameter": 0.31,
+     "mae": 0.16692818842264917,
+     "mse": 0.06372376951097791,
+     "bias": -0.15145833020091903,
+     "mae_vs_hazus": {
+      "diff": 0.02827140424074643,
+      "lo": 0.01870245135896998,
+      "hi": 0.03718081770810199
+     },
+     "mse_vs_hazus": {
+      "diff": 0.01935781924322454,
+      "lo": 0.013357151222399038,
+      "hi": 0.025597904905154793
+     }
+    },
+    {
+     "candidate": "Isotonic on depth",
+     "fitted_parameter": null,
+     "mae": 0.16033064134661987,
+     "mse": 0.03921852539721307,
+     "bias": 0.05126304436980679,
+     "mae_vs_hazus": {
+      "diff": 0.02167385716471714,
+      "lo": 0.01290717305900577,
+      "hi": 0.030019384389800775
+     },
+     "mse_vs_hazus": {
+      "diff": -0.005147424870540298,
+      "lo": -0.009623574535565331,
+      "hi": -0.0010718790493303655
+     }
+    },
+    {
+     "candidate": "Constant (train mean)",
+     "fitted_parameter": null,
+     "mae": 0.16773274710317845,
+     "mse": 0.040872863583628405,
+     "bias": 0.060492817106596805,
+     "mae_vs_hazus": {
+      "diff": 0.029075962921275702,
+      "lo": 0.018985396066877196,
+      "hi": 0.03850765282223776
+     },
+     "mse_vs_hazus": {
+      "diff": -0.003493086684124967,
+      "lo": -0.008437042078751776,
+      "hi": 0.0009502053820529203
+     }
+    }
+   ]
+  },
+  {
+   "train": "Ida 2021 NY/NJ",
+   "test": "Sandy 2012",
+   "n_train": 2572,
+   "n_test": 27014,
+   "observed_mean": 0.23579942793651187,
+   "rows": [
+    {
+     "candidate": "Hazus 129",
+     "fitted_parameter": null,
+     "mae": 0.17311427403294824,
+     "mse": 0.06018336576356694,
+     "bias": -0.03451808616311046,
+     "mae_vs_hazus": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0
+     },
+     "mse_vs_hazus": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0
+     }
+    },
+    {
+     "candidate": "Hazus 129 x k (mae fit)",
+     "fitted_parameter": 0.6600000000000004,
+     "mae": 0.16584542990492762,
+     "mse": 0.06317951319982391,
+     "bias": -0.10295374236606687,
+     "mae_vs_hazus": {
+      "diff": -0.007268844128020553,
+      "lo": -0.010220620038985785,
+      "hi": -0.004299110299775032
+     },
+     "mse_vs_hazus": {
+      "diff": 0.00299614743625696,
+      "lo": 0.0013144689430225228,
+      "hi": 0.0048117043529653835
+     }
+    },
+    {
+     "candidate": "Hazus 129 x k (mse fit)",
+     "fitted_parameter": 0.8700000000000006,
+     "mae": 0.16795411755118694,
+     "mse": 0.05985879810229709,
+     "bias": -0.06068466059365253,
+     "mae_vs_hazus": {
+      "diff": -0.005160156481761243,
+      "lo": -0.006283006907928328,
+      "hi": -0.004009104779793891
+     },
+     "mse_vs_hazus": {
+      "diff": -0.0003245676612698539,
+      "lo": -0.0009805425437489676,
+      "hi": 0.0004117093190917456
+     }
+    },
+    {
+     "candidate": "FIA 121 one floor + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.2204796292203498,
+     "mse": 0.09686784536645077,
+     "bias": -0.21926448309309737,
+     "mae_vs_hazus": {
+      "diff": 0.04736535518740159,
+      "lo": 0.040409577067587465,
+      "hi": 0.05387711172882909
+     },
+     "mse_vs_hazus": {
+      "diff": 0.03668447960288381,
+      "lo": 0.03213154323660667,
+      "hi": 0.041554424731296016
+     }
+    },
+    {
+     "candidate": "FIA 121 one floor + fitted finish",
+     "fitted_parameter": 0.51,
+     "mae": 0.20889964626291546,
+     "mse": 0.08544452681810472,
+     "bias": -0.12596955577146168,
+     "mae_vs_hazus": {
+      "diff": 0.03578537222996726,
+      "lo": 0.03197208675073416,
+      "hi": 0.039285654058434316
+     },
+     "mse_vs_hazus": {
+      "diff": 0.025261161054537774,
+      "lo": 0.022978172113087086,
+      "hi": 0.02780244058301181
+     }
+    },
+    {
+     "candidate": "FIA 122 two floors + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.21986423643145656,
+     "mse": 0.09653177344286559,
+     "bias": -0.21813642603626265,
+     "mae_vs_hazus": {
+      "diff": 0.04674996239850837,
+      "lo": 0.03985339708162332,
+      "hi": 0.053201368821688175
+     },
+     "mse_vs_hazus": {
+      "diff": 0.03634840767929866,
+      "lo": 0.031858084858809185,
+      "hi": 0.04117341170326695
+     }
+    },
+    {
+     "candidate": "FIA 122 two floors + fitted finish",
+     "fitted_parameter": 0.485,
+     "mae": 0.20833892070582335,
+     "mse": 0.08523368974280106,
+     "bias": -0.13020327614690488,
+     "mae_vs_hazus": {
+      "diff": 0.03522464667287516,
+      "lo": 0.031338388147968514,
+      "hi": 0.038845190419233885
+     },
+     "mse_vs_hazus": {
+      "diff": 0.02505032397923411,
+      "lo": 0.02271549662560399,
+      "hi": 0.027685852256959034
+     }
+    },
+    {
+     "candidate": "FIA(MOD) 108 two floors + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.18734898276614112,
+     "mse": 0.08065785026509607,
+     "bias": -0.17793091531342756,
+     "mae_vs_hazus": {
+      "diff": 0.014234708733192925,
+      "lo": 0.00809212648839119,
+      "hi": 0.02002866724956271
+     },
+     "mse_vs_hazus": {
+      "diff": 0.020474484501529132,
+      "lo": 0.016925040887915646,
+      "hi": 0.02424091395813687
+     }
+    },
+    {
+     "candidate": "FIA(MOD) 108 two floors + fitted finish",
+     "fitted_parameter": 0.25,
+     "mae": 0.18029685204667395,
+     "mse": 0.07306712402000916,
+     "bias": -0.14039847328748217,
+     "mae_vs_hazus": {
+      "diff": 0.007182578013725743,
+      "lo": 0.0026560929321416313,
+      "hi": 0.011583072699498034
+     },
+     "mse_vs_hazus": {
+      "diff": 0.012883758256442208,
+      "lo": 0.010267629306983968,
+      "hi": 0.015742343922
+     }
+    },
+    {
+     "candidate": "USACE-Chicago 133 + first-draft finish",
+     "fitted_parameter": null,
+     "mae": 0.21987233726472064,
+     "mse": 0.0965378353690415,
+     "bias": -0.2181602716965376,
+     "mae_vs_hazus": {
+      "diff": 0.0467580632317724,
+      "lo": 0.03985865071596082,
+      "hi": 0.053212097933238584
+     },
+     "mse_vs_hazus": {
+      "diff": 0.03635446960547455,
+      "lo": 0.031861067601865106,
+      "hi": 0.041182745259880464
+     }
+    },
+    {
+     "candidate": "USACE-Chicago 133 + fitted finish",
+     "fitted_parameter": 0.485,
+     "mae": 0.20832179995362077,
+     "mse": 0.08522019822755152,
+     "bias": -0.13022712180717977,
+     "mae_vs_hazus": {
+      "diff": 0.0352075259206726,
+      "lo": 0.03132182479768848,
+      "hi": 0.03883044912772608
+     },
+     "mse_vs_hazus": {
+      "diff": 0.02503683246398457,
+      "lo": 0.022698797866198956,
+      "hi": 0.027674239465588408
+     }
+    },
+    {
+     "candidate": "Isotonic on depth",
+     "fitted_parameter": null,
+     "mae": 0.16326070252776212,
+     "mse": 0.05086494047624748,
+     "bias": -0.03266317777155227,
+     "mae_vs_hazus": {
+      "diff": -0.009853571505186074,
+      "lo": -0.01210491503018345,
+      "hi": -0.00759091652172197
+     },
+     "mse_vs_hazus": {
+      "diff": -0.009318425287319455,
+      "lo": -0.010355235798377903,
+      "hi": -0.008259556057191276
+     }
+    },
+    {
+     "candidate": "Constant (train mean)",
+     "fitted_parameter": null,
+     "mae": 0.15803330755456563,
+     "mse": 0.052595746027039196,
+     "bias": -0.06049281710659685,
+     "mae_vs_hazus": {
+      "diff": -0.015080966478382573,
+      "lo": -0.0175259167126194,
+      "hi": -0.012702343856967306
+     },
+     "mse_vs_hazus": {
+      "diff": -0.007587619736527748,
+      "lo": -0.008681729435747416,
+      "hi": -0.006574770477598467
+     }
+    }
+   ]
+  }
+ ],
+ "verdicts": {
+  "Hazus 129": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "Hazus 129 x k (mae fit)": {
+   "mae": "adopt",
+   "mse": "keep Hazus 129"
+  },
+  "Hazus 129 x k (mse fit)": {
+   "mae": "adopt",
+   "mse": "keep Hazus 129"
+  },
+  "FIA 121 one floor + first-draft finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "FIA 121 one floor + fitted finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "FIA 122 two floors + first-draft finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "FIA 122 two floors + fitted finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "FIA(MOD) 108 two floors + first-draft finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "FIA(MOD) 108 two floors + fitted finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "USACE-Chicago 133 + first-draft finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "USACE-Chicago 133 + fitted finish": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  },
+  "Isotonic on depth": {
+   "mae": "keep Hazus 129",
+   "mse": "adopt"
+  },
+  "Constant (train mean)": {
+   "mae": "keep Hazus 129",
+   "mse": "keep Hazus 129"
+  }
+ },
+ "pooled_k": {
+  "mae": 0.7100000000000004,
+  "mse": 0.9100000000000006
+ }
+}

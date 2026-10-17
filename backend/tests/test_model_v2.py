@@ -64,7 +64,7 @@ def test_every_constant_has_provenance_fields():
 def test_validated_constants_cite_a_url():
     for key, const in constants.REGISTRY.items():
         if const.validated:
-            assert const.source_url.startswith("http"), key
+            assert const.source_url.startswith(("http", "docs/validation/")), key
 
 
 def test_wildfire_and_wind_coefficients_are_priors():
@@ -104,7 +104,7 @@ def test_no_bare_float_literals_outside_the_registry():
     # the 1-in-100 and 1-in-250 return periods; the two epsilons are numerical guards.
     allowed = {0.0, 0.5, 1.0, 100.0, 99.0, 10000.0, 99.6, 1e-9, 5e-05}
     offenders = []
-    for name in ("compound_model", "credibility", "optimizer", "uncertainty", "insurance", "attribution", "base_rates"):
+    for name in ("compound_model", "credibility", "optimizer", "uncertainty", "insurance", "attribution", "base_rates", "nyc"):
         for node in ast.walk(ast.parse((APP / f"{name}.py").read_text())):
             if isinstance(node, ast.Constant) and isinstance(node.value, float) and node.value not in allowed:
                 offenders.append((name, node.lineno, node.value))

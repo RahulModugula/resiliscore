@@ -23,7 +23,7 @@ KEYS = [
 
 
 V2_OPTIONAL = {
-    "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only",
+    "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only", "nyc",
 }
 V3_OPTIONAL = {"nyc"}
 

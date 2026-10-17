@@ -45,6 +45,9 @@ def correlation(perils: list[str], state: str) -> np.ndarray:
     if "FLOOD" in perils and "WIND_HAIL" in perils and state in GULF_STATES:
         i, j = perils.index("FLOOD"), perils.index("WIND_HAIL")
         rho[i, j] = rho[j, i] = c("mc.copula_rho_gulf")
+    if "PLUVIAL" in perils and "SEWER_BACKUP" in perils:  # one rainfall driver behind both
+        i, j = perils.index("PLUVIAL"), perils.index("SEWER_BACKUP")
+        rho[i, j] = rho[j, i] = c("mc.nyc_rain_rho")
     np.fill_diagonal(rho, 1.0)
     return rho
 
@@ -71,13 +74,18 @@ def simulate_losses(
     z: float,
     draws: int | None = None,
     freeboard_known: bool = True,
+    nyc_data_known: bool = True,
 ) -> McResult:
     n_draws = int(c("mc.draws")) if draws is None else draws
     rng = np.random.default_rng(int(c("mc.seed")))
     perils = [t.peril for t in terms]
     chol = np.linalg.cholesky(correlation(perils, state))
     drivers = rng.standard_normal((n_draws, len(terms))) @ chol.T
-    cv = np.array([c("mc.param_cv")[p] for p in perils])
+    cvs = {**c("mc.param_cv"), **c("mc.nyc_param_cv")}
+    cv = np.array([cvs[p] for p in perils])
+    if not nyc_data_known:  # unknown basement or no DEP map widens the NYC perils
+        wide = np.isin(np.array(perils), ["PLUVIAL", "SEWER_BACKUP"])
+        cv = np.where(wide, cv * c("mc.nyc_missing_cv_mult"), cv)
     if not freeboard_known:  # an unknown first-floor height widens the flood band
         cv = np.where(np.array(perils) == "FLOOD", cv * c("mc.freeboard_missing_cv_mult"), cv)
     sig = np.sqrt(np.log1p(cv * cv))
