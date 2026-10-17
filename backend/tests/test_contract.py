@@ -202,3 +202,23 @@ def test_geometry_kinds_present_and_rings_closed(key):
     for f in feats:
         for ring in f["geometry"]["coordinates"]:
             assert ring[0] == ring[-1]
+
+
+def _band(score):
+    return "TIER_1_AUTO_BIND" if score >= 720 else "TIER_2_CONDITIONAL" if score >= 580 else "TIER_3_DECLINE_ESCALATE"
+
+
+@pytest.mark.parametrize("key", KEYS)
+def test_internal_arithmetic_consistency(key):
+    a = GOLDEN[key]["actuarial_breakdown"]
+    z = a["credibility_weight_z"]
+    assert a["posterior_lcr"] == pytest.approx(z * a["parcel_raw_lcr"] + (1 - z) * a["tract_prior_lcr"], abs=1e-5)
+    assert a["annual_discounted_premium_usd"] == pytest.approx(
+        a["annual_base_premium_usd"] * (1 - a["statutory_discount_pct"] / 100), abs=0.5)
+    assert a["underwriting_tier"] == _band(a["resili_score"])
+    # Tract-prior-only baselines are all sub-580 in the goldens (prior LCRs are 160-210 bps).
+    assert _band(a["baseline_macro_score"]) == "TIER_3_DECLINE_ESCALATE"
+    for m in GOLDEN[key]["prescriptive_mitigations"]:
+        assert m["net_capex_usd"] == pytest.approx(m["gross_capex_usd"] - m["grant_subsidy_usd"])
+        if m["annual_premium_savings_usd"] > 0:
+            assert m["payback_years"] == pytest.approx(m["net_capex_usd"] / m["annual_premium_savings_usd"], abs=0.01)

@@ -1,6 +1,6 @@
 """Pydantic v2 models mirroring contracts/parcel_score_schema.json. Change both together."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -35,7 +35,7 @@ class _Strict(BaseModel):
 
 class Polygon(_Strict):
     type: Literal["Polygon"]
-    coordinates: list[list[tuple[float, float]]] = Field(min_length=1)
+    coordinates: list[Annotated[list[tuple[float, float]], Field(min_length=4)]] = Field(min_length=1)
 
 
 class FeatureProperties(_Strict):
