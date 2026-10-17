@@ -41,7 +41,7 @@ The UI posts to the following spec endpoints, validates responses against the ca
 
 The backend is developed separately. These requests follow the spec; live integration must be checked against the backend implementation as it lands. Guidewire receipts and mobile inspections are simulations in both modes. QR links open `/inspect?apn=...`; a phone needs a reachable app hostname. Captures stay on their page and do not synchronize between devices.
 
-Local mitigation projections add only unapplied action deltas from the contract. Existing verified actions cannot earn duplicate credits. No alternate score curve is introduced while `../docs/DECISIONS.md` D1 remains open. Structure loading assumes $250/sq ft for 240 sq ft, retains the golden score, adjusts loss cost and replacement value, and imposes conditional review.
+Local demo mitigation projections add only unapplied action deltas from the contract. Existing verified actions cannot earn duplicate credits. These are demo counterfactuals; the live API supplies canonical model assessments. Structure loading assumes $250/sq ft for 240 sq ft, retains the golden score, adjusts loss cost and replacement value, and imposes conditional review.
 
 Audit declarations are supplied payload values. The UI does not invent individual channel precision weights, live derivatives, BISG results, or regulatory approval.
 
