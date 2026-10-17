@@ -205,6 +205,7 @@ class NycLayer(_Strict):
     floodnet_max_depth_in: float | None
     sewer_backup_311_500m_5y: int | None
     street_flooding_311_500m_5y: int | None
+    residential_units_500m: int | None  # sum of PLUTO unitsres within 500 m: the denominator for 311 density
     catch_basins_150m: int | None
     dob_open_violations: int | None
     dob_cellar_conversion_flag: bool | None
