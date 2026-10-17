@@ -29,8 +29,7 @@ class SceneBoundary extends Component<{ children: ReactNode; onError?: (message:
   render() { return this.state.failed ? <MapFallback /> : this.props.children; }
 }
 
-function MapFallback({ onError }: { onError?: (message: string) => void }) {
-  useEffect(() => { onError?.(WEBGL_MESSAGE); }, [onError]);
+function MapFallback() {
   return <div role="status" style={{ padding: 24, color: "#eaf1f3", background: "#0b1519", height: "100%" }}>{WEBGL_MESSAGE}</div>;
 }
 
@@ -81,8 +80,8 @@ function NeighborhoodMesh({ neighborhood, terrain, selected, muted, underground,
   </group>;
 }
 
-function BuildingMesh({ buildings, interactive, onSelect, onNeighborhoodSelect, selectedBuildingId, underground, onHover }: {
-  buildings: Building[]; interactive: boolean; selectedBuildingId?: string | null; underground: boolean;
+function BuildingMesh({ buildings, activeNeighborhoodId, onSelect, onNeighborhoodSelect, selectedBuildingId, underground, onHover }: {
+  buildings: Building[]; activeNeighborhoodId: string | null; selectedBuildingId?: string | null; underground: boolean;
   onSelect: (building: Building) => void; onNeighborhoodSelect: (id: string) => void; onHover: (building: Building | null) => void;
 }) {
   const merged = useMemo(() => buildingGeometry(buildings), [buildings]);
@@ -101,7 +100,7 @@ function BuildingMesh({ buildings, interactive, onSelect, onNeighborhoodSelect, 
       if (event.delta > 6) return;
       const building = pick(event);
       if (!building) return;
-      if (interactive) onSelect(building);
+      if (building.neighborhoodId === activeNeighborhoodId) onSelect(building);
       else onNeighborhoodSelect(building.neighborhoodId);
     }} onPointerMove={(event) => {
       event.stopPropagation();
@@ -118,12 +117,13 @@ function BuildingMesh({ buildings, interactive, onSelect, onNeighborhoodSelect, 
 }
 
 function Landscape({ neighborhoods, overview, detail, showUnderground }: Pick<ManhattanSceneProps, "neighborhoods" | "overview" | "detail" | "showUnderground">) {
-  const data = detail ?? overview;
-  const parks = useMemo(() => parkGeometry(data?.parks ?? [], data?.terrain), [data]);
-  const land = useMemo(() => data?.terrain ? terrainGeometry(data.terrain, neighborhoods) : null, [data, neighborhoods]);
-  useEffect(() => () => { parks.dispose(); land?.dispose(); }, [parks, land]);
+  const parks = useMemo(() => parkGeometry(overview?.parks ?? detail?.parks ?? [], overview?.terrain ?? detail?.terrain), [overview, detail]);
+  const land = useMemo(() => overview?.terrain ? terrainGeometry(overview.terrain, neighborhoods.filter((neighborhood) => neighborhood.id !== detail?.neighborhoodId)) : null, [overview, detail, neighborhoods]);
+  const detailLand = useMemo(() => detail?.terrain ? terrainGeometry(detail.terrain, neighborhoods.filter((neighborhood) => neighborhood.id === detail.neighborhoodId)) : null, [detail, neighborhoods]);
+  useEffect(() => () => { parks.dispose(); land?.dispose(); detailLand?.dispose(); }, [parks, land, detailLand]);
   return <group>
     {land && <mesh geometry={land} raycast={() => null}><meshStandardMaterial color="#829181" roughness={1} side={DoubleSide} transparent={showUnderground} opacity={showUnderground ? 0.14 : 1} depthWrite={!showUnderground} /></mesh>}
+    {detailLand && <mesh geometry={detailLand} raycast={() => null}><meshStandardMaterial color="#829181" roughness={1} side={DoubleSide} transparent={showUnderground} opacity={showUnderground ? 0.14 : 1} depthWrite={!showUnderground} /></mesh>}
     <mesh geometry={parks} raycast={() => null}><meshStandardMaterial color="#4d8066" side={DoubleSide} roughness={1} polygonOffset polygonOffsetFactor={-1} transparent={showUnderground} opacity={showUnderground ? 0.22 : 1} depthWrite={!showUnderground} /></mesh>
   </group>;
 }
@@ -152,16 +152,18 @@ function Underground({ infrastructure, terrain }: { infrastructure?: Infrastruct
 function WebGLStatus({ onReady, onError }: Pick<ManhattanSceneProps, "onReady" | "onError">) {
   const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
+  const callbacks = useRef({ onReady, onError });
+  useEffect(() => { callbacks.current = { onReady, onError }; }, [onReady, onError]);
   useEffect(() => {
     const canvas = gl.domElement;
-    const lost = (event: Event) => { event.preventDefault(); onError?.(WEBGL_MESSAGE); };
-    const restored = () => { onReady?.(); invalidate(); };
+    const lost = (event: Event) => { event.preventDefault(); callbacks.current.onError?.(WEBGL_MESSAGE); };
+    const restored = () => { callbacks.current.onReady?.(); invalidate(); };
     canvas.addEventListener("webglcontextlost", lost);
     canvas.addEventListener("webglcontextrestored", restored);
     // This effect runs only once the Canvas renderer and scene have mounted.
-    onReady?.();
+    callbacks.current.onReady?.();
     return () => { canvas.removeEventListener("webglcontextlost", lost); canvas.removeEventListener("webglcontextrestored", restored); };
-  }, [gl, onReady, onError, invalidate]);
+  }, [gl, invalidate]);
   return null;
 }
 
@@ -182,10 +184,14 @@ function City(props: ManhattanSceneProps) {
   const selected = neighborhoods.find((neighborhood) => neighborhood.id === selectedNeighborhoodId);
   const bounds = selected?.bounds ?? combineBounds(neighborhoods);
   const activeDetail = detail?.neighborhoodId === selectedNeighborhoodId ? detail : null;
+  const buildings = useMemo(() => activeDetail
+    ? [...(overview?.buildings ?? []).filter((building) => building.neighborhoodId !== activeDetail.neighborhoodId), ...activeDetail.buildings]
+    : overview?.buildings ?? [], [overview, activeDetail]);
   const terrain = (activeDetail ?? overview)?.terrain;
   const hovered = neighborhoods.find((neighborhood) => neighborhood.id === (hoverBuilding?.neighborhoodId ?? hoverNeighborhoodId));
-  const label = hoverBuilding && activeDetail ? hoverBuilding.address ?? hoverBuilding.name ?? `Building ${hoverBuilding.bin ?? hoverBuilding.id}` : hovered?.name;
-  const labelPoint = hoverBuilding && activeDetail ? worldPoint(hoverBuilding.center, (hoverBuilding.groundElevationM ?? 0) + (hoverBuilding.heightM ?? 0) + 20) : hovered ? worldPoint(hovered.center, (terrainElevation(hovered.center, terrain) ?? 0) + 20) : null;
+  const propertyHover = hoverBuilding && hoverBuilding.neighborhoodId === activeDetail?.neighborhoodId ? hoverBuilding : null;
+  const label = propertyHover ? propertyHover.address ?? propertyHover.name ?? `Building ${propertyHover.bin ?? propertyHover.id}` : hovered?.name;
+  const labelPoint = propertyHover ? worldPoint(propertyHover.center, (propertyHover.groundElevationM ?? 0) + (propertyHover.heightM ?? 0) + 20) : hovered ? worldPoint(hovered.center, (terrainElevation(hovered.center, terrain) ?? 0) + 20) : null;
   return <>
     <color attach="background" args={["#0b1b23"]} />
     <ambientLight intensity={1.15} />
@@ -194,7 +200,7 @@ function City(props: ManhattanSceneProps) {
     <CameraRig bounds={bounds} reducedMotion={reducedMotion} />
     <Landscape neighborhoods={neighborhoods} overview={overview} detail={activeDetail} showUnderground={props.showUnderground} />
     {neighborhoods.map((neighborhood) => <NeighborhoodMesh key={neighborhood.id} neighborhood={neighborhood} terrain={terrain} selected={neighborhood.id === selectedNeighborhoodId || neighborhood.id === hovered?.id} muted={!!selectedNeighborhoodId} underground={!!props.showUnderground} onSelect={onNeighborhoodSelect} onHover={setHoverNeighborhoodId} />)}
-    <BuildingMesh buildings={activeDetail?.buildings ?? overview?.buildings ?? []} interactive={!!activeDetail} onSelect={onBuildingSelect} onNeighborhoodSelect={onNeighborhoodSelect} selectedBuildingId={selectedBuildingId} underground={!!props.showUnderground} onHover={setHoverBuilding} />
+    <BuildingMesh key={activeDetail?.neighborhoodId ?? "overview"} buildings={buildings} activeNeighborhoodId={activeDetail?.neighborhoodId ?? null} onSelect={onBuildingSelect} onNeighborhoodSelect={onNeighborhoodSelect} selectedBuildingId={selectedBuildingId} underground={!!props.showUnderground} onHover={setHoverBuilding} />
     {props.showUnderground && <Underground infrastructure={(activeDetail ?? overview)?.infrastructure} terrain={terrain} />}
     {label && labelPoint && <Html position={labelPoint} center style={{ pointerEvents: "none", whiteSpace: "nowrap" }} zIndexRange={[20, 0]}>
       <span style={{ display: "block", background: "#101f25", border: "1px solid #59756e", color: "#eaf1f3", padding: "6px 9px", borderRadius: 4, fontSize: 12, boxShadow: "0 4px 12px #0005" }}>{label}</span>
@@ -206,7 +212,7 @@ function City(props: ManhattanSceneProps) {
 /** Root supplies the accessible neighborhood/property list and loading state beside this canvas. */
 export default function ManhattanScene(props: ManhattanSceneProps) {
   return <SceneBoundary onError={props.onError}>
-    <Canvas aria-label="Interactive 3D Manhattan map. Drag to pan or orbit; scroll or pinch to zoom. Use the neighborhood and property lists for keyboard selection." role="img" frameloop="demand" dpr={[1, 1.5]} camera={{ position: [10000, 18000, 18000], fov: 38, near: 2, far: 150000 }} gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }} fallback={<MapFallback onError={props.onError} />} style={{ touchAction: "none", background: "#0b1b23" }}>
+    <Canvas aria-label="Interactive 3D Manhattan map. Drag to pan or orbit; scroll or pinch to zoom. Use the neighborhood and property lists for keyboard selection." role="img" frameloop="demand" dpr={[1, 1.5]} camera={{ position: [10000, 18000, 18000], fov: 38, near: 2, far: 150000 }} gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }} fallback={<MapFallback />} style={{ touchAction: "none", background: "#0b1b23" }}>
       <City {...props} />
     </Canvas>
   </SceneBoundary>;
