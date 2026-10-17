@@ -204,9 +204,58 @@
         "state": {
           "type": "string",
           "enum": [
-            "LA",
+            "AL",
+            "AK",
+            "AZ",
+            "AR",
             "CA",
-            "FL"
+            "CO",
+            "CT",
+            "DE",
+            "DC",
+            "FL",
+            "GA",
+            "HI",
+            "ID",
+            "IL",
+            "IN",
+            "IA",
+            "KS",
+            "KY",
+            "LA",
+            "ME",
+            "MD",
+            "MA",
+            "MI",
+            "MN",
+            "MS",
+            "MO",
+            "MT",
+            "NE",
+            "NV",
+            "NH",
+            "NJ",
+            "NM",
+            "NY",
+            "NC",
+            "ND",
+            "OH",
+            "OK",
+            "OR",
+            "PA",
+            "PR",
+            "RI",
+            "SC",
+            "SD",
+            "TN",
+            "TX",
+            "UT",
+            "VT",
+            "VA",
+            "WA",
+            "WV",
+            "WI",
+            "WY"
           ]
         },
         "h3_res11": {
@@ -294,6 +343,15 @@
         },
         "openfema_tract_mean_lcr": {
           "type": "number"
+        },
+        "wrc_burn_probability": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "USFS Wildfire Risk to Communities annual burn probability (0-1). Optional; null when unavailable."
         }
       },
       "required": [
@@ -310,7 +368,8 @@
         "slope_deg",
         "wui_class",
         "openfema_tract_claim_count",
-        "openfema_tract_mean_lcr"
+        "openfema_tract_mean_lcr",
+        "wrc_burn_probability"
       ],
       "additionalProperties": false
     },

@@ -7,7 +7,10 @@ from pydantic import BaseModel, ConfigDict, Field
 
 UUID_PATTERN = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 
-State = Literal["LA", "CA", "FL"]
+# USPS codes: 50 states + DC + PR.
+State = Literal[
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+]
 Peril = Literal["FLOOD", "WILDFIRE", "WIND_HAIL"]
 RoofClass = Literal["CLASS_A_FORTIFIED", "CLASS_A_IMPACT_4", "CLASS_A_ASPHALT", "WOOD_SHAKE_UNRATED"]
 FortifiedTier = Literal["ROOF", "SILVER", "GOLD", "NONE"]
@@ -83,6 +86,7 @@ class PublicHazardLayer(_Strict):
     wui_class: str
     openfema_tract_claim_count: int
     openfema_tract_mean_lcr: float
+    wrc_burn_probability: float | None = Field(default=None, ge=0, le=1)
 
 
 class PrivateVerificationLayer(_Strict):
