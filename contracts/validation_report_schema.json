@@ -1,0 +1,756 @@
+{
+  "$defs": {
+    "BenchmarkRow": {
+      "additionalProperties": false,
+      "properties": {
+        "concurrency": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Concurrent clients, if applicable.",
+          "title": "Concurrency"
+        },
+        "n": {
+          "description": "Number of requests measured.",
+          "title": "N",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Benchmark name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "p50_ms": {
+          "description": "Median latency, ms.",
+          "title": "P50 Ms",
+          "type": "number"
+        },
+        "p95_ms": {
+          "description": "95th percentile latency, ms.",
+          "title": "P95 Ms",
+          "type": "number"
+        },
+        "p99_ms": {
+          "description": "99th percentile latency, ms.",
+          "title": "P99 Ms",
+          "type": "number"
+        },
+        "rps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Requests per second, if measured.",
+          "title": "Rps"
+        }
+      },
+      "required": [
+        "name",
+        "n",
+        "p50_ms",
+        "p95_ms",
+        "p99_ms"
+      ],
+      "title": "BenchmarkRow",
+      "type": "object"
+    },
+    "FloodEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "bias": {
+          "description": "Mean signed error (predicted minus observed), in dr.",
+          "title": "Bias",
+          "type": "number"
+        },
+        "event": {
+          "description": "Name of the flood event.",
+          "title": "Event",
+          "type": "string"
+        },
+        "fitted_mae": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mean absolute error of the fitted curve, in dr.",
+          "title": "Fitted Mae"
+        },
+        "hazus_mae": {
+          "description": "Mean absolute error of the Hazus prediction, in dr.",
+          "title": "Hazus Mae",
+          "type": "number"
+        },
+        "n_claims": {
+          "description": "Number of claims used for the event.",
+          "title": "N Claims",
+          "type": "integer"
+        },
+        "n_tracts": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of tracts in the rank comparison.",
+          "title": "N Tracts"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Free-text caveat for the event.",
+          "title": "Note"
+        },
+        "observed_mean_dr": {
+          "description": "Observed mean damage ratio (dr, 0-1).",
+          "title": "Observed Mean Dr",
+          "type": "number"
+        },
+        "states": {
+          "description": "US state codes the event covers.",
+          "items": {
+            "type": "string"
+          },
+          "title": "States",
+          "type": "array"
+        },
+        "tract_spearman": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Spearman rank correlation across tracts.",
+          "title": "Tract Spearman"
+        },
+        "year": {
+          "description": "Year of the event.",
+          "title": "Year",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "event",
+        "year",
+        "n_claims",
+        "observed_mean_dr",
+        "hazus_mae",
+        "bias"
+      ],
+      "title": "FloodEvent",
+      "type": "object"
+    },
+    "FloodValidation": {
+      "additionalProperties": false,
+      "properties": {
+        "adopted": {
+          "description": "True if a fitted result was adopted into the model.",
+          "title": "Adopted",
+          "type": "boolean"
+        },
+        "adoption_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why the fit was or was not adopted.",
+          "title": "Adoption Note"
+        },
+        "data_source": {
+          "description": "Where the observed data came from.",
+          "title": "Data Source",
+          "type": "string"
+        },
+        "data_vintage": {
+          "description": "Vintage or release of the observed data.",
+          "title": "Data Vintage",
+          "type": "string"
+        },
+        "events": {
+          "description": "Per-event results.",
+          "items": {
+            "$ref": "#/$defs/FloodEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "fetched_on": {
+          "description": "Date the data was fetched.",
+          "format": "date",
+          "title": "Fetched On",
+          "type": "string"
+        },
+        "method": {
+          "description": "How the validation was done.",
+          "title": "Method",
+          "type": "string"
+        },
+        "ranking": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ranking"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tract ranking result; None if not run."
+        },
+        "severity_by_depth": {
+          "description": "Severity by depth bucket.",
+          "items": {
+            "$ref": "#/$defs/SeverityBucket"
+          },
+          "title": "Severity By Depth",
+          "type": "array"
+        },
+        "verdict": {
+          "description": "Plain-language conclusion.",
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "data_source",
+        "data_vintage",
+        "fetched_on",
+        "verdict",
+        "adopted"
+      ],
+      "title": "FloodValidation",
+      "type": "object"
+    },
+    "ModelCard": {
+      "additionalProperties": false,
+      "properties": {
+        "constants_calibration": {
+          "description": "Entries solved by internal calibration to reference parcels.",
+          "title": "Constants Calibration",
+          "type": "integer"
+        },
+        "constants_total": {
+          "description": "Entries in the constants registry.",
+          "title": "Constants Total",
+          "type": "integer"
+        },
+        "constants_validated": {
+          "description": "Entries taken from a primary or official source.",
+          "title": "Constants Validated",
+          "type": "integer"
+        },
+        "perils": {
+          "description": "Perils the model covers.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Perils",
+          "type": "array"
+        },
+        "sources": {
+          "description": "Distinct external sources used.",
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "constants_total",
+        "constants_validated",
+        "constants_calibration"
+      ],
+      "title": "ModelCard",
+      "type": "object"
+    },
+    "Ranking": {
+      "additionalProperties": false,
+      "properties": {
+        "deciles": {
+          "description": "Expected versus actual by decile.",
+          "items": {
+            "$ref": "#/$defs/RankingDecile"
+          },
+          "title": "Deciles",
+          "type": "array"
+        },
+        "gini": {
+          "description": "Gini coefficient of the ranking.",
+          "title": "Gini",
+          "type": "number"
+        },
+        "n_tracts": {
+          "description": "Number of tracts ranked.",
+          "title": "N Tracts",
+          "type": "integer"
+        },
+        "spearman": {
+          "description": "Spearman rank correlation of predicted versus observed loss.",
+          "title": "Spearman",
+          "type": "number"
+        }
+      },
+      "required": [
+        "n_tracts",
+        "spearman",
+        "gini"
+      ],
+      "title": "Ranking",
+      "type": "object"
+    },
+    "RankingDecile": {
+      "additionalProperties": false,
+      "properties": {
+        "actual": {
+          "description": "Mean observed loss in the decile.",
+          "title": "Actual",
+          "type": "number"
+        },
+        "decile": {
+          "description": "Decile of predicted risk, 1 to 10.",
+          "title": "Decile",
+          "type": "integer"
+        },
+        "expected": {
+          "description": "Mean predicted loss in the decile.",
+          "title": "Expected",
+          "type": "number"
+        }
+      },
+      "required": [
+        "decile",
+        "expected",
+        "actual"
+      ],
+      "title": "RankingDecile",
+      "type": "object"
+    },
+    "SeverityBucket": {
+      "additionalProperties": false,
+      "properties": {
+        "depth_bucket": {
+          "description": "Label of the flood depth bucket, e.g. '1-2 ft'.",
+          "title": "Depth Bucket",
+          "type": "string"
+        },
+        "depth_mid_ft": {
+          "description": "Bucket midpoint, feet above first finished floor.",
+          "title": "Depth Mid Ft",
+          "type": "number"
+        },
+        "fitted_pred_dr": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Damage ratio from the fitted curve, if any.",
+          "title": "Fitted Pred Dr"
+        },
+        "hazus_pred_dr": {
+          "description": "Damage ratio predicted by the Hazus curve at depth_mid_ft.",
+          "title": "Hazus Pred Dr",
+          "type": "number"
+        },
+        "n": {
+          "description": "Number of observed claims in the bucket.",
+          "title": "N",
+          "type": "integer"
+        },
+        "observed_ci_high": {
+          "description": "Upper bound of the confidence interval on observed_mean_dr.",
+          "title": "Observed Ci High",
+          "type": "number"
+        },
+        "observed_ci_low": {
+          "description": "Lower bound of the confidence interval on observed_mean_dr.",
+          "title": "Observed Ci Low",
+          "type": "number"
+        },
+        "observed_mean_dr": {
+          "description": "Observed mean damage ratio (dr, 0-1).",
+          "title": "Observed Mean Dr",
+          "type": "number"
+        }
+      },
+      "required": [
+        "depth_bucket",
+        "depth_mid_ft",
+        "n",
+        "observed_mean_dr",
+        "observed_ci_low",
+        "observed_ci_high",
+        "hazus_pred_dr"
+      ],
+      "title": "SeverityBucket",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Source name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "description": "Source URL.",
+          "title": "Url",
+          "type": "string"
+        },
+        "vintage": {
+          "description": "Date or release the source was read.",
+          "title": "Vintage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "url",
+        "vintage"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "WildfireFeature": {
+      "additionalProperties": false,
+      "properties": {
+        "ci_high": {
+          "description": "Upper bound of the odds-ratio confidence interval.",
+          "title": "Ci High",
+          "type": "number"
+        },
+        "ci_low": {
+          "description": "Lower bound of the odds-ratio confidence interval.",
+          "title": "Ci Low",
+          "type": "number"
+        },
+        "feature": {
+          "description": "Structure or site feature tested.",
+          "title": "Feature",
+          "type": "string"
+        },
+        "model_implied_ratio": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ratio the model implies for the feature.",
+          "title": "Model Implied Ratio"
+        },
+        "n": {
+          "description": "Structures with the feature recorded.",
+          "title": "N",
+          "type": "integer"
+        },
+        "odds_ratio": {
+          "description": "Observed odds ratio of destruction.",
+          "title": "Odds Ratio",
+          "type": "number"
+        },
+        "supported": {
+          "description": "True if the data supports the model's direction and size.",
+          "title": "Supported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "feature",
+        "n",
+        "odds_ratio",
+        "ci_low",
+        "ci_high",
+        "supported"
+      ],
+      "title": "WildfireFeature",
+      "type": "object"
+    },
+    "WildfireFire": {
+      "additionalProperties": false,
+      "properties": {
+        "auc_current": {
+          "description": "ROC AUC of the current model.",
+          "title": "Auc Current",
+          "type": "number"
+        },
+        "auc_fitted": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ROC AUC of the fitted model, if any.",
+          "title": "Auc Fitted"
+        },
+        "calibration_slope": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Calibration slope; 1.0 is ideal.",
+          "title": "Calibration Slope"
+        },
+        "destroyed_share": {
+          "description": "Share of assessed structures destroyed (0-1).",
+          "title": "Destroyed Share",
+          "type": "number"
+        },
+        "fire": {
+          "description": "Name of the fire.",
+          "title": "Fire",
+          "type": "string"
+        },
+        "n_structures": {
+          "description": "Structures assessed.",
+          "title": "N Structures",
+          "type": "integer"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Free-text caveat for the fire.",
+          "title": "Note"
+        },
+        "year": {
+          "description": "Year of the fire.",
+          "title": "Year",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "fire",
+        "year",
+        "n_structures",
+        "destroyed_share",
+        "auc_current"
+      ],
+      "title": "WildfireFire",
+      "type": "object"
+    },
+    "WildfireValidation": {
+      "additionalProperties": false,
+      "properties": {
+        "adopted": {
+          "description": "True if a fitted result was adopted into the model.",
+          "title": "Adopted",
+          "type": "boolean"
+        },
+        "adoption_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why the fit was or was not adopted.",
+          "title": "Adoption Note"
+        },
+        "data_source": {
+          "description": "Where the observed data came from.",
+          "title": "Data Source",
+          "type": "string"
+        },
+        "data_vintage": {
+          "description": "Vintage or release of the observed data.",
+          "title": "Data Vintage",
+          "type": "string"
+        },
+        "features": {
+          "description": "Per-feature results.",
+          "items": {
+            "$ref": "#/$defs/WildfireFeature"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "fetched_on": {
+          "description": "Date the data was fetched.",
+          "format": "date",
+          "title": "Fetched On",
+          "type": "string"
+        },
+        "fires": {
+          "description": "Per-fire results.",
+          "items": {
+            "$ref": "#/$defs/WildfireFire"
+          },
+          "title": "Fires",
+          "type": "array"
+        },
+        "method": {
+          "description": "How the validation was done.",
+          "title": "Method",
+          "type": "string"
+        },
+        "pooled_auc": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ROC AUC pooled across fires.",
+          "title": "Pooled Auc"
+        },
+        "verdict": {
+          "description": "Plain-language conclusion.",
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "data_source",
+        "data_vintage",
+        "fetched_on",
+        "verdict",
+        "adopted"
+      ],
+      "title": "WildfireValidation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "benchmarks": {
+      "description": "Latency and throughput rows.",
+      "items": {
+        "$ref": "#/$defs/BenchmarkRow"
+      },
+      "title": "Benchmarks",
+      "type": "array"
+    },
+    "flood": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FloodValidation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Flood results; None while pending."
+    },
+    "generated_at": {
+      "description": "When the report was built.",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "model_card": {
+      "$ref": "#/$defs/ModelCard",
+      "description": "Summary of the constants registry."
+    },
+    "model_commit": {
+      "description": "Short git commit of the model the report describes.",
+      "title": "Model Commit",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "description": "Contract version.",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "description": "COMPLETE when flood, wildfire and benchmarks are present, PENDING when none, else PARTIAL.",
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "PENDING"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "wildfire": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/WildfireValidation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Wildfire results; None while pending."
+    }
+  },
+  "required": [
+    "generated_at",
+    "model_commit",
+    "status",
+    "model_card"
+  ],
+  "title": "ValidationReport",
+  "type": "object"
+}

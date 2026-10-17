@@ -1,0 +1,81 @@
+{
+  "benchmarks": [],
+  "flood": null,
+  "generated_at": "2026-10-17T18:37:42Z",
+  "model_card": {
+    "constants_calibration": 1,
+    "constants_total": 72,
+    "constants_validated": 16,
+    "perils": [
+      "flood",
+      "wildfire",
+      "wind"
+    ],
+    "sources": [
+      {
+        "name": "wildfire",
+        "url": "https://abgt.assembly.ca.gov/system/files/2026-05/panel-1-steve-hawks-2026-5-6-ca-assembly-4-hearing.pdf",
+        "vintage": "2026-05-06"
+      },
+      {
+        "name": "credit",
+        "url": "https://aldoi.gov/SAH/Home.aspx",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "wind",
+        "url": "https://culverhouse.ua.edu/?p=29203",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "credibility",
+        "url": "https://en.wikipedia.org/wiki/B%C3%BChlmann_model",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "credibility",
+        "url": "https://en.wikipedia.org/wiki/Credibility_theory",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "wind",
+        "url": "https://ibhs.org/",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "nri",
+        "url": "https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "wildfire",
+        "url": "https://wildfirerisk.org/",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "prior",
+        "url": "https://www.fema.gov/openfema-data-page/fima-nfip-redacted-claims-v2",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "credit",
+        "url": "https://www.law.cornell.edu/regulations/california/10-CCR-2644.9",
+        "vintage": "2026-10-17"
+      },
+      {
+        "name": "credit",
+        "url": "https://www.wafb.com/2026/09/24/louisiana-homeowners-could-qualify-up-49-hurricane-insurance-discount/",
+        "vintage": "2026-09-24"
+      },
+      {
+        "name": "flood",
+        "url": "https://zenodo.org/records/10027236/files/haz_fl_dept.csv?download=1",
+        "vintage": "2026-10-17"
+      }
+    ]
+  },
+  "model_commit": "15a3574",
+  "schema_version": "1.0",
+  "status": "PENDING",
+  "wildfire": null
+}
