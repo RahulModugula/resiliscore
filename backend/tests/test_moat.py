@@ -186,7 +186,7 @@ def test_mcp_registers_broker_tools():
 
 def test_what_if_s2_all_actions():
     out = mcp_server.what_if_mitigation("1840 Canyon Crest Dr, Altadena, CA", S2_ALL)
-    assert (out["score_before"], out["score_after"], out["score_delta"]) == (385, 630, 245)
+    assert (out["score_before"], out["score_after"], out["score_delta"]) == (551, 661, 110)
     assert out["tier_after"] == "TIER_2_CONDITIONAL"
     assert out["premium_delta_usd"] < 0
     assert out["discount_mandates"] == ["CA_CCR_2644_9"] == out["newly_unlocked_mandates"]

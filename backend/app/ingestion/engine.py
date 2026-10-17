@@ -69,6 +69,7 @@ class HazardResult:
     indicative_only: bool
     tract_prior_lcr: float | None  # None: keep the response's own prior (golden parcels)
     nri_rates: dict[str, float] = field(default_factory=dict)  # per-peril tract EAL rates, when live
+    nri_tract: nri.TractPrior | None = None  # full tract figures (EALB, EXPB, BUILDVALUE) for base-rate calibration
 
 
 def _prov(name: str, source: ValueSource, src: tuple[str, str] | str, vintage: str | None = None) -> InputProvenance:
@@ -226,13 +227,14 @@ class SpatialIngestionEngine:
         if lag is not None:
             elev = usgs_3dep.compute_elevations(lag, bfe, offset)
             values["usgs_lag_ft"], values["est_ffe_ft"] = elev.usgs_lag_ft, elev.est_ffe_ft
-            # The contract field is a non-null float, so "no BFE" is carried as 0.0, as in the golden parcels.
-            values["freeboard_delta_h_ft"] = elev.freeboard_delta_h_ft or 0.0
+            # Nullable in the contract: no BFE is None, not 0.0 (which would read as "at BFE").
+            values["freeboard_delta_h_ft"] = elev.freeboard_delta_h_ft
             prov.append(_prov("usgs_lag_ft", "LIVE", SRC_EPQS))
             prov.append(_prov("est_ffe_ft", "DEFAULT", "LAG + assumed 2.0 ft slab-on-grade foundation offset"))
             prov.append(_prov("freeboard_delta_h_ft", "DEFAULT" if bfe is not None else "UNAVAILABLE", SRC_NFHL))
         else:
-            values.update(usgs_lag_ft=0.0, est_ffe_ft=0.0, freeboard_delta_h_ft=0.0)
+            # A failed lookup is unknown, never the nearest reference parcel's elevation or a zero.
+            values.update(usgs_lag_ft=None, est_ffe_ft=None, freeboard_delta_h_ft=None)
             for f in ("usgs_lag_ft", "est_ffe_ft", "freeboard_delta_h_ft"):
                 prov.append(_prov(f, "UNAVAILABLE", SRC_EPQS))
 
@@ -275,4 +277,5 @@ class SpatialIngestionEngine:
             indicative_only=any(status[k] != "LIVE" for k in KEY_INPUTS),
             tract_prior_lcr=prior,
             nri_rates=dict(tract.rates) if tract else {},
+            nri_tract=tract,
         )

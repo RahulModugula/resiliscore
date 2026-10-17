@@ -1,1 +1,162 @@
-{"objectIdFieldName":"OBJECTID","uniqueIdField":{"name":"OBJECTID","isSystemMaintained":true},"globalIdFieldName":"","serverGens":{"minServerGen":187760764,"serverGen":187760764},"geometryType":"esriGeometryPolygon","spatialReference":{"wkid":102100,"latestWkid":3857},"fields":[{"name":"TRACTFIPS","type":"esriFieldTypeString","alias":"Census Tract FIPS Code","sqlType":"sqlTypeOther","length":20,"domain":null,"defaultValue":null},{"name":"NRI_VER","type":"esriFieldTypeString","alias":"National Risk Index Version","sqlType":"sqlTypeOther","length":50,"domain":null,"defaultValue":null},{"name":"BUILDVALUE","type":"esriFieldTypeDouble","alias":"Building Value ($)","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"IFLD_EALB","type":"esriFieldTypeDouble","alias":"Inland Flooding - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"CFLD_EALB","type":"esriFieldTypeDouble","alias":"Coastal Flooding - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"WFIR_EALB","type":"esriFieldTypeDouble","alias":"Wildfire - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"HAIL_EALB","type":"esriFieldTypeDouble","alias":"Hail - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"SWND_EALB","type":"esriFieldTypeDouble","alias":"Strong Wind - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null},{"name":"HRCN_EALB","type":"esriFieldTypeDouble","alias":"Hurricane - Expected Annual Loss - Building Value","sqlType":"sqlTypeOther","domain":null,"defaultValue":null}],"features":[{"attributes":{"TRACTFIPS":"48453001103","NRI_VER":"December 2025","BUILDVALUE":1019131037,"IFLD_EALB":720143.49290000019,"CFLD_EALB":null,"WFIR_EALB":0,"HAIL_EALB":118574.43515657287,"SWND_EALB":11272.221830350512,"HRCN_EALB":7266.5579796945585}}]}
+{
+  "objectIdFieldName": "OBJECTID",
+  "uniqueIdField": {
+    "name": "OBJECTID",
+    "isSystemMaintained": true
+  },
+  "globalIdFieldName": "",
+  "serverGens": {
+    "minServerGen": 187760764,
+    "serverGen": 187760764
+  },
+  "geometryType": "esriGeometryPolygon",
+  "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+  },
+  "fields": [
+    {
+      "name": "TRACTFIPS",
+      "type": "esriFieldTypeString",
+      "alias": "Census Tract FIPS Code",
+      "sqlType": "sqlTypeOther",
+      "length": 20,
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "NRI_VER",
+      "type": "esriFieldTypeString",
+      "alias": "National Risk Index Version",
+      "sqlType": "sqlTypeOther",
+      "length": 50,
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "BUILDVALUE",
+      "type": "esriFieldTypeDouble",
+      "alias": "Building Value ($)",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "IFLD_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Inland Flooding - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "CFLD_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Coastal Flooding - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "WFIR_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Wildfire - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "HAIL_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Hail - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "SWND_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Strong Wind - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "HRCN_EALB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Hurricane - Expected Annual Loss - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "IFLD_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Inland Flooding - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "CFLD_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Coastal Flooding - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "WFIR_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Wildfire - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "HAIL_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Hail - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "SWND_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Strong Wind - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    },
+    {
+      "name": "HRCN_EXPB",
+      "type": "esriFieldTypeDouble",
+      "alias": "Hurricane - Exposure - Building Value",
+      "sqlType": "sqlTypeOther",
+      "domain": null,
+      "defaultValue": null
+    }
+  ],
+  "features": [
+    {
+      "attributes": {
+        "TRACTFIPS": "48453001103",
+        "NRI_VER": "December 2025",
+        "BUILDVALUE": 1019131037,
+        "IFLD_EALB": 720143.4929000002,
+        "CFLD_EALB": null,
+        "WFIR_EALB": 0,
+        "HAIL_EALB": 118574.43515657287,
+        "SWND_EALB": 11272.221830350512,
+        "HRCN_EALB": 7266.5579796945585,
+        "IFLD_EXPB": 1018960218.8211998,
+        "CFLD_EXPB": null,
+        "WFIR_EXPB": 0,
+        "HAIL_EXPB": 1019131037,
+        "SWND_EXPB": 1019131037,
+        "HRCN_EXPB": 1019131037
+      }
+    }
+  ]
+}

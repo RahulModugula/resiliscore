@@ -8,7 +8,7 @@ is its building-value EAL (<PERIL>_EALB) divided by the tract building value (BU
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import httpx
 
@@ -24,7 +24,7 @@ PERILS = {
     "SWND": "strong wind",
     "HRCN": "hurricane",
 }
-OUT_FIELDS = ("TRACTFIPS", "NRI_VER", "BUILDVALUE", *(f"{p}_EALB" for p in PERILS))
+OUT_FIELDS = ("TRACTFIPS", "NRI_VER", "BUILDVALUE", *(f"{p}_EALB" for p in PERILS), *(f"{p}_EXPB" for p in PERILS))
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,9 @@ class TractPrior:
     tract_fips: str
     version: str
     rates: dict[str, float]  # peril code -> annual loss as a fraction of building value
+    ealb_usd: dict[str, float] = field(default_factory=dict)  # peril code -> expected annual building loss ($)
+    expb_usd: dict[str, float] = field(default_factory=dict)  # peril code -> exposed building value ($)
+    buildvalue_usd: float = 0.0
 
     @property
     def total_rate(self) -> float:
@@ -49,7 +52,12 @@ def parse_nri(payload: dict) -> TractPrior:
     if not value or float(value) <= 0:
         raise ValueError(f"NRI tract {a.get('TRACTFIPS')} has no building value")
     rates = {p: float(a.get(f"{p}_EALB") or 0.0) / float(value) for p in PERILS}  # null EAL = peril absent
-    return TractPrior(tract_fips=str(a["TRACTFIPS"]), version=str(a.get("NRI_VER") or "unknown"), rates=rates)
+    return TractPrior(
+        tract_fips=str(a["TRACTFIPS"]), version=str(a.get("NRI_VER") or "unknown"), rates=rates,
+        ealb_usd={p: float(a.get(f"{p}_EALB") or 0.0) for p in PERILS},
+        expb_usd={p: float(a.get(f"{p}_EXPB") or 0.0) for p in PERILS},
+        buildvalue_usd=float(value),
+    )
 
 
 async def fetch_tract_prior(client: httpx.AsyncClient, lat: float, lng: float) -> TractPrior:

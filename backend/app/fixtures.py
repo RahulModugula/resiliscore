@@ -4,6 +4,7 @@ import json
 from functools import cache
 from pathlib import Path
 
+from app import provenance
 from app.models.schemas import ParcelScoreResponse
 
 GOLDEN_PATH = Path(__file__).resolve().parents[2] / "contracts" / "golden_scenarios.json"
@@ -32,7 +33,10 @@ def by_address(address: str) -> ParcelScoreResponse | None:
 
 
 # Sections of a golden scenario that the engine owns; everything else is input (parcel, hazard, verification).
-ENGINE_SECTIONS = ("actuarial_breakdown", "prescriptive_mitigations", "hitl_status", "regulatory_compliance")
+ENGINE_SECTIONS = (
+    "actuarial_breakdown", "prescriptive_mitigations", "hitl_status", "regulatory_compliance",
+    "factor_contributions", "uncertainty", "premium_build",
+)
 
 
 def reconcile(raw: dict) -> dict:
@@ -50,6 +54,10 @@ def reconcile(raw: dict) -> dict:
         **new["regulatory_compliance"]["dataset_vintages"],
         "OpenFEMA": VINTAGES["OpenFEMA"],
     }
+    # The golden parcels are the reference set, so every input is REFERENCE_PARCEL and the score is not indicative.
+    new["input_provenance"] = [
+        row.model_dump(mode="json") for row in provenance.build(ParcelScoreResponse.model_validate(new))
+    ]
     return new
 
 

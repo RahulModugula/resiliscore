@@ -309,13 +309,22 @@
           ]
         },
         "usgs_lag_ft": {
-          "type": "number"
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "est_ffe_ft": {
-          "type": "number"
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "freeboard_delta_h_ft": {
-          "type": "number"
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "hand_rel_elev_ft": {
           "type": "number"

@@ -8,37 +8,40 @@ assumed verified (CV upload or registry certificate), so it also adds its credib
 
 import time
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 
-from app.actuarial import compliance
+from app.actuarial import attribution, compliance, insurance, uncertainty
 from app.actuarial import compound_model as cm
+from app.actuarial.base_rates import NriRates, base_rates_for, context_for, resolve
+from app.actuarial.constants import get as c
 from app.actuarial.credibility import Credibility, credibility, posterior_lcr
 from app.actuarial.score_map import score, tier
 from app.models.schemas import (
     ActuarialBreakdown,
+    InputProvenance,
     Mitigation,
     ParcelScoreResponse,
     PrivateVerificationLayer,
     RegulatoryCompliance,
+    Uncertainty,
 )
 
-LA_AL_FORTIFIED_GRANT_USD = 10_000.0
-WILDFIRE_DISCOUNT_CAP = 0.30
-WIND_DISCOUNT_CAP = 0.55
+LA_AL_FORTIFIED_GRANT_USD = c("credit.grant_usd")
+WILDFIRE_DISCOUNT_CAP = c("credit.wildfire_cap")
+WIND_DISCOUNT_CAP = c("credit.wind_cap")
 NO_PAYBACK_YEARS = 99.0  # reported when an action earns no premium credit
 BPS = 1e4
 
-# Statutory credit schedules (share of the peril's premium). Wildfire credits stack to the cap;
-# WPH Plus earns the cap outright. Wind credits are not additive: the best roof credit applies.
-WILDFIRE_CREDITS = {
-    "zone0_clear": 0.06,
-    "zone1_no_shed": 0.03,
-    "ember_vents": 0.05,
-    "enclosed_eaves": 0.03,
-    "roof_class_a": 0.08,
+# Statutory credit schedules (share of the peril's premium); see the registry for sources and caveats.
+# Wildfire credits stack to the cap; WPH Plus earns the cap outright. Wind credits are not additive: the
+# best roof credit applies. Louisiana FORTIFIED discounts are the South-region values, reused for Alabama.
+WILDFIRE_CREDITS = c("credit.wildfire")
+WPH_BASE_BONUS = c("credit.wph_base_bonus")
+_LA_REGION = "South"
+WIND_CREDITS = {
+    "impact_class4": c("credit.class4"),
+    **{tier: c("credit.la_fortified")[tier][_LA_REGION] for tier in ("ROOF", "SILVER", "GOLD")},
 }
-WPH_BASE_BONUS = 0.05
-WIND_CREDITS = {"impact_class4": 0.124, "ROOF": 0.38, "SILVER": 0.46, "GOLD": 0.55}
 
 
 @dataclass(frozen=True)
@@ -55,29 +58,36 @@ def _firewise(r: ParcelScoreResponse) -> bool:
     return r.regulatory_compliance.ca_2644_9_factors.cat_a_firewise_usa
 
 
-def _ctx(r: ParcelScoreResponse) -> dict:
+def _ctx(r: ParcelScoreResponse, nri: NriRates | None = None) -> dict:
     return {"state": r.parcel_identity.state, "year_built": r.parcel_identity.year_built,
-            "firewise": _firewise(r)}
+            "firewise": _firewise(r), "base_rates": context_for(r, nri)[0]}
 
 
-def evaluate(r: ParcelScoreResponse, v: PrivateVerificationLayer) -> Evaluation:
-    """Full chain for response `r`'s parcel under verification state `v`."""
-    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r))
+def evaluate(
+    r: ParcelScoreResponse, v: PrivateVerificationLayer, *, z: float | None = None, nri: NriRates | None = None
+) -> Evaluation:
+    """Full chain for response `r`'s parcel under verification state `v`.
+
+    `z` pins the credibility weight (default: the weight `v`'s evidence earns), so a caller can isolate the
+    physical effect of a change from the evidence it would add."""
+    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri))
     raw = sum(t.n * t.s for t in terms)
     cred = credibility(v)
-    post = posterior_lcr(raw, r.actuarial_breakdown.tract_prior_lcr, cred.z)
+    if z is not None:
+        cred = replace(cred, z=z)
+    post = posterior_lcr(raw, context_for(r, nri)[1], cred.z)
     s = score(post)
     return Evaluation(raw, cred, post, s, tier(s), terms)
 
 
-def premium_discount(r: ParcelScoreResponse, v: PrivateVerificationLayer) -> float:
+def premium_discount(r: ParcelScoreResponse, v: PrivateVerificationLayer, nri: NriRates | None = None) -> float:
     """Blended statutory discount on the homeowners premium (flood is NFIP, so it is excluded).
 
     Peril shares come from the mitigation-free AAL split so the base premium stays fixed as actions toggle.
     """
     bare = {
         t.peril: t.n * t.s
-        for t in cm.peril_terms(r.public_hazard_layer, v, **_ctx(r), mitigations=cm.Mitigations())
+        for t in cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri), mitigations=cm.Mitigations())
         if t.peril != "FLOOD"
     }
     total = sum(bare.values())
@@ -124,25 +134,27 @@ def _ca_wui(r: ParcelScoreResponse, _v: PrivateVerificationLayer) -> bool:
 def _FORTIFIED_ROOF(v: PrivateVerificationLayer) -> bool:
     return v.cv_roof_class == "CLASS_A_FORTIFIED" or v.ibhs_fortified_tier != "NONE"
 
+_E = c("action.economics")  # action id -> (gross capex USD, resale bump %)
+
 ACTIONS: tuple[Action, ...] = (
     Action(
         "CA_ZONE0_1_CLEARANCE", "zone0_clear",
         "Zone 0/1 clearance: noncombustible 0-5 ft, prune canopy, relocate shed",
-        "WILDFIRE", "10 CCR 2644.9 Cat B1; CA PRC 4291", 1800.0, 0.4, _ca_wui,
+        "WILDFIRE", "10 CCR 2644.9 Cat B1; CA PRC 4291", *_E["CA_ZONE0_1_CLEARANCE"], _ca_wui,
         lambda v: v.cv_zone0_clear and v.cv_zone1_no_shed and v.cv_overhang_ft == 0,
         lambda v: {"cv_zone0_clear": True, "cv_zone1_no_shed": True, "cv_overhang_ft": 0.0},
         lambda v: {"cv_zone0_clear": False, "cv_zone1_no_shed": False},
     ),
     Action(
         "CA_EMBER_VENTS_EAVES", "ember_vents_eaves", "1/4-inch ember vents + enclosed eaves",
-        "WILDFIRE", "10 CCR 2644.9 Cat B2; CBC Chapter 7A", 3200.0, 0.6, _ca_wui,
+        "WILDFIRE", "10 CCR 2644.9 Cat B2; CBC Chapter 7A", *_E["CA_EMBER_VENTS_EAVES"], _ca_wui,
         lambda v: v.cv_ember_vents and v.cv_enclosed_eaves,
         lambda v: {"cv_ember_vents": True, "cv_enclosed_eaves": True},
         lambda v: {"cv_ember_vents": False, "cv_enclosed_eaves": False},
     ),
     Action(
         "CA_IBHS_WPH_CLASS_A_ROOF", "ibhs_wph_class_a_roof", "IBHS Wildfire Prepared Home Class A roof",
-        "WILDFIRE", "10 CCR 2644.9 Cat B2; IBHS WPH", 14500.0, 1.2,
+        "WILDFIRE", "10 CCR 2644.9 Cat B2; IBHS WPH", *_E["CA_IBHS_WPH_CLASS_A_ROOF"],
         lambda r, v: _ca_wui(r, v) and v.ibhs_wph_tier != "PLUS",
         lambda v: v.ibhs_wph_tier != "NONE" and v.cv_roof_class != "WOOD_SHAKE_UNRATED",
         lambda v: {
@@ -154,7 +166,7 @@ ACTIONS: tuple[Action, ...] = (
     Action(
         "CA_IBHS_WPH_PLUS", "ibhs_wph_plus",
         "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
-        "WILDFIRE", "10 CCR 2644.9 Cat B1+B2; IBHS WPH Plus", 15000.0, 1.5, _ca_wui,
+        "WILDFIRE", "10 CCR 2644.9 Cat B1+B2; IBHS WPH Plus", *_E["CA_IBHS_WPH_PLUS"], _ca_wui,
         lambda v: v.ibhs_wph_tier == "PLUS",
         lambda v: {
             "ibhs_wph_tier": "PLUS", "cv_zone0_clear": True, "cv_zone1_no_shed": True, "cv_overhang_ft": 0.0,
@@ -165,7 +177,7 @@ ACTIONS: tuple[Action, ...] = (
     ),
     Action(
         "LA_FORTIFIED_ROOF", "ibhs_fortified_roof", "IBHS FORTIFIED Roof (Louisiana Fortify Homes grant)",
-        "WIND_HAIL", "LA R.S. 22:1460 FORTIFIED Roof credit", 18000.0, 6.8,
+        "WIND_HAIL", "LA R.S. 22:1460 FORTIFIED Roof credit", *_E["LA_FORTIFIED_ROOF"],
         lambda r, v: r.parcel_identity.state in ("LA", "AL"),
         _FORTIFIED_ROOF,
         lambda v: {
@@ -177,7 +189,7 @@ ACTIONS: tuple[Action, ...] = (
     ),
     Action(
         "HAIL_CLASS4_ROOF", "hail_class4_roof", "Class 4 impact-resistant roof (12.4% hail discount)",
-        "WIND_HAIL", "IBHS FORTIFIED; UL 2218 Class 4", 9000.0, 0.8,
+        "WIND_HAIL", "IBHS FORTIFIED; UL 2218 Class 4", *_E["HAIL_CLASS4_ROOF"],
         lambda r, v: not _FORTIFIED_ROOF(v),
         lambda v: v.cv_roof_class == "CLASS_A_IMPACT_4",
         lambda v: {"cv_roof_class": "CLASS_A_IMPACT_4"},
@@ -185,7 +197,7 @@ ACTIONS: tuple[Action, ...] = (
     ),
     Action(
         "SMART_WATER_SHUTOFF", "smart_water_shutoff", "Smart water shut-off valve with backflow protection",
-        "FLOOD", "IBHS FORTIFIED Home water-intrusion guidance; carrier water-damage credit", 650.0, 0.2,
+        "FLOOD", "IBHS FORTIFIED Home water-intrusion guidance; carrier water-damage credit", *_E["SMART_WATER_SHUTOFF"],
         lambda r, v: "FLOOD" in cm.active_perils(r.public_hazard_layer),
         lambda v: v.iot_shutoff_active,
         lambda v: {"iot_shutoff_active": True},
@@ -207,10 +219,15 @@ def _select(v: PrivateVerificationLayer, action_ids: list[str]) -> PrivateVerifi
     return v
 
 
-def _mitigation_row(r: ParcelScoreResponse, a: Action, v: PrivateVerificationLayer, base_premium: float) -> Mitigation:
+def _mitigation_row(
+    r: ParcelScoreResponse, a: Action, v: PrivateVerificationLayer, base_premium: float, nri: NriRates
+) -> Mitigation:
     on, off = a.with_(v), a.without(v)
-    e_on, e_off = evaluate(r, on), evaluate(r, off)
-    savings = base_premium * (premium_discount(r, on) - premium_discount(r, off))
+    # A row is the physical effect of the action alone: both sides use the as-found credibility weight.
+    # Evidence (more channels, a higher Z) is a separate effect and shows in simulate()'s headline score.
+    z = credibility(v).z
+    e_on, e_off = evaluate(r, on, z=z, nri=nri), evaluate(r, off, z=z, nri=nri)
+    savings = base_premium * (premium_discount(r, on, nri) - premium_discount(r, off, nri))
     grant = min(a.gross_capex_usd, LA_AL_FORTIFIED_GRANT_USD) if r.parcel_identity.state in a.grant_states else 0.0
     net = a.gross_capex_usd - grant
     return Mitigation(
@@ -240,20 +257,51 @@ def _factors(r: ParcelScoreResponse, v: PrivateVerificationLayer):
         "cat_b2_ember_vents": v.cv_ember_vents,
     })
 
+STAND_IN_FIELD = "actuarial_breakdown.base_rates"
 
-def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScoreResponse:
-    """Re-score `response` with `action_ids` applied (canonical ids or spec aliases)."""
+
+def _with_stand_in_row(rows: list[InputProvenance], tract: NriRates) -> list[InputProvenance]:
+    """Say that the base rates and prior come from the nearest reference tract, not the parcel's own."""
+    row = InputProvenance(
+        field=STAND_IN_FIELD, value_source="REFERENCE_PARCEL", vintage=tract.version,
+        source_name=f"FEMA NRI reference tract {tract.tractfips} used as a stand-in: no tract was supplied for this parcel",
+    )
+    return [x for x in rows if x.field != STAND_IN_FIELD] + [row]
+
+
+def simulate(
+    response: ParcelScoreResponse, action_ids: list[str], nri: NriRates | None = None
+) -> ParcelScoreResponse:
+    """Re-score `response` with `action_ids` applied (canonical ids or spec aliases).
+
+    `nri` is the parcel's own NRI tract (from the ingestion client). With none, the nearest reference tract is a
+    stand-in unless the parcel is that reference parcel, and the result is `indicative_only` with a provenance row
+    saying so. The tract is resolved once here; nothing is read from any other request.
+    """
     t0 = time.perf_counter()
     r = response
+    tract, stand_in = resolve(r, nri)
     v = _select(r.private_verification_layer, action_ids)
-    ev = evaluate(r, v)
-    prior = r.actuarial_breakdown.tract_prior_lcr
+    ev = evaluate(r, v, nri=tract)
+    prior = tract.tract_prior_lcr
     base_premium = r.actuarial_breakdown.annual_base_premium_usd
-    discount = premium_discount(r, v)
+    discount = premium_discount(r, v, tract)
     jac = compliance.numerical_jacobian(
-        r.public_hazard_layer, v, **_ctx(r), tract_prior_lcr=prior, z=ev.credibility.z
+        r.public_hazard_layer, v, **_ctx(r, tract), tract_prior_lcr=prior, z=ev.credibility.z
     )
-    rows = [_mitigation_row(r, a, v, base_premium) for a in ACTIONS if a.applicable(r, v)]
+    rows = [_mitigation_row(r, a, v, base_premium, tract) for a in ACTIONS if a.applicable(r, v)]
+    scale = ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0
+    rcv = r.parcel_identity.rcv_usd
+    freeboard_missing = r.public_hazard_layer.freeboard_delta_h_ft is None and "FLOOD" in {t.peril for t in ev.terms}
+    mc = uncertainty.simulate_losses(
+        ev.terms, state=r.parcel_identity.state, rcv_usd=rcv, tract_prior_lcr=prior, z=ev.credibility.z,
+        freeboard_known=not freeboard_missing,
+    )
+    build = insurance.premium_build(
+        ev.terms,
+        bare_terms=cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, tract), mitigations=cm.Mitigations()),
+        expected_loss_usd=ev.posterior_lcr * rcv, scale=scale, rcv_usd=rcv, filed_credit_pct=discount * 100,
+    )
     breakdown = ActuarialBreakdown(
         tract_prior_lcr=prior,
         parcel_raw_lcr=round(ev.raw_lcr, 6),
@@ -265,7 +313,7 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
             v,
             r.parcel_identity.rcv_usd,
             scale=ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0,
-            **_ctx(r),
+            **_ctx(r, tract),
         ),
         resili_score=ev.score,
         baseline_macro_score=score(prior),
@@ -278,6 +326,11 @@ def simulate(response: ParcelScoreResponse, action_ids: list[str]) -> ParcelScor
         "private_verification_layer": v,
         "actuarial_breakdown": breakdown,
         "prescriptive_mitigations": rows,
+        "uncertainty": Uncertainty(**asdict(mc)),
+        "indicative_only": r.indicative_only or freeboard_missing or stand_in,
+        "input_provenance": _with_stand_in_row(r.input_provenance, tract) if stand_in else r.input_provenance,
+        "premium_build": build,
+        "factor_contributions": attribution.contributions(r, v, base_rates=base_rates_for(tract), prior=prior),
         "hitl_status": compliance.hitl_status(
             rcv_usd=r.parcel_identity.rcv_usd,
             cv_confidence=v.cv_confidence,

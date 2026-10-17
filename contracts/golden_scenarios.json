@@ -12,8 +12,8 @@
       "rcv_usd": 450000.0,
       "year_built": 1998,
       "centroid": [
-        -90.1032,
-        29.9657
+        -90.153,
+        29.984
       ],
       "geometries": {
         "type": "FeatureCollection",
@@ -25,24 +25,24 @@
               "coordinates": [
                 [
                   [
-                    -90.103358,
-                    29.9654794
+                    -90.153158,
+                    29.983779
                   ],
                   [
-                    -90.103042,
-                    29.9654794
+                    -90.152842,
+                    29.983779
                   ],
                   [
-                    -90.103042,
-                    29.9659206
+                    -90.152842,
+                    29.984221
                   ],
                   [
-                    -90.103358,
-                    29.9659206
+                    -90.153158,
+                    29.984221
                   ],
                   [
-                    -90.103358,
-                    29.9654794
+                    -90.153158,
+                    29.983779
                   ]
                 ]
               ]
@@ -59,24 +59,24 @@
               "coordinates": [
                 [
                   [
-                    -90.103279,
-                    29.9656504
+                    -90.153079,
+                    29.98395
                   ],
                   [
-                    -90.103121,
-                    29.9656504
+                    -90.152921,
+                    29.98395
                   ],
                   [
-                    -90.103121,
-                    29.9657496
+                    -90.152921,
+                    29.98405
                   ],
                   [
-                    -90.103279,
-                    29.9657496
+                    -90.153079,
+                    29.98405
                   ],
                   [
-                    -90.103279,
-                    29.9656504
+                    -90.153079,
+                    29.98395
                   ]
                 ]
               ]
@@ -93,46 +93,46 @@
               "coordinates": [
                 [
                   [
-                    -90.1032948,
-                    29.9656366
+                    -90.153095,
+                    29.983937
                   ],
                   [
-                    -90.1031052,
-                    29.9656366
+                    -90.152905,
+                    29.983937
                   ],
                   [
-                    -90.1031052,
-                    29.9657634
+                    -90.152905,
+                    29.984063
                   ],
                   [
-                    -90.1032948,
-                    29.9657634
+                    -90.153095,
+                    29.984063
                   ],
                   [
-                    -90.1032948,
-                    29.9656366
+                    -90.153095,
+                    29.983937
                   ]
                 ],
                 [
                   [
-                    -90.103279,
-                    29.9656504
+                    -90.153079,
+                    29.98395
                   ],
                   [
-                    -90.103279,
-                    29.9657496
+                    -90.153079,
+                    29.98405
                   ],
                   [
-                    -90.103121,
-                    29.9657496
+                    -90.152921,
+                    29.98405
                   ],
                   [
-                    -90.103121,
-                    29.9656504
+                    -90.152921,
+                    29.98395
                   ],
                   [
-                    -90.103279,
-                    29.9656504
+                    -90.153079,
+                    29.98395
                   ]
                 ]
               ]
@@ -149,46 +149,46 @@
               "coordinates": [
                 [
                   [
-                    -90.1033738,
-                    29.9655676
+                    -90.153174,
+                    29.983868
                   ],
                   [
-                    -90.1030262,
-                    29.9655676
+                    -90.152826,
+                    29.983868
                   ],
                   [
-                    -90.1030262,
-                    29.9658324
+                    -90.152826,
+                    29.984132
                   ],
                   [
-                    -90.1033738,
-                    29.9658324
+                    -90.153174,
+                    29.984132
                   ],
                   [
-                    -90.1033738,
-                    29.9655676
+                    -90.153174,
+                    29.983868
                   ]
                 ],
                 [
                   [
-                    -90.1032948,
-                    29.9656366
+                    -90.153095,
+                    29.983937
                   ],
                   [
-                    -90.1032948,
-                    29.9657634
+                    -90.153095,
+                    29.984063
                   ],
                   [
-                    -90.1031052,
-                    29.9657634
+                    -90.152905,
+                    29.984063
                   ],
                   [
-                    -90.1031052,
-                    29.9656366
+                    -90.152905,
+                    29.983937
                   ],
                   [
-                    -90.1032948,
-                    29.9656366
+                    -90.153095,
+                    29.983937
                   ]
                 ]
               ]
@@ -205,46 +205,46 @@
               "coordinates": [
                 [
                   [
-                    -90.1035951,
-                    29.9653746
+                    -90.153395,
+                    29.983675
                   ],
                   [
-                    -90.1028049,
-                    29.9653746
+                    -90.152605,
+                    29.983675
                   ],
                   [
-                    -90.1028049,
-                    29.9660254
+                    -90.152605,
+                    29.984325
                   ],
                   [
-                    -90.1035951,
-                    29.9660254
+                    -90.153395,
+                    29.984325
                   ],
                   [
-                    -90.1035951,
-                    29.9653746
+                    -90.153395,
+                    29.983675
                   ]
                 ],
                 [
                   [
-                    -90.1033738,
-                    29.9655676
+                    -90.153174,
+                    29.983868
                   ],
                   [
-                    -90.1033738,
-                    29.9658324
+                    -90.153174,
+                    29.984132
                   ],
                   [
-                    -90.1030262,
-                    29.9658324
+                    -90.152826,
+                    29.984132
                   ],
                   [
-                    -90.1030262,
-                    29.9655676
+                    -90.152826,
+                    29.983868
                   ],
                   [
-                    -90.1033738,
-                    29.9655676
+                    -90.153174,
+                    29.983868
                   ]
                 ]
               ]
@@ -261,24 +261,24 @@
               "coordinates": [
                 [
                   [
-                    -90.1032695,
-                    29.9656586
+                    -90.15307,
+                    29.983959
                   ],
                   [
-                    -90.1031305,
-                    29.9656586
+                    -90.152931,
+                    29.983959
                   ],
                   [
-                    -90.1031305,
-                    29.9657414
+                    -90.152931,
+                    29.984041
                   ],
                   [
-                    -90.1032695,
-                    29.9657414
+                    -90.15307,
+                    29.984041
                   ],
                   [
-                    -90.1032695,
-                    29.9656586
+                    -90.15307,
+                    29.983959
                   ]
                 ]
               ]
@@ -323,33 +323,33 @@
       "unpermitted_footprint_delta_sqft": 0.0
     },
     "actuarial_breakdown": {
-      "tract_prior_lcr": 0.0185,
-      "parcel_raw_lcr": 0.001372,
+      "tract_prior_lcr": 0.0038003750792206035,
+      "parcel_raw_lcr": 0.000776,
       "credibility_weight_z": 0.94,
-      "posterior_lcr": 0.002399,
-      "expected_annual_loss_usd": 1079.48,
+      "posterior_lcr": 0.000958,
+      "expected_annual_loss_usd": 430.91,
       "peril_split": [
         {
           "peril": "FLOOD",
           "zip_immunity_pi": 0.2172,
-          "expected_freq_n": 0.00869,
-          "expected_sev_s": 96624.82,
-          "peril_aal_usd": 839.19
+          "expected_freq_n": 0.00014,
+          "expected_sev_s": 75528.82,
+          "peril_aal_usd": 10.84
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.8455,
-          "expected_freq_n": 0.0057,
-          "expected_sev_s": 42177.45,
-          "peril_aal_usd": 240.29
+          "zip_immunity_pi": 0.8384,
+          "expected_freq_n": 0.00502,
+          "expected_sev_s": 83674.29,
+          "peril_aal_usd": 420.07
         }
       ],
-      "resili_score": 765,
-      "baseline_macro_score": 430,
+      "resili_score": 823,
+      "baseline_macro_score": 692,
       "underwriting_tier": "TIER_1_AUTO_BIND",
-      "statutory_discount_pct": 38.0,
+      "statutory_discount_pct": 29.0,
       "annual_base_premium_usd": 4200.0,
-      "annual_discounted_premium_usd": 2604.0
+      "annual_discounted_premium_usd": 2982.0
     },
     "prescriptive_mitigations": [
       {
@@ -360,10 +360,10 @@
         "gross_capex_usd": 18000.0,
         "grant_subsidy_usd": 10000.0,
         "net_capex_usd": 8000.0,
-        "lcr_delta_bps": -37.66,
-        "score_delta_pts": 149,
-        "annual_premium_savings_usd": 1596.0,
-        "payback_years": 5.01,
+        "lcr_delta_bps": -23.88,
+        "score_delta_pts": 111,
+        "annual_premium_savings_usd": 1218.0,
+        "payback_years": 6.57,
         "resale_value_bump_pct": 6.8,
         "currently_applied": true
       },
@@ -375,8 +375,8 @@
         "gross_capex_usd": 650.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 650.0,
-        "lcr_delta_bps": -8.05,
-        "score_delta_pts": 51,
+        "lcr_delta_bps": -0.07,
+        "score_delta_pts": 0,
         "annual_premium_savings_usd": 0.0,
         "payback_years": 99.0,
         "resale_value_bump_pct": 0.2,
@@ -415,7 +415,235 @@
         "FEMA_NFHL": "2026-03",
         "LA_FORTIFY_HOMES": "2026-Q2"
       }
-    }
+    },
+    "factor_contributions": [
+      {
+        "factor": "Freeboard (first floor vs base flood elevation)",
+        "input_value": 4.2,
+        "score_points": 9.9783,
+        "source": "public hazard layer"
+      },
+      {
+        "factor": "Wind and hail roof",
+        "input_value": true,
+        "score_points": 84.9767,
+        "source": "mitigation dose (verification layer)"
+      },
+      {
+        "factor": "Verification evidence (CV, registry, sensors)",
+        "input_value": true,
+        "score_points": 35.375,
+        "source": "credibility channel weight"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": -0.004,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 240.59,
+      "aal_p50_usd": 395.63,
+      "aal_p95_usd": 739.08,
+      "score_p05": 816.1,
+      "score_p95": 829.7,
+      "loss_1_in_100_usd": 102.53,
+      "loss_1_in_250_usd": 29453.29,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0060"
+    },
+    "premium_build": {
+      "expected_loss_usd": 430.91,
+      "deductible_usd": 4500.0,
+      "net_expected_loss_usd": 402.23,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 618.82,
+      "modeled_mitigation_credit_pct": 77.05,
+      "filed_mitigation_credit_pct": 29.0
+    },
+    "input_provenance": [
+      {
+        "field": "public_hazard_layer.fema_flood_zone",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.bfe_ft_navd88",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.usgs_lag_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.est_ffe_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.freeboard_delta_h_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.hand_rel_elev_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS HAND",
+        "vintage": "NHDPlusHR_2024"
+      },
+      {
+        "field": "public_hazard_layer.twi_index",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP derived TWI",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.noaa_atlas15_p24h_100yr_in",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.atlas15_cmip6_mult",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15 CMIP6 multiplier",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.landfire_fbfm40_code",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE FBFM40",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.slope_deg",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE slope",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.wui_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "WUI classification",
+        "vintage": null
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_claim_count",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_mean_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "private_verification_layer.cv_roof_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_confidence",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_overhang_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone0_clear",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone1_no_shed",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_enclosed_eaves",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_ember_vents",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.elev_cert_verified",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_fortified_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_wph_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.iot_shutoff_active",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.unpermitted_footprint_delta_sqft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.year_built",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "actuarial_breakdown.tract_prior_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
+        "vintage": "v1.20 (December 2025)"
+      },
+      {
+        "field": "actuarial_breakdown.base_rates",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
+        "vintage": "v1.20 (December 2025)"
+      }
+    ]
   },
   "SCENARIO_2_CA_WUI": {
     "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000002",
@@ -775,29 +1003,29 @@
       "unpermitted_footprint_delta_sqft": 0.0
     },
     "actuarial_breakdown": {
-      "tract_prior_lcr": 0.021,
-      "parcel_raw_lcr": 0.026645,
+      "tract_prior_lcr": 0.002006604942577563,
+      "parcel_raw_lcr": 0.013784,
       "credibility_weight_z": 0.62,
-      "posterior_lcr": 0.0245,
-      "expected_annual_loss_usd": 20825.09,
+      "posterior_lcr": 0.009308,
+      "expected_annual_loss_usd": 7912.04,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.0474,
-          "expected_freq_n": 0.05116,
-          "expected_sev_s": 385021.3,
-          "peril_aal_usd": 19699.19
+          "zip_immunity_pi": 0.3056,
+          "expected_freq_n": 0.02088,
+          "expected_sev_s": 378829.13,
+          "peril_aal_usd": 7910.98
         },
         {
           "peril": "WIND_HAIL",
           "zip_immunity_pi": 0.4013,
-          "expected_freq_n": 0.00812,
-          "expected_sev_s": 138601.52,
-          "peril_aal_usd": 1125.91
+          "expected_freq_n": 1e-05,
+          "expected_sev_s": 101795.84,
+          "peril_aal_usd": 1.06
         }
       ],
-      "resili_score": 385,
-      "baseline_macro_score": 405,
+      "resili_score": 551,
+      "baseline_macro_score": 796,
       "underwriting_tier": "TIER_3_DECLINE_ESCALATE",
       "statutory_discount_pct": 0.0,
       "annual_base_premium_usd": 11200.0,
@@ -812,10 +1040,10 @@
         "gross_capex_usd": 1800.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 1800.0,
-        "lcr_delta_bps": -97.35,
-        "score_delta_pts": 93,
-        "annual_premium_savings_usd": 921.59,
-        "payback_years": 1.95,
+        "lcr_delta_bps": -41.81,
+        "score_delta_pts": 94,
+        "annual_premium_savings_usd": 1007.78,
+        "payback_years": 1.79,
         "resale_value_bump_pct": 0.4,
         "currently_applied": false
       },
@@ -827,10 +1055,10 @@
         "gross_capex_usd": 3200.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 3200.0,
-        "lcr_delta_bps": -58.01,
-        "score_delta_pts": 43,
-        "annual_premium_savings_usd": 847.56,
-        "payback_years": 3.78,
+        "lcr_delta_bps": -13.86,
+        "score_delta_pts": 25,
+        "annual_premium_savings_usd": 895.88,
+        "payback_years": 3.57,
         "resale_value_bump_pct": 0.6,
         "currently_applied": false
       },
@@ -842,10 +1070,10 @@
         "gross_capex_usd": 14500.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 14500.0,
-        "lcr_delta_bps": -23.56,
-        "score_delta_pts": 13,
-        "annual_premium_savings_usd": 1377.28,
-        "payback_years": 10.53,
+        "lcr_delta_bps": -6.69,
+        "score_delta_pts": 11,
+        "annual_premium_savings_usd": 1455.81,
+        "payback_years": 9.96,
         "resale_value_bump_pct": 1.2,
         "currently_applied": false
       },
@@ -857,10 +1085,10 @@
         "gross_capex_usd": 15000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 15000.0,
-        "lcr_delta_bps": -193.45,
-        "score_delta_pts": 259,
-        "annual_premium_savings_usd": 3071.96,
-        "payback_years": 4.88,
+        "lcr_delta_bps": -55.45,
+        "score_delta_pts": 143,
+        "annual_premium_savings_usd": 3359.26,
+        "payback_years": 4.47,
         "resale_value_bump_pct": 1.5,
         "currently_applied": false
       },
@@ -872,10 +1100,10 @@
         "gross_capex_usd": 9000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 9000.0,
-        "lcr_delta_bps": -5.36,
-        "score_delta_pts": 4,
-        "annual_premium_savings_usd": 75.09,
-        "payback_years": 119.86,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 0.19,
+        "payback_years": 48575.64,
         "resale_value_bump_pct": 0.8,
         "currently_applied": false
       }
@@ -912,7 +1140,229 @@
         "FEMA_NFHL": "2026-03",
         "CAL_FIRE_FHSZ": "2025"
       }
-    }
+    },
+    "factor_contributions": [
+      {
+        "factor": "Verification evidence (CV, registry, sensors)",
+        "input_value": true,
+        "score_points": -40.0682,
+        "source": "credibility channel weight"
+      },
+      {
+        "factor": "Wildfire site (canopy overhang, Firewise)",
+        "input_value": 16.5,
+        "score_points": -66.391,
+        "source": "verification layer, regulatory factors"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": -138.9969,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 3154.48,
+      "aal_p50_usd": 6841.41,
+      "aal_p95_usd": 16096.88,
+      "score_p05": 425.4,
+      "score_p95": 696.1,
+      "loss_1_in_100_usd": 339710.79,
+      "loss_1_in_250_usd": 436324.08,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0197"
+    },
+    "premium_build": {
+      "expected_loss_usd": 7912.04,
+      "deductible_usd": 8500.0,
+      "net_expected_loss_usd": 7791.46,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 11986.86,
+      "modeled_mitigation_credit_pct": 0.0,
+      "filed_mitigation_credit_pct": 0.0
+    },
+    "input_provenance": [
+      {
+        "field": "public_hazard_layer.fema_flood_zone",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.bfe_ft_navd88",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.usgs_lag_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.est_ffe_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.freeboard_delta_h_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.hand_rel_elev_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS HAND",
+        "vintage": "NHDPlusHR_2024"
+      },
+      {
+        "field": "public_hazard_layer.twi_index",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP derived TWI",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.noaa_atlas15_p24h_100yr_in",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.atlas15_cmip6_mult",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15 CMIP6 multiplier",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.landfire_fbfm40_code",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE FBFM40",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.slope_deg",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE slope",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.wui_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "WUI classification",
+        "vintage": "2025"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_claim_count",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_mean_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "private_verification_layer.cv_roof_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_confidence",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_overhang_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone0_clear",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone1_no_shed",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_enclosed_eaves",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_ember_vents",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.elev_cert_verified",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_fortified_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_wph_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.iot_shutoff_active",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.unpermitted_footprint_delta_sqft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.year_built",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "actuarial_breakdown.tract_prior_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
+        "vintage": "v1.20 (December 2025)"
+      },
+      {
+        "field": "actuarial_breakdown.base_rates",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
+        "vintage": "v1.20 (December 2025)"
+      }
+    ]
   },
   "SCENARIO_3_ESCONDIDO_HITL": {
     "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000003",
@@ -1238,33 +1688,33 @@
       "unpermitted_footprint_delta_sqft": 0.0
     },
     "actuarial_breakdown": {
-      "tract_prior_lcr": 0.016,
-      "parcel_raw_lcr": 0.001361,
+      "tract_prior_lcr": 0.0013970369292433406,
+      "parcel_raw_lcr": 2e-06,
       "credibility_weight_z": 0.97,
-      "posterior_lcr": 0.0018,
-      "expected_annual_loss_usd": 1296.3,
+      "posterior_lcr": 4.3e-05,
+      "expected_annual_loss_usd": 31.28,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.451,
-          "expected_freq_n": 0.00559,
-          "expected_sev_s": 159100.87,
-          "peril_aal_usd": 889.27
+          "zip_immunity_pi": 0.6001,
+          "expected_freq_n": 0.0,
+          "expected_sev_s": 13292542.13,
+          "peril_aal_usd": 8.17
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.6225,
-          "expected_freq_n": 0.00379,
-          "expected_sev_s": 107254.91,
-          "peril_aal_usd": 407.03
+          "zip_immunity_pi": 0.5809,
+          "expected_freq_n": 1e-05,
+          "expected_sev_s": 3571862.26,
+          "peril_aal_usd": 23.1
         }
       ],
-      "resili_score": 815,
-      "baseline_macro_score": 465,
+      "resili_score": 850,
+      "baseline_macro_score": 818,
       "underwriting_tier": "TIER_1_AUTO_BIND",
-      "statutory_discount_pct": 26.79,
+      "statutory_discount_pct": 17.69,
       "annual_base_premium_usd": 3900.0,
-      "annual_discounted_premium_usd": 2855.34
+      "annual_discounted_premium_usd": 3209.98
     },
     "prescriptive_mitigations": [
       {
@@ -1275,8 +1725,8 @@
         "gross_capex_usd": 1800.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 1800.0,
-        "lcr_delta_bps": -12.96,
-        "score_delta_pts": 90,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
         "annual_premium_savings_usd": 0.0,
         "payback_years": 99.0,
         "resale_value_bump_pct": 0.4,
@@ -1290,8 +1740,8 @@
         "gross_capex_usd": 3200.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 3200.0,
-        "lcr_delta_bps": -11.57,
-        "score_delta_pts": 83,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
         "annual_premium_savings_usd": 0.0,
         "payback_years": 99.0,
         "resale_value_bump_pct": 0.6,
@@ -1305,10 +1755,10 @@
         "gross_capex_usd": 15000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 15000.0,
-        "lcr_delta_bps": -7.14,
-        "score_delta_pts": 57,
-        "annual_premium_savings_usd": 159.39,
-        "payback_years": 94.11,
+        "lcr_delta_bps": 0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 58.64,
+        "payback_years": 255.79,
         "resale_value_bump_pct": 1.5,
         "currently_applied": true
       },
@@ -1320,10 +1770,10 @@
         "gross_capex_usd": 9000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 9000.0,
-        "lcr_delta_bps": -6.21,
-        "score_delta_pts": 51,
-        "annual_premium_savings_usd": 88.31,
-        "payback_years": 101.92,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 338.17,
+        "payback_years": 26.61,
         "resale_value_bump_pct": 0.8,
         "currently_applied": true
       }
@@ -1361,7 +1811,247 @@
         "CAL_FIRE_FHSZ": "2025",
         "FLO_BY_MOEN": "telemetry_2026-10"
       }
-    }
+    },
+    "factor_contributions": [
+      {
+        "factor": "Wildfire home hardening",
+        "input_value": true,
+        "score_points": 0.0012,
+        "source": "mitigation dose (verification layer)"
+      },
+      {
+        "factor": "Wind and hail roof",
+        "input_value": true,
+        "score_points": 0.002,
+        "source": "mitigation dose (verification layer)"
+      },
+      {
+        "factor": "Verification evidence (CV, registry, sensors)",
+        "input_value": true,
+        "score_points": 25.1698,
+        "source": "credibility channel weight"
+      },
+      {
+        "factor": "Wildfire site (canopy overhang, Firewise)",
+        "input_value": 0.0,
+        "score_points": 0.0008,
+        "source": "verification layer, regulatory factors"
+      },
+      {
+        "factor": "Construction era",
+        "input_value": 2016.0,
+        "score_points": 0.0017,
+        "source": "parcel identity"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": 6.7556,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 30.72,
+      "aal_p50_usd": 31.19,
+      "aal_p95_usd": 32.13,
+      "score_p05": 850.0,
+      "score_p95": 850.0,
+      "loss_1_in_100_usd": 30.19,
+      "loss_1_in_250_usd": 30.19,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0000"
+    },
+    "premium_build": {
+      "expected_loss_usd": 31.28,
+      "deductible_usd": 7200.0,
+      "net_expected_loss_usd": 29.85,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 45.92,
+      "modeled_mitigation_credit_pct": 33.73,
+      "filed_mitigation_credit_pct": 17.69
+    },
+    "input_provenance": [
+      {
+        "field": "public_hazard_layer.fema_flood_zone",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.bfe_ft_navd88",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.usgs_lag_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.est_ffe_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.freeboard_delta_h_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.hand_rel_elev_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS HAND",
+        "vintage": "NHDPlusHR_2024"
+      },
+      {
+        "field": "public_hazard_layer.twi_index",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP derived TWI",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.noaa_atlas15_p24h_100yr_in",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.atlas15_cmip6_mult",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15 CMIP6 multiplier",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.landfire_fbfm40_code",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE FBFM40",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.slope_deg",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE slope",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.wui_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "WUI classification",
+        "vintage": "2025"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_claim_count",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_mean_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "private_verification_layer.cv_roof_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_confidence",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_overhang_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone0_clear",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone1_no_shed",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_enclosed_eaves",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_ember_vents",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.elev_cert_verified",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_fortified_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_wph_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.iot_shutoff_active",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.unpermitted_footprint_delta_sqft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.year_built",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "actuarial_breakdown.tract_prior_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
+        "vintage": "v1.20 (December 2025)"
+      },
+      {
+        "field": "actuarial_breakdown.base_rates",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
+        "vintage": "v1.20 (December 2025)"
+      }
+    ]
   },
   "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED": {
     "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000004",
@@ -1721,33 +2411,33 @@
       "unpermitted_footprint_delta_sqft": 240.0
     },
     "actuarial_breakdown": {
-      "tract_prior_lcr": 0.016,
-      "parcel_raw_lcr": 0.001778,
+      "tract_prior_lcr": 0.0013970369292433406,
+      "parcel_raw_lcr": 2e-06,
       "credibility_weight_z": 0.97,
-      "posterior_lcr": 0.002205,
-      "expected_annual_loss_usd": 1587.55,
+      "posterior_lcr": 4.3e-05,
+      "expected_annual_loss_usd": 31.32,
       "peril_split": [
         {
           "peril": "WILDFIRE",
-          "zip_immunity_pi": 0.3107,
-          "expected_freq_n": 0.00702,
-          "expected_sev_s": 171863.44,
-          "peril_aal_usd": 1205.99
+          "zip_immunity_pi": 0.54,
+          "expected_freq_n": 0.0,
+          "expected_sev_s": 12808063.04,
+          "peril_aal_usd": 9.06
         },
         {
           "peril": "WIND_HAIL",
-          "zip_immunity_pi": 0.6225,
-          "expected_freq_n": 0.00379,
-          "expected_sev_s": 100544.43,
-          "peril_aal_usd": 381.56
+          "zip_immunity_pi": 0.5809,
+          "expected_freq_n": 1e-05,
+          "expected_sev_s": 3441677.03,
+          "peril_aal_usd": 22.26
         }
       ],
-      "resili_score": 780,
-      "baseline_macro_score": 465,
+      "resili_score": 850,
+      "baseline_macro_score": 818,
       "underwriting_tier": "TIER_1_AUTO_BIND",
-      "statutory_discount_pct": 26.79,
+      "statutory_discount_pct": 17.69,
       "annual_base_premium_usd": 3900.0,
-      "annual_discounted_premium_usd": 2855.34
+      "annual_discounted_premium_usd": 3209.98
     },
     "prescriptive_mitigations": [
       {
@@ -1758,8 +2448,8 @@
         "gross_capex_usd": 1800.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 1800.0,
-        "lcr_delta_bps": -12.96,
-        "score_delta_pts": 90,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
         "annual_premium_savings_usd": 0.0,
         "payback_years": 99.0,
         "resale_value_bump_pct": 0.4,
@@ -1773,8 +2463,8 @@
         "gross_capex_usd": 3200.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 3200.0,
-        "lcr_delta_bps": -13.58,
-        "score_delta_pts": 77,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
         "annual_premium_savings_usd": 0.0,
         "payback_years": 99.0,
         "resale_value_bump_pct": 0.6,
@@ -1788,10 +2478,10 @@
         "gross_capex_usd": 15000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 15000.0,
-        "lcr_delta_bps": -10.98,
-        "score_delta_pts": 80,
-        "annual_premium_savings_usd": 255.03,
-        "payback_years": 58.82,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 93.83,
+        "payback_years": 159.87,
         "resale_value_bump_pct": 1.5,
         "currently_applied": true
       },
@@ -1803,10 +2493,10 @@
         "gross_capex_usd": 9000.0,
         "grant_subsidy_usd": 0.0,
         "net_capex_usd": 9000.0,
-        "lcr_delta_bps": -6.21,
-        "score_delta_pts": 41,
-        "annual_premium_savings_usd": 88.31,
-        "payback_years": 101.92,
+        "lcr_delta_bps": -0.0,
+        "score_delta_pts": 0,
+        "annual_premium_savings_usd": 338.17,
+        "payback_years": 26.61,
         "resale_value_bump_pct": 0.8,
         "currently_applied": true
       }
@@ -1844,6 +2534,246 @@
         "CAL_FIRE_FHSZ": "2025",
         "FLO_BY_MOEN": "telemetry_2026-10"
       }
-    }
+    },
+    "factor_contributions": [
+      {
+        "factor": "Wildfire home hardening",
+        "input_value": true,
+        "score_points": 0.001,
+        "source": "mitigation dose (verification layer)"
+      },
+      {
+        "factor": "Wind and hail roof",
+        "input_value": true,
+        "score_points": 0.002,
+        "source": "mitigation dose (verification layer)"
+      },
+      {
+        "factor": "Verification evidence (CV, registry, sensors)",
+        "input_value": true,
+        "score_points": 25.17,
+        "source": "credibility channel weight"
+      },
+      {
+        "factor": "Wildfire site (canopy overhang, Firewise)",
+        "input_value": 0.0,
+        "score_points": 0.0009,
+        "source": "verification layer, regulatory factors"
+      },
+      {
+        "factor": "Construction era",
+        "input_value": 2016.0,
+        "score_points": 0.0017,
+        "source": "parcel identity"
+      },
+      {
+        "factor": "In-hazard reference home vs tract-wide average",
+        "input_value": null,
+        "score_points": 6.7556,
+        "source": "unlisted inputs (rain, fuel, own hazard layer) and lidar-only credibility; defined, not a remainder"
+      }
+    ],
+    "uncertainty": {
+      "aal_p05_usd": 30.74,
+      "aal_p50_usd": 31.23,
+      "aal_p95_usd": 32.2,
+      "score_p05": 850.0,
+      "score_p95": 850.0,
+      "loss_1_in_100_usd": 30.19,
+      "loss_1_in_250_usd": 30.19,
+      "method": "seeded Monte Carlo, 10k draws, Gaussian copula on peril drivers, Poisson-spliced severity; p_any_loss=0.0000"
+    },
+    "premium_build": {
+      "expected_loss_usd": 31.32,
+      "deductible_usd": 7200.0,
+      "net_expected_loss_usd": 29.93,
+      "expense_load_pct": 30.0,
+      "profit_load_pct": 5.0,
+      "indicated_premium_usd": 46.04,
+      "modeled_mitigation_credit_pct": 31.13,
+      "filed_mitigation_credit_pct": 17.69
+    },
+    "input_provenance": [
+      {
+        "field": "public_hazard_layer.fema_flood_zone",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.bfe_ft_navd88",
+        "value_source": "UNAVAILABLE",
+        "source_name": "FEMA NFHL",
+        "vintage": "2026-03"
+      },
+      {
+        "field": "public_hazard_layer.usgs_lag_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.est_ffe_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.freeboard_delta_h_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP EPQS",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.hand_rel_elev_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS HAND",
+        "vintage": "NHDPlusHR_2024"
+      },
+      {
+        "field": "public_hazard_layer.twi_index",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "USGS 3DEP derived TWI",
+        "vintage": "2025-05-01"
+      },
+      {
+        "field": "public_hazard_layer.noaa_atlas15_p24h_100yr_in",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.atlas15_cmip6_mult",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "NOAA Atlas 15 CMIP6 multiplier",
+        "vintage": "Atlas15_Vol1_Prelim_2026"
+      },
+      {
+        "field": "public_hazard_layer.landfire_fbfm40_code",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE FBFM40",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.slope_deg",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "LANDFIRE slope",
+        "vintage": "LF2024_FBFM40"
+      },
+      {
+        "field": "public_hazard_layer.wui_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "WUI classification",
+        "vintage": "2025"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_claim_count",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "public_hazard_layer.openfema_tract_mean_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "OpenFEMA NFIP claims (context only, not scored)",
+        "vintage": "NfipClaims_v3"
+      },
+      {
+        "field": "private_verification_layer.cv_roof_class",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_confidence",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_overhang_ft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone0_clear",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_zone1_no_shed",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_enclosed_eaves",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.cv_ember_vents",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.elev_cert_verified",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_fortified_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.ibhs_wph_tier",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.iot_shutoff_active",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "private_verification_layer.unpermitted_footprint_delta_sqft",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "Reference parcel verification record",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.rcv_usd",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "parcel_identity.year_built",
+        "value_source": "DEFAULT",
+        "source_name": "nearest reference parcel",
+        "vintage": null
+      },
+      {
+        "field": "actuarial_breakdown.tract_prior_lcr",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): tract-wide sum of NRI building loss rates",
+        "vintage": "v1.20 (December 2025)"
+      },
+      {
+        "field": "actuarial_breakdown.base_rates",
+        "value_source": "REFERENCE_PARCEL",
+        "source_name": "FEMA National Risk Index building loss rates (reference tract for this golden parcel): per-peril exposed-building loss rates behind the frequency intercepts",
+        "vintage": "v1.20 (December 2025)"
+      }
+    ]
   }
 }

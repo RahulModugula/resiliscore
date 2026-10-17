@@ -103,18 +103,19 @@ def readyz() -> dict[str, object]:
 @app.post("/v1/parcel/score", response_model=ParcelScoreResponse)
 async def score_parcel(body: ScoreRequest) -> ParcelScoreResponse:
     started = time.perf_counter()
+    tract = None  # the parcel's own NRI tract, from the pipeline; golden parcels are their own reference
     if body.scenario_id is not None:
         found = by_scenario(body.scenario_id)
     else:
         found = by_address(body.address or "")
         if found is None and None not in (body.lat, body.lng, body.county_fips, body.state):
-            found = await pipeline.build_parcel(
+            found, tract = await pipeline.build_parcel(
                 body.address or "", body.lat, body.lng, body.county_fips, body.state,  # type: ignore[arg-type]
                 footprint=body.footprint, rcv_usd=body.rcv_usd, year_built=body.year_built,
             )  # fmt: skip
         elif found is None:
             try:
-                found = await pipeline.build_parcel_for_address(
+                found, tract = await pipeline.build_parcel_for_address(
                     body.address or "", footprint=body.footprint, rcv_usd=body.rcv_usd, year_built=body.year_built
                 )
             except GeocodeError as exc:
@@ -126,7 +127,7 @@ async def score_parcel(body: ScoreRequest) -> ParcelScoreResponse:
                 ) from exc
     if found is None:
         raise HTTPException(status_code=404, detail="no golden scenario matches and no coordinates to resolve")
-    return _fresh(simulate(found, []), started)
+    return _fresh(simulate(found, [], nri=tract), started)
 
 
 @app.post("/v1/parcel/simulate-mitigation", response_model=ParcelScoreResponse)

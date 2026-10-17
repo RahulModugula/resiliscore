@@ -6,19 +6,17 @@ GPD tail on [u, 1]. Every mitigation m_k in [0, 1] enters only through attenuati
 (immunity logit up, body down, GPD scale down, tail probability down), which is what makes
 d(score)/d(m_k) > 0 (section 3.4).
 
-Calibration. The structural coefficients below are spec-faithful (positive signs, USACE DDF constants).
-Four constants were solved by damped Newton iteration (finite-difference Jacobian) on the log residuals of
-the golden raw loss cost ratios (S1 13.72 bps, S2 266.45 bps, S3 13.61 bps) and of the S2 posterior with all
-three golden actions applied (target: score 630, i.e. 56.36 bps on the D1 curve): BETA0 (flood intercept,
-fits S1), DELTA0 (wildfire intercept, S2), DELTA2 (slope coefficient, S3) and a scale on the Class A roof
-effect (S2 with actions). The wind intercept V0 is fixed so wind stays a minor share. All solved values
-are positive where the spec demands it. The fit touches constants only and never branches on scenario ids.
+Parameters. Every coefficient is read from constants.py, which records its source and whether it is
+validated. v2 replaced invented severity and mitigation values with cited ones: the flood body is the Hazus
+USACE-IWR RES1 depth-damage table, wildfire immunity per feature comes from the IBHS LA conflagration study,
+and the FORTIFIED roof effect reproduces the Hurricane Sally frequency and severity cuts. The intercepts
+the frequency intercepts are no longer fitted to any demo score: each peril's intercept is solved in closed form
+so a reference home matches the FEMA NRI building loss rate for its tract (base_rates.py, D3).
 
-Spec deviations (see PR notes):
+Notes.
 * Flood ln(lambda) uses +beta_2 * TWI (section 3.1). Prompt 1C prints -beta_2 * TWI, which would lower
   flood frequency on wetter terrain.
-* The stated DDF constants (L_max 0.88, k 0.36, d0 2.85) give about 10.2% at 0 ft and 39.9% at +4 ft, not
-  the quoted ~13.4% / ~49.0%. The constants are kept.
+* Freeboard acts by shifting first-floor height through the depth-damage curve (depth = stage - freeboard).
 * The spec gives no GLM for wind/hail; the structure below mirrors the wildfire one.
 """
 
@@ -26,44 +24,50 @@ import math
 from dataclasses import dataclass, fields
 from statistics import NormalDist
 
+import numpy as np
+
+from app.actuarial.base_rates import BaseRates, intercept_for
+from app.actuarial.constants import get as c
 from app.models.schemas import PerilSplit, PrivateVerificationLayer, PublicHazardLayer
 
-U_TAIL = 0.5  # catastrophic splice threshold u_p
+U_TAIL = c("tail.splice_u")  # catastrophic splice threshold u_p
 _PHI = NormalDist().cdf
 
-# --- Flood frequency (all gamma, beta > 0; spec 3.1) ---
-GAMMA0, GAMMA1, GAMMA2 = -3.0, 0.15, 0.17
-# DEMO CALIBRATION: BETA0, DELTA0, DELTA2 and the roof_class_a effect (below) were solved to the
-# reference parcels (see module docstring). They are not validated against loss data.
-BETA0, BETA1, BETA2, BETA3, BETA4 =-4.98102, 0.08, 0.12, 0.35, 0.4
-ELEVATED_BLDG_FT = 3.0  # I_elev_bldg: certified freeboard at or above this
+# Every coefficient below is read from the registry (constants.py), which records its source and whether it
+# is validated. Most are priors; see the registry notes before quoting any of them.
+
+# --- Flood frequency ---
+GAMMA0, GAMMA1, GAMMA2 = c("flood.zip.gamma")
+BETA1, BETA2, BETA3, BETA4 = c("flood.freq.beta")
+ELEVATED_BLDG_FT = c("flood.elevated_bldg_ft")  # I_elev_bldg: certified freeboard at or above this
 
 # --- Wildfire frequency ---
-ETA0 = -3.0
-DELTA0, DELTA1, DELTA2, DELTA3_CANOPY, DELTA4_FIREWISE = -4.66275, 0.9, 0.012272, 0.03, 0.35
+ETA0 = c("wildfire.eta0")
+DELTA1, DELTA2, DELTA3_CANOPY, DELTA4_FIREWISE = c("wildfire.freq")
 
 # --- Wind/hail frequency ---
-OMEGA0 = -0.4
-V0, V1_REGION, V2_PRE_CODE = -4.6, 1.0, 0.3
-PRE_CODE_YEAR = 2002
-STATE_WIND_INDEX = {"LA": 1.0, "AL": 1.0, "FL": 1.1, "CA": 0.0}
-DEFAULT_WIND_INDEX = 0.5  # states outside the table (e.g. TX): mid-scale, neither Gulf-coast nor hail-only
+OMEGA0 = c("wind.omega0")
+V1_REGION, V2_PRE_CODE = c("wind.v_region_precode")
+PRE_CODE_YEAR = c("wind.pre_code_year")
+STATE_WIND_INDEX = c("wind.state_index")
+DEFAULT_WIND_INDEX = c("wind.state_index_default")
 
 # --- Severity ---
-L_MAX, K_DDF, D0_DDF, DDF_FLOOR_FT = 0.88, 0.36, 2.85, -2.0
-FLOOD_STAGE0_FT, FLOOD_STAGE_PER_IN = 2.5, 0.12  # event stage above BFE = a + b * D_100
-BODY_WILDFIRE, BODY_WIND = 0.35, 0.12
+DDF_MIN_FT, DDF_MAX_FT = c("flood.ddf.depth_clamp_ft")
+_DDF_DEPTHS = np.arange(DDF_MIN_FT, DDF_MAX_FT + 1.0)
+_DDF_FRACTION = np.array(c("flood.ddf.usace_iwr_res1_1s_nb"), dtype=float) / 100.0
+FLOOD_STAGE0_FT, FLOOD_STAGE_PER_IN = c("flood.stage0_ft"), c("flood.stage_per_in")  # stage above BFE = a + b * D_100
+BODY_WILDFIRE, BODY_WIND = c("wildfire.body"), c("wind.body")
 # (alpha_0, alpha_dh, sigma_0, xi) per peril
 TAIL = {
-    "FLOOD": (-1.5, 0.08, 0.15, 0.25),
-    "WILDFIRE": (0.0, 0.0, 0.15, 0.25),
-    "WIND_HAIL": (-1.2, 0.0, 0.12, 0.2),
+    "WILDFIRE": tuple(c("wildfire.tail")),
+    "WIND_HAIL": tuple(c("wind.tail")),
 }
 
 # Fuel index (0-1) for Scott & Burgan codes: family default plus overrides.
-FUEL_FAMILY = {"NB": 0.0, "GR": 0.3, "GS": 0.35, "SH": 0.6, "TU": 0.45, "TL": 0.35, "SB": 0.7}
-FUEL_OVERRIDES = {"SH7": 1.0, "GS2": 0.35, "NB1": 0.0}
-FUEL_DEFAULT = 0.5  # unrecognised code: mid-scale rather than silently zero
+FUEL_FAMILY = c("wildfire.fuel_family")
+FUEL_OVERRIDES = c("wildfire.fuel_overrides")
+FUEL_DEFAULT = c("wildfire.fuel_default")  # unrecognised code: mid-scale rather than silently zero
 
 
 @dataclass(frozen=True)
@@ -95,19 +99,17 @@ class Effect:
 
 
 # peril -> mitigation -> effect. All fields >= 0 (spec 3.4). canopy_trim acts through lambda (DELTA3_CANOPY).
+# Wildfire features carry only the IBHS-derived immunity lift (severity attenuation is not invented).
+# Wind roof effects come from the registry.
 EFFECTS: dict[str, dict[str, Effect]] = {
-    "FLOOD": {"water_shutoff": Effect(eta=0.6, psi=0.35, theta=0.25, alpha=0.2)},
+    "FLOOD": {"water_shutoff": Effect(*c("flood.effect.water_shutoff"))},
     "WILDFIRE": {
-        "zone0_clear": Effect(eta=1.0, psi=0.25, theta=0.35, alpha=0.3),
-        "zone1_no_shed": Effect(eta=0.6, psi=0.1, theta=0.15, alpha=0.15),
-        "ember_vents": Effect(eta=0.7, psi=0.3, theta=0.3, alpha=0.3),
-        "enclosed_eaves": Effect(psi=0.25, theta=0.2, alpha=0.2),
-        # demo calibration (scale solved to the reference parcels), not validated against loss data
-        "roof_class_a": Effect(eta=0.50321, psi=0.19569, theta=0.27956, alpha=0.25161),
+        name: Effect(*c("wildfire.effect.feature"))
+        for name in ("zone0_clear", "zone1_no_shed", "ember_vents", "enclosed_eaves", "roof_class_a")
     },
     "WIND_HAIL": {
-        "roof_impact_class4": Effect(eta=0.9, psi=0.35, theta=0.3, alpha=0.4),
-        "roof_fortified": Effect(eta=1.2, psi=0.6, theta=0.5, alpha=0.6),
+        "roof_impact_class4": Effect(*c("wind.effect.roof_impact_class4")),
+        "roof_fortified": Effect(*c("wind.effect.roof_fortified")),
     },
 }
 
@@ -118,6 +120,8 @@ class PerilTerm:
     pi: float
     n: float  # E[N]
     s: float  # E[S | N > 0] as a fraction of RCV
+    depth_ft: float | None = None  # flood only: event depth above the first floor
+    sev: "SevParams | None" = None  # severity distribution behind s, used by the Monte Carlo and the deductible
 
 
 def mitigations_from(v: PrivateVerificationLayer) -> Mitigations:
@@ -160,11 +164,12 @@ def _sum(peril: str, m: Mitigations, attr: str) -> float:
 
 
 def ddf(depth_ft: float) -> float:
-    """USACE one-story Gompertz-logistic depth-damage, 0 at -2 ft (spec 3.1 item 2, before attenuation)."""
-    if depth_ft <= DDF_FLOOR_FT:
-        return 0.0
-    c0 = L_MAX / (1 + math.exp(-K_DDF * (DDF_FLOOR_FT - D0_DDF)))
-    return L_MAX / (1 + math.exp(-K_DDF * (depth_ft - D0_DDF))) - c0
+    """Hazus RES1 one-story no-basement structure damage fraction (USACE-IWR, DmgFnId 129).
+
+    depth_ft is flood stage minus first-floor elevation, so more freeboard means less damage. Piecewise
+    linear between the published one-foot points, clamped to the table's -2..+16 ft support.
+    """
+    return float(np.interp(depth_ft, _DDF_DEPTHS, _DDF_FRACTION))
 
 
 def tgpd_mean(sigma: float, xi: float, upper: float) -> float:
@@ -174,42 +179,102 @@ def tgpd_mean(sigma: float, xi: float, upper: float) -> float:
     return (integral - upper * surv_upper) / (1 - surv_upper)
 
 
-def _severity(peril: str, body: float, m: Mitigations, delta_h: float = 0.0) -> float:
+@dataclass(frozen=True)
+class SevParams:
+    """Spliced severity: partial-loss body (mean body_mean, capped at body_cap) with probability 1 - p_tail,
+    GPD(sigma, xi) tail on [U_TAIL, 1] with probability p_tail."""
+
+    body_mean: float
+    p_tail: float
+    sigma: float
+    xi: float
+    body_cap: float
+
+    @property
+    def tail_mean(self) -> float:
+        return U_TAIL + tgpd_mean(self.sigma, self.xi, 1 - U_TAIL) if self.p_tail > 0 else 0.0
+
+    @property
+    def mean(self) -> float:
+        return (1 - self.p_tail) * self.body_mean + self.p_tail * self.tail_mean
+
+
+def sev_params(peril: str, body: float, m: Mitigations, delta_h: float = 0.0) -> SevParams:
+    psi = math.exp(-_sum(peril, m, "psi"))
+    if peril == "FLOOD":
+        # The Hazus curve is already a mean damage function over the whole loss range, so no separate
+        # GPD tail is layered on top (that would double count deep-water losses).
+        return SevParams(min(1.0, body * psi), 0.0, 1.0, 1.0, 1.0)  # sigma, xi unused: no tail
     a0, a_dh, sigma0, xi = TAIL[peril]
     p_tail = _PHI(a0 - _sum(peril, m, "alpha") - a_dh * delta_h)
-    body_mean = min(U_TAIL, body * math.exp(-_sum(peril, m, "psi")))
     sigma = sigma0 * math.exp(-_sum(peril, m, "theta"))
-    tail_mean = U_TAIL + tgpd_mean(sigma, xi, 1 - U_TAIL)
-    return (1 - p_tail) * body_mean + p_tail * tail_mean
+    return SevParams(min(U_TAIL, body * psi), p_tail, sigma, xi, U_TAIL)
 
 
-def _flood(h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations) -> PerilTerm:
-    dh = h.freeboard_delta_h_ft
+def _flood(h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations, a: float) -> PerilTerm:
+    dh = h.freeboard_delta_h_ft if h.freeboard_delta_h_ft is not None else c("flood.freeboard_default_ft")
     d100 = h.noaa_atlas15_p24h_100yr_in * h.atlas15_cmip6_mult
     elevated = float(v.elev_cert_verified and dh >= ELEVATED_BLDG_FT)
     pi = _sigmoid(GAMMA0 + GAMMA1 * max(0.0, dh) + GAMMA2 * h.hand_rel_elev_ft + _sum("FLOOD", m, "eta"))
-    lam = math.exp(BETA0 + BETA1 * d100 + BETA2 * h.twi_index - BETA3 * dh - BETA4 * elevated)
+    lam = math.exp(a + BETA1 * d100 + BETA2 * h.twi_index - BETA3 * dh - BETA4 * elevated)
     depth = FLOOD_STAGE0_FT + FLOOD_STAGE_PER_IN * d100 - dh
-    return PerilTerm("FLOOD", pi, (1 - pi) * lam, _severity("FLOOD", ddf(depth), m, dh))
+    sp = sev_params("FLOOD", ddf(depth), m, dh)
+    return PerilTerm("FLOOD", pi, (1 - pi) * lam, sp.mean, depth, sp)
 
 
-def _wildfire(h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations, firewise: bool) -> PerilTerm:
+def burn_probability_multiplier(bp: float | None) -> float:
+    """Scale the fuel/slope wildfire rate by USFS Wildfire Risk to Communities burn probability relative to
+    the reference value the intercept was calibrated at. None (not ingested) leaves the rate unchanged."""
+    if bp is None:
+        return 1.0
+    lo, hi = c("wildfire.burn_prob_multiplier_clamp")
+    return min(hi, max(lo, bp / c("wildfire.burn_prob_reference")))
+
+
+def _wildfire(
+    h: PublicHazardLayer, v: PrivateVerificationLayer, m: Mitigations, firewise: bool, a: float
+) -> PerilTerm:
     overhang = v.cv_overhang_ft * (1 - m.canopy_trim)
     pi = _sigmoid(ETA0 + _sum("WILDFIRE", m, "eta"))
     lam = math.exp(
-        DELTA0
+        a
         + DELTA1 * fuel_index(h.landfire_fbfm40_code)
         + DELTA2 * h.slope_deg
         + DELTA3_CANOPY * overhang
         - DELTA4_FIREWISE * float(firewise)
     )
-    return PerilTerm("WILDFIRE", pi, (1 - pi) * lam, _severity("WILDFIRE", BODY_WILDFIRE, m))
+    lam *= burn_probability_multiplier(h.wrc_burn_probability)
+    sp = sev_params("WILDFIRE", BODY_WILDFIRE, m)
+    return PerilTerm("WILDFIRE", pi, (1 - pi) * lam, sp.mean, None, sp)
 
 
-def _wind(state: str, year_built: int, m: Mitigations) -> PerilTerm:
+def _wind(state: str, year_built: int, m: Mitigations, a: float) -> PerilTerm:
     pi = _sigmoid(OMEGA0 + _sum("WIND_HAIL", m, "eta"))
-    lam = math.exp(V0 + V1_REGION * STATE_WIND_INDEX.get(state, DEFAULT_WIND_INDEX) + V2_PRE_CODE * float(year_built < PRE_CODE_YEAR))
-    return PerilTerm("WIND_HAIL", pi, (1 - pi) * lam, _severity("WIND_HAIL", BODY_WIND, m))
+    lam = math.exp(a + V1_REGION * STATE_WIND_INDEX.get(state, DEFAULT_WIND_INDEX) + V2_PRE_CODE * float(year_built < PRE_CODE_YEAR))
+    sp = sev_params("WIND_HAIL", BODY_WIND, m)
+    return PerilTerm("WIND_HAIL", pi, (1 - pi) * lam, sp.mean, None, sp)
+
+
+def _reference_intercept(
+    peril: str, base_rates: BaseRates, h: PublicHazardLayer, v: PrivateVerificationLayer, state: str
+) -> float:
+    """Closed-form intercept so the reference home's loss rate (E[N] * E[S]) equals `rate`.
+
+    The reference home is unmitigated, built in the tract-typical era, has no verified freeboard (first floor
+    at the base flood elevation) and no verified elevation certificate, no overhang and no Firewise status.
+    Rain, terrain and fuel are the tract's reference values (base_rates.reference_hazard) when known, so the
+    parcel's own values act as relativities; with none, the parcel's stand in for the tract's.
+    """
+    ref_h = (base_rates.reference_hazard or h).model_copy(update={"freeboard_delta_h_ft": 0.0, "wrc_burn_probability": None})
+    ref_v = v.model_copy(update={"elev_cert_verified": False, "cv_overhang_ft": 0.0})
+    zero = Mitigations()
+    if peril == "FLOOD":
+        t = _flood(ref_h, ref_v, zero, 0.0)
+    elif peril == "WILDFIRE":
+        t = _wildfire(ref_h, ref_v, zero, False, 0.0)
+    else:
+        t = _wind(state, int(c("nri.reference_year_built")), zero, 0.0)
+    return intercept_for(base_rates.for_peril(peril), t.n * t.s)
 
 
 def peril_terms(
@@ -220,17 +285,25 @@ def peril_terms(
     year_built: int,
     firewise: bool = False,
     mitigations: Mitigations | None = None,
+    base_rates: BaseRates,
 ) -> list[PerilTerm]:
-    """Per-peril (pi, E[N], E[S]); `mitigations` overrides the doses read from `verification`."""
+    """Per-peril (pi, E[N], E[S]); `mitigations` overrides the doses read from `verification`.
+
+    Each intercept is solved so the reference home matches the tract loss rate in `base_rates` (NRI).
+    """
     m = mitigations if mitigations is not None else mitigations_from(verification)
+
+    def a(peril: str) -> float:
+        return _reference_intercept(peril, base_rates, hazard, verification, state)
+
     terms = []
     for peril in active_perils(hazard):
         if peril == "FLOOD":
-            terms.append(_flood(hazard, verification, m))
+            terms.append(_flood(hazard, verification, m, a(peril)))
         elif peril == "WILDFIRE":
-            terms.append(_wildfire(hazard, verification, m, firewise))
+            terms.append(_wildfire(hazard, verification, m, firewise, a(peril)))
         else:
-            terms.append(_wind(state, year_built, m))
+            terms.append(_wind(state, year_built, m, a(peril)))
     return terms
 
 

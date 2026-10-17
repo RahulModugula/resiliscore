@@ -22,7 +22,7 @@ from app.main import app
 
 FIXTURES = Path(__file__).parent / "fixtures"
 AUSTIN = {"lat": 30.2672, "lng": -97.7431, "county": "48453", "tract": "48453001103", "state": "TX"}
-NOLA = (29.9657, -90.1032)  # S1 golden centroid
+NOLA = (29.984, -90.153)  # S1 golden centroid
 
 
 def fixture(name: str) -> str:
@@ -367,7 +367,7 @@ def test_austin_all_live_uses_real_data_and_marks_what_is_not_live():
     s, layer = status(r), r.layer
     assert (layer.fema_flood_zone, layer.bfe_ft_navd88) == ("X", None)
     assert layer.usgs_lag_ft == pytest.approx(487.0965, abs=1e-3)
-    assert layer.freeboard_delta_h_ft == 0.0  # contract float for "no BFE"
+    assert layer.freeboard_delta_h_ft is None  # no BFE: unknown, not 'at BFE'
     assert layer.noaa_atlas15_p24h_100yr_in == 12.7
     assert layer.openfema_tract_claim_count == len(up.claims["NfipClaims"])
     assert r.tract_prior_lcr == pytest.approx(nri.parse_nri(json.loads(fixture("nri_austin.json"))).total_rate)
@@ -493,8 +493,8 @@ def test_unknown_address_is_404_not_a_golden_fallback(monkeypatch):
 def test_simulate_keeps_provenance_and_indicative_flag(monkeypatch):
     up = Upstreams()
     monkeypatch.setattr(http, "_client", up.client())
-    built = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
-    out = simulate(built, [])
+    built, tract_nri = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
+    out = simulate(built, [], nri=tract_nri)
     assert out.indicative_only is True and len(out.input_provenance) >= 15
 
 
@@ -563,3 +563,23 @@ def test_live_apis_reachable():
     assert 300 < lag < 1000
     assert 8 < rain < 20
     assert agg.claim_count > 500
+
+
+def test_off_demo_parcel_is_calibrated_to_its_own_tract_nri_rate(monkeypatch):
+    from app.actuarial import base_rates
+
+    up = Upstreams()
+    monkeypatch.setattr(http, "_client", up.client())
+    built, tract_nri = run(pipeline.build_parcel_for_address("1100 Congress Ave Austin TX 78701"))
+    tract = nri.parse_nri(json.loads(fixture("nri_austin.json")))
+    rates, prior = base_rates.context_for(built, tract_nri)
+    ealb, expb = tract.ealb_usd, tract.expb_usd
+    assert rates.flood == pytest.approx((ealb["IFLD"] + ealb["CFLD"]) / expb["IFLD"])
+    assert rates.wildfire == 0.0  # NRI reports none for this tract
+    assert rates.wind == pytest.approx((ealb["HRCN"] + ealb["SWND"] + ealb["HAIL"]) / tract.buildvalue_usd)
+    assert prior == pytest.approx(tract.total_rate)
+    # Not the nearest reference tract's figures.
+    ref_rates, ref_prior = base_rates.context_for(rasters.nearest_site(AUSTIN["lat"], AUSTIN["lng"]).response)
+    assert rates.wind != ref_rates.wind and prior != ref_prior
+    out = simulate(built, [], nri=tract_nri)
+    assert out.actuarial_breakdown.tract_prior_lcr == pytest.approx(tract.total_rate)
