@@ -86,8 +86,8 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
         let result = await requestParcel("/v1/parcel/score", address ? { address } : { scenario_id: requestedScenario }, controller.signal);
         const scoredBaseline = result;
         if (!address && selected.length) result = await requestParcel("/v1/parcel/simulate-mitigation", { apn_uid: result.parcel_identity.apn_uid, action_ids: selected }, controller.signal);
-        if (!address && resolution !== "none") result = await requestParcel("/v1/hitl/verify-override", {
-          apn_uid: result.parcel_identity.apn_uid, resolution, approved: resolution === "verified", verification_method: "demo_mobile_inspection", simulate: true,
+        if (!address && resolution === "verified") result = await requestParcel("/v1/hitl/verify-override", {
+          apn_uid: result.parcel_identity.apn_uid,
         }, controller.signal);
         if (!controller.signal.aborted) {
           setRemote({ key, source, baseline: scoredBaseline, parcel: result });
@@ -119,6 +119,12 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
     if (!value) setAddress(null);
     setRemote(null); setNetwork({ key: "", status: "idle", message: "" }); setModal(null); setLive(value);
   }
+  function applyDemoStructureLoading() {
+    setLive(false);
+    setRemote(null);
+    setResolution("loaded");
+    setModal(null);
+  }
   const header = isSelectedProperty ? <header className="topbar"><Link className="brand" href="/">SaveMyHome</Link><span className="brand-description">Manhattan property assessment</span><div className="header-actions"><Link className="secondary-button" href={selectedProperty ? `/?neighborhood=${encodeURIComponent(selectedProperty.neighborhoodId)}` : "/"}>Back to Manhattan map</Link><button className="icon-button" onClick={() => setDark(v => !v)} aria-label={dark ? "Use light theme" : "Use dark theme"}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button></div></header> : <HeaderScenarioBar active={address ? null : scenario} onSelect={selectScenario} onAddress={searchAddress} live={live} onLive={changeLive} dark={dark} onTheme={() => setDark(v => !v)} loading={pending} />;
   const notice = live && <div className={`status-notice ${network.status === "fallback" ? "warning" : ""}`} role="status">{network.key === key ? network.message : "Loading live evidence…"}</div>;
   if (!parcel || !baseline) return <div className="app-shell" data-theme={dark ? "dark" : "light"}>
@@ -149,7 +155,7 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
       <div className="property-heading"><div><h2>{isSelectedProperty ? propertyTitle : p.address.split(",")[0]}</h2><p><MapPin size={14} />{p.address.split(",").slice(1).join(",").trim()}<span className="badge">{isSelectedProperty ? offlineScreening ? "Offline model screening" : parcel.indicative_only ? "Indicative live assessment" : "Live assessment" : address ? "Live address" : isRemote ? "Live API" : "Golden demo parcel"}</span></p></div><div className="property-details"><span>{isSelectedProperty ? "Building" : "APN"} <strong>{selectedProperty?.id ?? p.apn_uid}</strong></span><span>Built <strong>{p.year_built}{isSelectedProperty && parcel.input_provenance?.some(row => row.field === "year_built" && row.value_source === "DEFAULT") ? " (default)" : ""}</strong></span><span>Replacement value <strong>{offlineScreening ? `${money(p.rcv_usd)} default` : money(p.rcv_usd)}</strong></span><button className="icon-button" aria-label="Download parcel JSON" onClick={() => downloadText(`parcel-${p.apn_uid}.json`, JSON.stringify(parcel, null, 2))}><Download size={17} /></button></div></div>
       {isEscondido && <label className="change-toggle"><input type="checkbox" checked={alert} onChange={e => toggleAlert(e.target.checked)} /><span><strong>Simulate satellite change-detection alert</strong><small>+240 sq ft unpermitted Zone 1 structure</small></span><span className="badge warning">HITL guardrail</span></label>}
       {escalated && !isSelectedProperty && !address && <div className="hitl-banner" role="alert"><ShieldAlert size={25} /><div><strong>{parcel.hitl_status.trigger_code.replaceAll("_", " ")}</strong><p>{parcel.hitl_status.trigger_reason}</p><p>Straight-through processing paused. Escalated to the demo UnderwritingCenter.</p></div><button className="secondary-button" onClick={() => setModal("hitl")}>Open review workbench<ArrowRight size={16} /></button></div>}
-      {resolution !== "none" && !escalated && <div className="status-notice success" role="status"><CheckCheck size={17} />{resolution === "verified" ? `Demo mobile evidence accepted. Open aluminum pergola verified. Auto-bind restored at ${a.resili_score}.` : "Demo structure loading applied: +35 bps LCR and $60,000 RCV at an assumed $250/sq ft. Conditional review required."}</div>}
+      {resolution !== "none" && !escalated && <div className="status-notice success" role="status"><CheckCheck size={17} />{resolution === "verified" ? `Demo mobile evidence accepted. Open aluminum pergola verified. Auto-bind restored at ${a.resili_score}.` : "Demo structure loading applied locally: +35 bps LCR and $60,000 RCV at an assumed $250/sq ft. Conditional review required. Live API off for this demo calculation."}</div>}
       </>}
       <div role="tabpanel" id={`workspace-panel-${tab}`} aria-labelledby={`workspace-tab-${tab}`} className="tab-content">
         {tab === 3 ? <ModelValidationTab live={live} /> : tab === 2 ? isSelectedProperty ? <SelectedPropertyEvidence parcel={parcel} offline={offlineScreening} /> : <RegulatoryAuditTab parcel={parcel} simulated={selected.length > 0 || resolution !== "none"} /> : <>
@@ -160,6 +166,6 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
       <footer className="app-footer">{tab === 3 ? <span><ShieldAlert size={14} />Model validation · Results retain their source caveats and adoption decisions</span> : <><span><ShieldAlert size={14} />{isSelectedProperty ? "Selected NYC building · Evidence status shown explicitly · No policy issued" : "Demonstration workspace · Synthetic parcel evidence · No policy issued"}</span><span>300–850 resilience scale · Contract v2</span></>}</footer>
     </main>
     {modal === "receipt" && bindable && <BindingReceipt parcel={parcel} selected={selected} onClose={() => setModal(null)} />}
-    {modal === "hitl" && <HitlWorkbenchModal parcel={parcel} onClose={() => setModal(null)} onVerify={() => { setResolution("verified"); setModal(null); }} onLoading={() => { setResolution("loaded"); setModal(null); }} />}
+    {modal === "hitl" && <HitlWorkbenchModal parcel={parcel} onClose={() => setModal(null)} onVerify={() => { setResolution("verified"); setModal(null); }} onLoading={applyDemoStructureLoading} />}
   </div>;
 }
