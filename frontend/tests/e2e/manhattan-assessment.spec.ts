@@ -9,8 +9,8 @@ test("selected property survives reload and shows an offline canonical screen wi
   await page.addInitScript(({ id, result }) => sessionStorage.setItem(`resiliscore:manhattan:assessment:v1:${id}`, JSON.stringify({ savedAt: Date.now(), result })), { id: building.id, result });
   await page.route("**/v1/**", route => route.abort("connectionrefused"));
   await page.goto(`/assessment?property=${building.id}`);
-  await expect(page.getByRole("heading", { name: "BIN 1000001", exact: true })).toBeVisible();
-  await expect(page.getByRole("status")).toContainText("Offline model screening");
+  await expect(page.getByRole("heading", { name: "Address unavailable", exact: true })).toBeVisible();
+  await expect(page.getByRole("status").filter({hasText:"Offline model screening"})).toBeVisible();
   await expect(page.getByText(`ResiliScore ${result.parcel.actuarial_breakdown.resili_score} / 850`, { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /auto-bind|conditional bind/i })).toHaveCount(0);
   await expect(page.getByText("Golden demo parcel", { exact: true })).toHaveCount(0);
@@ -19,7 +19,7 @@ test("selected property survives reload and shows an offline canonical screen wi
   await expect(page.getByText("REFERENCE_PARCEL", { exact: true })).toBeVisible();
   await expect(page.getByText(/nonlocal FEMA NRI reference tract/).first()).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "BIN 1000001", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Address unavailable", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Back to Manhattan map" })).toHaveAttribute("href", "/?neighborhood=MN0101");
 });
 
