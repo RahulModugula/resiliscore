@@ -33,10 +33,9 @@ function Block({context}:{context:BlockContext}) {
     const rectangle:Neighborhood={id:"context",name:"Block",type:"0",center:[(w+e)/2,(s+n)/2],bounds:[w,s,e,n],geometry:{type:"Polygon",coordinates:[[[w,s],[e,s],[e,n],[w,n],[w,s]]]}};
     const samples=context.terrain.elevationsM.filter((h):h is number=>h!==null);
     const land=colorTerrain(terrainGeometry(context.terrain,[rectangle]),Math.min(...samples),Math.max(...samples));
-    // DEM replaces the footprint's old point elevation. A missing DEM value remains explicitly unknown in the UI.
-    const anchored=context.buildings.map(b=>({...b,groundElevationM:terrainElevation(b.center,context.terrain)??b.groundElevationM}));
-    const buildings=buildingGeometry(anchored.filter(b=>b.id!==context.selected.id)).geometry;
-    const selected=buildingGeometry(anchored.filter(b=>b.id===context.selected.id)).geometry;
+    const options={terrain:context.terrain,verticalScale:1};
+    const buildings=buildingGeometry(context.buildings.filter(b=>b.id!==context.selected.id),options).geometry;
+    const selected=buildingGeometry(context.buildings.filter(b=>b.id===context.selected.id),options).geometry;
     return {land,buildings,selected,streets:streetGeometry(context.streets,context.terrain,context.bounds)};
   },[context]);
   useEffect(()=>()=>{Object.values(geometries).forEach(g=>g.dispose());},[geometries]);

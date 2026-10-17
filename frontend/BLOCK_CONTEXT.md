@@ -8,7 +8,7 @@ With a valid BBL, the extent covers all mapped footprints in the same tax block 
 
 The scene uses the common USGS bare-earth 10-metre DEM, cropped without inventing or flattening samples. Ground elevation is metres relative to NAVD88 and is shown separately from height above ground. Roads follow the DEM at intervals of at most five metres; cells without DEM support are omitted. The view uses true vertical scale. Source roof heights and bare-earth elevation differ from a surveyed building model and are geographic context, not certified freeboard or risk evidence.
 
-The local assets include NYC OTI Street Centerline coordinates and names. A supplied street width is converted from feet to metres; missing widths appear as thin centerlines. These ribbons do not establish curb boundaries. Expand the view's source details for an accessible list of surrounding addresses, street names and source limitations. The list and measurements remain usable when WebGL is unavailable.
+The local assets include NYC OTI Street Centerline coordinates and names for constructed at-grade segments. Paper streets, bridges, tunnels, ferry routes and nonphysical links are excluded rather than draped onto the ground. A supplied street width is converted from feet to metres; missing widths appear as thin centerlines. These ribbons do not establish curb boundaries. Expand the view's source details for an accessible list of surrounding addresses, street names and source limitations. The list and measurements remain usable when WebGL is unavailable.
 
 ## Refresh the local context assets
 
