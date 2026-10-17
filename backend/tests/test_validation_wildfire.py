@@ -89,11 +89,29 @@ def test_proposal_only_contains_protective_features_with_ci_below_one(result):
 
 
 def test_committed_results_match_a_fresh_run(result):
-    summary = json.loads((wr.RESULTS / "wildfire_summary.json").read_text())
-    assert summary["palisades_holdout"]["auc_fitted"] == pytest.approx(result["palisades_holdout"]["auc_fitted"], abs=1e-4)
-    assert summary["palisades_holdout"]["auc_current"] == pytest.approx(result["palisades_holdout"]["auc_current"], abs=1e-4)
+    details = json.loads((wr.RESULTS / "wildfire_details.json").read_text())
+    assert details["palisades_holdout"]["auc_fitted"] == pytest.approx(result["palisades_holdout"]["auc_fitted"], abs=1e-4)
+    assert details["palisades_holdout"]["auc_current"] == pytest.approx(result["palisades_holdout"]["auc_current"], abs=1e-4)
+    committed_summary = json.loads((wr.RESULTS / "wildfire_summary.json").read_text())
+    assert committed_summary["pooled_auc"] == pytest.approx(wr._clean(wr.report(result))["pooled_auc"], abs=1e-4)
     committed = json.loads((wr.FITTED / "wildfire_relativities.json").read_text())
     assert committed["holdout_auc"] == pytest.approx(result["proposal"]["holdout_auc"], abs=1e-4)
+
+
+def test_summary_matches_the_report_contract(result):
+    summary = json.loads((wr.RESULTS / "wildfire_summary.json").read_text())
+    assert set(summary) == {"method", "data_source", "data_vintage", "fetched_on", "verdict", "fires", "features",
+                            "pooled_auc", "adopted", "adoption_note"}  # fmt: skip
+    assert len(summary["fetched_on"]) == 10 and summary["fetched_on"][4] == "-"
+    fire_keys = {"fire", "year", "n_structures", "destroyed_share", "auc_current", "auc_fitted", "calibration_slope", "note"}
+    assert all(set(f) == fire_keys for f in summary["fires"])
+    assert all(f["auc_current"] is not None and 0 <= f["destroyed_share"] <= 1 for f in summary["fires"])
+    feature_keys = {"feature", "n", "odds_ratio", "ci_low", "ci_high", "model_implied_ratio", "supported"}
+    assert all(set(f) == feature_keys for f in summary["features"])
+    assert all(f["ci_low"] <= f["odds_ratio"] <= f["ci_high"] for f in summary["features"])
+    assert summary["adopted"] is False
+    roof = next(f for f in summary["features"] if f["feature"] == "roof_class_a")
+    assert roof["supported"] and 0 < roof["model_implied_ratio"] < 1
 
 
 def test_no_image_features_are_invented(result):

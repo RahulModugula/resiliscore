@@ -82,7 +82,7 @@ def holdout_metrics(train: list[wm.Home], test: list[wm.Home]) -> dict:
     mask = np.array([is_complete(h) for h in test])
     all_homes = _metrics(lp_fit, b * np.log(destroyed_rel), destroyed_rel, loss_rel, _y(test))
     complete = _metrics(lp_fit[mask], b * np.log(destroyed_rel[mask]), destroyed_rel[mask], loss_rel[mask], _y(test)[mask])
-    return {**complete, **{f"all_{k}": v for k, v in all_homes.items() if k.startswith("auc_")}, "n_all": len(test)}
+    return {**complete, **{f"all_{k}": v for k, v in all_homes.items() if k.startswith(("auc_", "cal_slope_"))}, "n_all": len(test)}
 
 
 def _metrics(lp_fit: np.ndarray, lp_cur: np.ndarray, destroyed_rel: np.ndarray, loss_rel: np.ndarray, y: np.ndarray) -> dict:
@@ -238,6 +238,67 @@ def _clean(value):
     return value
 
 
+DINS_URL = "https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/ArcGIS/rest/services/POSTFIRE_MASTER_DATA_SHARE/FeatureServer/0"
+ADOPTION_NOTE = (
+    "Not adopted. Fitted relativities are proposed in backend/validation/fitted/wildfire_relativities.json for the "
+    "actuarial lane to review; the engine is unchanged."
+)
+
+
+def _implied_odds_ratio(rr: float, base_share: float) -> float:
+    """Odds ratio equivalent to a risk ratio `rr` at the unfavourable group's destroyed share."""
+    return rr * (1 - base_share) / (1 - rr * base_share)
+
+
+def report(result: dict) -> dict:
+    """The fixed validation-report shape (fires, features, pooled AUC). Fire AUCs are on all homes, unknowns neutral."""
+    homes = wm.load_homes()
+    base = {f: np.mean([h.destroyed for h in homes if h.flags[f] == 0]) for f in wm.BINARY}
+    fires = []
+    for r in result["lofo"]:
+        complete = (
+            f"Complete-case AUC (roof, eaves, vents recorded; n={r['n_complete']}): current {r['auc_current']:.2f}, "
+            f"fitted {r['auc_fitted']:.2f}."
+            if not math.isnan(r["auc_current"])
+            else f"Too few complete-case destroyed or surviving homes (n={r['n_complete']}) for a complete-case AUC."
+        )
+        fires.append({
+            "fire": r["fire"], "year": r["start_year"], "n_structures": r["n_inspected"],
+            "destroyed_share": r["destroyed_share_population"], "auc_current": r["all_auc_current"],
+            "auc_fitted": r["all_auc_fitted"], "calibration_slope": r["all_cal_slope_fitted"],
+            "note": f"Sampled {r['n_sample']} single residences. {complete}",
+        })  # fmt: skip
+    features = []
+    for row in result["features"]:
+        name = row["feature"]
+        rr = row.get("modelled_rr_destroyed")
+        features.append({
+            "feature": name, "n": row.get("n_known") or len([h for h in homes if h.era]),
+            "odds_ratio": row["fitted_or"], "ci_low": row["fitted_or_ci_low"], "ci_high": row["fitted_or_ci_high"],
+            "model_implied_ratio": _implied_odds_ratio(rr, base[name]) if rr else None,
+            "supported": row["fitted_or_ci_high"] < 1.0,
+        })  # fmt: skip
+    mean = result["mean_auc"]
+    pooled = float(np.average([r["all_auc_current"] for r in result["lofo"]], weights=[r["n_sample"] for r in result["lofo"]]))
+    palisades = result["palisades_holdout"]
+    return {
+        "method": METHOD + " Observed ratios are fire-stratified; each fire is scored by a model fitted without it. "
+        "model_implied_ratio converts the engine's risk ratio to an odds ratio at the unfavourable group's destroyed share.",
+        "data_source": f"CAL FIRE Damage Inspection (DINS) database, ArcGIS FeatureServer {DINS_URL}",
+        "data_vintage": f"DINS layer last edited 2026-01-06; {result['n_fires']} fires, 2015 to 2025; seeded sample of "
+        f"{result['n_sample']:,} single residences",
+        "fetched_on": FIT_DATE,
+        "verdict": (
+            "Class A roof, enclosed eaves and screened vents each lower the destroyed share within a fire, and the "
+            "engine's 8% credit per feature understates all three. Zone 0 clearance cannot be tested in DINS. Hardening "
+            f"features alone discriminate weakly (mean AUC {mean['current']:.2f} current, {mean['fitted']:.2f} refit on "
+            f"complete-case homes; Palisades holdout {palisades['auc_current']:.2f} vs {palisades['auc_fitted']:.2f}). "
+            "DINS attributes are recorded after the fire, so Unknown mostly marks destroyed homes."
+        ),
+        "fires": fires, "features": features, "pooled_auc": pooled, "adopted": False, "adoption_note": ADOPTION_NOTE,
+    }  # fmt: skip
+
+
 def write(result: dict) -> None:
     RESULTS.mkdir(exist_ok=True)
     FITTED.mkdir(exist_ok=True)
@@ -255,14 +316,15 @@ def write(result: dict) -> None:
         writer = csv.DictWriter(fh, fieldnames=feature_cols, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(_clean(result["features"]))
-    summary = {
+    details = {
         "fit_date": FIT_DATE, "n_sample": result["n_sample"], "n_fires": result["n_fires"],
         "mean_auc_weighted_by_n": _clean(result["mean_auc"]),
         "palisades_holdout": _clean(result["palisades_holdout"]),
         "example_split_eaton_camp_to_palisades": _clean(result["example_split"]),
         "counts": _clean(result["counts"]), "deciles": _clean(result["deciles"]),
     }  # fmt: skip
-    (RESULTS / "wildfire_summary.json").write_text(json.dumps(summary, indent=1))
+    (RESULTS / "wildfire_details.json").write_text(json.dumps(details, indent=1))
+    (RESULTS / "wildfire_summary.json").write_text(json.dumps(_clean(report(result)), indent=1))
     (FITTED / "wildfire_relativities.json").write_text(json.dumps(_clean(result["proposal"]), indent=1))
 
 

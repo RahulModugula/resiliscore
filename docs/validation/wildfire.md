@@ -130,7 +130,8 @@ fire-adjusted; the per-feature table above is.
   all-homes AUC is shown for them. Many show an AUC far from 0.5 (Creek 0.05, Kincade 0.04, LNU 0.13), which is
   the artifact above: there, destroyed homes were recorded with *more* favourable known features than survivors.
   These are not evidence that the model is inverted.
-- **Calibration by decile** is in `results/wildfire_summary.json`. After re-centring, the pooled deciles mostly
+- **Calibration by decile** is in `results/wildfire_details.json`. `results/wildfire_summary.json` holds the fixed report shape the frontend
+reads (fire AUCs there are on all homes with unknowns neutral). After re-centring, the pooled deciles mostly
   track fire base rates, so use the within-fire AUC above, not the deciles, as evidence of discrimination.
 
 ### Fitted proposal
