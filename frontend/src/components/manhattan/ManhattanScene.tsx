@@ -109,10 +109,10 @@ function BuildingMesh({ buildings, interactive, onSelect, onNeighborhoodSelect, 
       setHoverId(building?.id ?? null);
       onHover(building);
     }} onPointerOut={() => { setHoverId(null); onHover(null); }}>
-      <meshStandardMaterial vertexColors roughness={0.92} side={DoubleSide} transparent={underground} opacity={underground ? 0.2 : 1} depthWrite={!underground} />
+      <meshStandardMaterial vertexColors flatShading roughness={0.92} side={DoubleSide} transparent={underground} opacity={underground ? 0.2 : 1} depthWrite={!underground} />
     </mesh>
     {highlight && <mesh geometry={highlight} renderOrder={2} raycast={() => null}>
-      <meshStandardMaterial color="#57d3bf" roughness={0.8} side={DoubleSide} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
+      <meshStandardMaterial color="#57d3bf" flatShading roughness={0.8} side={DoubleSide} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>}
   </Bvh>;
 }

@@ -40,10 +40,11 @@ function polygonTriangles(rings: LngLat[][]) {
   return { rings: clean, points: clean.flat(), faces: ShapeUtils.triangulateShape(projected[0], projected.slice(1)) };
 }
 
-function geometryFromPositions(positions: number[], colors?: number[]) {
+function geometryFromPositions(positions: number[], colors?: number[], indices?: number[]) {
   const geometry = new BufferGeometry();
   geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
   if (colors) geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
+  if (indices) geometry.setIndex(indices);
   geometry.computeVertexNormals();
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
@@ -58,6 +59,7 @@ function triangle(positions: number[], a: Point, b: Point, c: Point) {
 export function buildingGeometry(buildings: Building[]) {
   const positions: number[] = [];
   const colors: number[] = [];
+  const indices: number[] = [];
   const triangleEnds: number[] = [];
   const base = new Color("#c8cebf");
   const tall = new Color("#eff0d9");
@@ -65,22 +67,26 @@ export function buildingGeometry(buildings: Building[]) {
     const { rings, points, faces } = polygonTriangles(building.footprint);
     const ground = building.groundElevationM ?? 0;
     // Missing height stays a flat footprint. Never infer a storey count or a roof height.
-    const roof = ground + (building.heightM ?? 0);
-    const before = positions.length;
-    for (const [a, b, c] of faces) triangle(positions, worldPoint(points[a], roof + 0.2), worldPoint(points[b], roof + 0.2), worldPoint(points[c], roof + 0.2));
+    const roof = ground + (building.heightM ?? 0) + 0.2;
+    const roofStart = positions.length / 3;
+    for (const point of points) positions.push(...worldPoint(point, roof));
+    for (const [a, b, c] of faces) indices.push(roofStart + a, roofStart + b, roofStart + c);
     if (building.heightM != null && building.heightM > 0) {
+      const groundStart = positions.length / 3;
+      for (const point of points) positions.push(...worldPoint(point, ground));
+      let ringStart = 0;
       for (const ring of rings) for (let i = 0; i < ring.length; i++) {
-        const a = ring[i];
-        const b = ring[(i + 1) % ring.length];
-        triangle(positions, worldPoint(a, ground), worldPoint(b, ground), worldPoint(a, roof));
-        triangle(positions, worldPoint(b, ground), worldPoint(b, roof), worldPoint(a, roof));
+        const a = ringStart + i;
+        const b = ringStart + (i + 1) % ring.length;
+        indices.push(groundStart + a, groundStart + b, roofStart + a, groundStart + b, roofStart + b, roofStart + a);
+        if (i === ring.length - 1) ringStart += ring.length;
       }
     }
     const color = base.clone().lerp(tall, Math.min((building.heightM ?? 0) / 300, 1));
-    for (let i = before; i < positions.length; i += 3) colors.push(color.r, color.g, color.b);
-    triangleEnds.push(positions.length / 9);
+    for (let i = roofStart; i < positions.length / 3; i++) colors.push(color.r, color.g, color.b);
+    triangleEnds.push(indices.length / 3);
   }
-  return { geometry: geometryFromPositions(positions, colors), triangleEnds };
+  return { geometry: geometryFromPositions(positions, colors, indices), triangleEnds };
 }
 
 /** Binary lookup keeps a merged city mesh interactive without one React node per property. */
@@ -132,13 +138,14 @@ export function terrainGeometry(terrain: TerrainGrid, neighborhoods: Neighborhoo
   const positions: number[] = [];
   const [w, s, e, n] = terrain.bounds;
   const lngLat = (x: number, y: number): LngLat => [w + x / (terrain.width - 1) * (e - w), s + y / (terrain.height - 1) * (n - s)];
+  const isLand = (point: LngLat) => neighborhoods.some(({ bounds, geometry }) => point[0] >= bounds[0] && point[0] <= bounds[2] && point[1] >= bounds[1] && point[1] <= bounds[3] && pointInGeometry(point, geometry));
   for (let y = 0; y < terrain.height - 1; y++) for (let x = 0; x < terrain.width - 1; x++) {
     const points = [lngLat(x, y), lngLat(x + 1, y), lngLat(x, y + 1), lngLat(x + 1, y + 1)];
     const heights = [terrain.elevationsM[y * terrain.width + x], terrain.elevationsM[y * terrain.width + x + 1], terrain.elevationsM[(y + 1) * terrain.width + x], terrain.elevationsM[(y + 1) * terrain.width + x + 1]];
     if (heights.some((height) => height == null)) continue;
     for (const face of [[0, 1, 2], [1, 3, 2]]) {
       const center: LngLat = [face.reduce((sum, i) => sum + points[i][0], 0) / 3, face.reduce((sum, i) => sum + points[i][1], 0) / 3];
-      if (!neighborhoods.some((neighborhood) => pointInGeometry(center, neighborhood.geometry))) continue;
+      if (!isLand(center) || !face.every((index) => isLand(points[index]))) continue;
       triangle(positions, worldPoint(points[face[0]], heights[face[0]]!), worldPoint(points[face[1]], heights[face[1]]!), worldPoint(points[face[2]], heights[face[2]]!));
     }
   }
