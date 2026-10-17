@@ -1,0 +1,1740 @@
+{
+  "SCENARIO_1_LA_FLOOD": {
+    "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000001",
+    "processing_time_ms": 3412.6,
+    "parcel_identity": {
+      "apn_uid": "02200100041200",
+      "address": "412 Bayou Rd, Jefferson Parish, LA",
+      "county_fips": "22051",
+      "state": "LA",
+      "h3_res11": "8b44d0c1a2b5fff",
+      "h3_res13": "8d44d0c1a2b5a3f",
+      "rcv_usd": 450000.0,
+      "year_built": 1998,
+      "centroid": [
+        -90.1032,
+        29.9657
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.103358,
+                    29.9654794
+                  ],
+                  [
+                    -90.103042,
+                    29.9654794
+                  ],
+                  [
+                    -90.103042,
+                    29.9659206
+                  ],
+                  [
+                    -90.103358,
+                    29.9659206
+                  ],
+                  [
+                    -90.103358,
+                    29.9654794
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "parcel_polygon",
+              "label": "Parcel boundary"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.103279,
+                    29.9656504
+                  ],
+                  [
+                    -90.103121,
+                    29.9656504
+                  ],
+                  [
+                    -90.103121,
+                    29.9657496
+                  ],
+                  [
+                    -90.103279,
+                    29.9657496
+                  ],
+                  [
+                    -90.103279,
+                    29.9656504
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.1032948,
+                    29.9656366
+                  ],
+                  [
+                    -90.1031052,
+                    29.9656366
+                  ],
+                  [
+                    -90.1031052,
+                    29.9657634
+                  ],
+                  [
+                    -90.1032948,
+                    29.9657634
+                  ],
+                  [
+                    -90.1032948,
+                    29.9656366
+                  ]
+                ],
+                [
+                  [
+                    -90.103279,
+                    29.9656504
+                  ],
+                  [
+                    -90.103279,
+                    29.9657496
+                  ],
+                  [
+                    -90.103121,
+                    29.9657496
+                  ],
+                  [
+                    -90.103121,
+                    29.9656504
+                  ],
+                  [
+                    -90.103279,
+                    29.9656504
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.1033738,
+                    29.9655676
+                  ],
+                  [
+                    -90.1030262,
+                    29.9655676
+                  ],
+                  [
+                    -90.1030262,
+                    29.9658324
+                  ],
+                  [
+                    -90.1033738,
+                    29.9658324
+                  ],
+                  [
+                    -90.1033738,
+                    29.9655676
+                  ]
+                ],
+                [
+                  [
+                    -90.1032948,
+                    29.9656366
+                  ],
+                  [
+                    -90.1032948,
+                    29.9657634
+                  ],
+                  [
+                    -90.1031052,
+                    29.9657634
+                  ],
+                  [
+                    -90.1031052,
+                    29.9656366
+                  ],
+                  [
+                    -90.1032948,
+                    29.9656366
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.1035951,
+                    29.9653746
+                  ],
+                  [
+                    -90.1028049,
+                    29.9653746
+                  ],
+                  [
+                    -90.1028049,
+                    29.9660254
+                  ],
+                  [
+                    -90.1035951,
+                    29.9660254
+                  ],
+                  [
+                    -90.1035951,
+                    29.9653746
+                  ]
+                ],
+                [
+                  [
+                    -90.1033738,
+                    29.9655676
+                  ],
+                  [
+                    -90.1033738,
+                    29.9658324
+                  ],
+                  [
+                    -90.1030262,
+                    29.9658324
+                  ],
+                  [
+                    -90.1030262,
+                    29.9655676
+                  ],
+                  [
+                    -90.1033738,
+                    29.9655676
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.1032695,
+                    29.9656586
+                  ],
+                  [
+                    -90.1031305,
+                    29.9656586
+                  ],
+                  [
+                    -90.1031305,
+                    29.9657414
+                  ],
+                  [
+                    -90.1032695,
+                    29.9657414
+                  ],
+                  [
+                    -90.1032695,
+                    29.9656586
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "FORTIFIED roof deck, Class A"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "AE",
+      "bfe_ft_navd88": 9.0,
+      "usgs_lag_ft": 7.2,
+      "est_ffe_ft": 13.2,
+      "freeboard_delta_h_ft": 4.2,
+      "hand_rel_elev_ft": 6.4,
+      "twi_index": 9.8,
+      "noaa_atlas15_p24h_100yr_in": 13.1,
+      "atlas15_cmip6_mult": 1.12,
+      "landfire_fbfm40_code": "NB1",
+      "slope_deg": 0.4,
+      "wui_class": "NON_WUI",
+      "openfema_tract_claim_count": 1432,
+      "openfema_tract_mean_lcr": 0.0185
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "CLASS_A_FORTIFIED",
+      "cv_confidence": 0.96,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": true,
+      "cv_zone1_no_shed": true,
+      "cv_enclosed_eaves": true,
+      "cv_ember_vents": false,
+      "elev_cert_verified": true,
+      "ibhs_fortified_tier": "ROOF",
+      "ibhs_wph_tier": "NONE",
+      "iot_shutoff_active": false,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.0185,
+      "parcel_raw_lcr": 0.001372,
+      "credibility_weight_z": 0.94,
+      "posterior_lcr": 0.0024,
+      "expected_annual_loss_usd": 1080.0,
+      "peril_split": [
+        {
+          "peril": "FLOOD",
+          "zip_immunity_pi": 0.22,
+          "expected_freq_n": 0.031,
+          "expected_sev_s": 41356.49,
+          "peril_aal_usd": 1000.0
+        },
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.45,
+          "expected_freq_n": 0.012,
+          "expected_sev_s": 12121.21,
+          "peril_aal_usd": 80.0
+        }
+      ],
+      "resili_score": 765,
+      "baseline_macro_score": 430,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 38.0,
+      "annual_base_premium_usd": 4200.0,
+      "annual_discounted_premium_usd": 2604.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "LA_FORTIFIED_ROOF",
+        "title": "IBHS FORTIFIED Roof (Louisiana Fortify Homes grant)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "LA R.S. 22:1460 FORTIFIED Roof credit",
+        "gross_capex_usd": 18000.0,
+        "grant_subsidy_usd": 10000.0,
+        "net_capex_usd": 8000.0,
+        "lcr_delta_bps": -35.0,
+        "score_delta_pts": 90,
+        "annual_premium_savings_usd": 1560.0,
+        "payback_years": 5.13,
+        "resale_value_bump_pct": 4.0,
+        "currently_applied": true
+      }
+    ],
+    "hitl_status": {
+      "escalated": false,
+      "trigger_code": "NONE",
+      "trigger_reason": null,
+      "recommended_underwriter_action": null
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": false,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": false,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
+        "cat_b2_class_a_roof": false,
+        "cat_b2_enclosed_eaves": false,
+        "cat_b2_ember_vents": false,
+        "cat_b2_multi_pane_windows": false,
+        "cat_b2_vertical_siding_clearance_6in": false
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "2025-05-01",
+        "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
+        "OpenFEMA": "FimaNfipClaims_v2",
+        "LANDFIRE": "LF2024_FBFM40",
+        "USGS_HAND": "NHDPlusHR_2024",
+        "FEMA_NFHL": "2026-03",
+        "LA_FORTIFY_HOMES": "2026-Q2"
+      }
+    }
+  },
+  "SCENARIO_2_CA_WUI": {
+    "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000002",
+    "processing_time_ms": 3688.1,
+    "parcel_identity": {
+      "apn_uid": "58430120180000",
+      "address": "1840 Canyon Crest Dr, Altadena, CA",
+      "county_fips": "06037",
+      "state": "CA",
+      "h3_res11": "8b2e68a1c4d3fff",
+      "h3_res13": "8d2e68a1c4d3b7f",
+      "rcv_usd": 850000.0,
+      "year_built": 1974,
+      "centroid": [
+        -118.1432,
+        34.192
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1434317,
+                    34.1916967
+                  ],
+                  [
+                    -118.1429683,
+                    34.1916967
+                  ],
+                  [
+                    -118.1429683,
+                    34.1923033
+                  ],
+                  [
+                    -118.1434317,
+                    34.1923033
+                  ],
+                  [
+                    -118.1434317,
+                    34.1916967
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "parcel_polygon",
+              "label": "Parcel boundary"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1432993,
+                    34.1919393
+                  ],
+                  [
+                    -118.1431007,
+                    34.1919393
+                  ],
+                  [
+                    -118.1431007,
+                    34.1920607
+                  ],
+                  [
+                    -118.1432993,
+                    34.1920607
+                  ],
+                  [
+                    -118.1432993,
+                    34.1919393
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1433159,
+                    34.1919256
+                  ],
+                  [
+                    -118.1430841,
+                    34.1919256
+                  ],
+                  [
+                    -118.1430841,
+                    34.1920744
+                  ],
+                  [
+                    -118.1433159,
+                    34.1920744
+                  ],
+                  [
+                    -118.1433159,
+                    34.1919256
+                  ]
+                ],
+                [
+                  [
+                    -118.1432993,
+                    34.1919393
+                  ],
+                  [
+                    -118.1432993,
+                    34.1920607
+                  ],
+                  [
+                    -118.1431007,
+                    34.1920607
+                  ],
+                  [
+                    -118.1431007,
+                    34.1919393
+                  ],
+                  [
+                    -118.1432993,
+                    34.1919393
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1433986,
+                    34.1918566
+                  ],
+                  [
+                    -118.1430014,
+                    34.1918566
+                  ],
+                  [
+                    -118.1430014,
+                    34.1921434
+                  ],
+                  [
+                    -118.1433986,
+                    34.1921434
+                  ],
+                  [
+                    -118.1433986,
+                    34.1918566
+                  ]
+                ],
+                [
+                  [
+                    -118.1433159,
+                    34.1919256
+                  ],
+                  [
+                    -118.1433159,
+                    34.1920744
+                  ],
+                  [
+                    -118.1430841,
+                    34.1920744
+                  ],
+                  [
+                    -118.1430841,
+                    34.1919256
+                  ],
+                  [
+                    -118.1433159,
+                    34.1919256
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1436303,
+                    34.1916636
+                  ],
+                  [
+                    -118.1427697,
+                    34.1916636
+                  ],
+                  [
+                    -118.1427697,
+                    34.1923364
+                  ],
+                  [
+                    -118.1436303,
+                    34.1923364
+                  ],
+                  [
+                    -118.1436303,
+                    34.1916636
+                  ]
+                ],
+                [
+                  [
+                    -118.1433986,
+                    34.1918566
+                  ],
+                  [
+                    -118.1433986,
+                    34.1921434
+                  ],
+                  [
+                    -118.1430014,
+                    34.1921434
+                  ],
+                  [
+                    -118.1430014,
+                    34.1918566
+                  ],
+                  [
+                    -118.1433986,
+                    34.1918566
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1433125,
+                    34.1920055
+                  ],
+                  [
+                    -118.1431801,
+                    34.1920055
+                  ],
+                  [
+                    -118.1431801,
+                    34.1920717
+                  ],
+                  [
+                    -118.1433125,
+                    34.1920717
+                  ],
+                  [
+                    -118.1433125,
+                    34.1920055
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "Overhanging canopy, 16.5 ft over roof (Zone 0)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -118.1430411,
+                    34.1919421
+                  ],
+                  [
+                    -118.143008,
+                    34.1919421
+                  ],
+                  [
+                    -118.143008,
+                    34.1919697
+                  ],
+                  [
+                    -118.1430411,
+                    34.1919697
+                  ],
+                  [
+                    -118.1430411,
+                    34.1919421
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "Detached shed at 18 ft (Zone 1)"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 1342.0,
+      "est_ffe_ft": 1344.5,
+      "freeboard_delta_h_ft": 0.0,
+      "hand_rel_elev_ft": 210.0,
+      "twi_index": 4.1,
+      "noaa_atlas15_p24h_100yr_in": 6.4,
+      "atlas15_cmip6_mult": 1.08,
+      "landfire_fbfm40_code": "SH7",
+      "slope_deg": 28.0,
+      "wui_class": "INTERMIX",
+      "openfema_tract_claim_count": 3,
+      "openfema_tract_mean_lcr": 0.0004
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "WOOD_SHAKE_UNRATED",
+      "cv_confidence": 0.91,
+      "cv_overhang_ft": 16.5,
+      "cv_zone0_clear": false,
+      "cv_zone1_no_shed": false,
+      "cv_enclosed_eaves": false,
+      "cv_ember_vents": false,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "NONE",
+      "iot_shutoff_active": false,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.021,
+      "parcel_raw_lcr": 0.026645,
+      "credibility_weight_z": 0.62,
+      "posterior_lcr": 0.0245,
+      "expected_annual_loss_usd": 20825.0,
+      "peril_split": [
+        {
+          "peril": "WILDFIRE",
+          "zip_immunity_pi": 0.05,
+          "expected_freq_n": 0.021,
+          "expected_sev_s": 977443.61,
+          "peril_aal_usd": 19500.0
+        },
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.55,
+          "expected_freq_n": 0.008,
+          "expected_sev_s": 368055.56,
+          "peril_aal_usd": 1325.0
+        }
+      ],
+      "resili_score": 385,
+      "baseline_macro_score": 405,
+      "underwriting_tier": "TIER_3_DECLINE_ESCALATE",
+      "statutory_discount_pct": 0.0,
+      "annual_base_premium_usd": 11200.0,
+      "annual_discounted_premium_usd": 11200.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "CA_ZONE0_1_CLEARANCE",
+        "title": "Zone 0/1 clearance: noncombustible 0-5 ft, prune canopy, relocate shed",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1; CA PRC 4291",
+        "gross_capex_usd": 1800.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 1800.0,
+        "lcr_delta_bps": -18.0,
+        "score_delta_pts": 65,
+        "annual_premium_savings_usd": 680.0,
+        "payback_years": 2.65,
+        "resale_value_bump_pct": 0.4,
+        "currently_applied": false
+      },
+      {
+        "action_id": "CA_EMBER_VENTS_EAVES",
+        "title": "1/4-inch ember vents + enclosed eaves",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B2; CBC Chapter 7A",
+        "gross_capex_usd": 3200.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 3200.0,
+        "lcr_delta_bps": -15.0,
+        "score_delta_pts": 55,
+        "annual_premium_savings_usd": 540.0,
+        "payback_years": 5.93,
+        "resale_value_bump_pct": 0.6,
+        "currently_applied": false
+      },
+      {
+        "action_id": "CA_IBHS_WPH_CLASS_A_ROOF",
+        "title": "IBHS Wildfire Prepared Home Class A roof",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B2; IBHS WPH",
+        "gross_capex_usd": 14500.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 14500.0,
+        "lcr_delta_bps": -42.0,
+        "score_delta_pts": 125,
+        "annual_premium_savings_usd": 920.0,
+        "payback_years": 15.76,
+        "resale_value_bump_pct": 1.2,
+        "currently_applied": false
+      }
+    ],
+    "hitl_status": {
+      "escalated": false,
+      "trigger_code": "NONE",
+      "trigger_reason": null,
+      "recommended_underwriter_action": null
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": false,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": false,
+        "cat_b1_no_sheds_within_30ft": false,
+        "cat_b1_prc_4291_compliance": false,
+        "cat_b2_class_a_roof": false,
+        "cat_b2_enclosed_eaves": false,
+        "cat_b2_ember_vents": false,
+        "cat_b2_multi_pane_windows": false,
+        "cat_b2_vertical_siding_clearance_6in": false
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "2025-05-01",
+        "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
+        "OpenFEMA": "FimaNfipClaims_v2",
+        "LANDFIRE": "LF2024_FBFM40",
+        "USGS_HAND": "NHDPlusHR_2024",
+        "FEMA_NFHL": "2026-03",
+        "CAL_FIRE_FHSZ": "2025"
+      }
+    }
+  },
+  "SCENARIO_3_ESCONDIDO_HITL": {
+    "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000003",
+    "processing_time_ms": 3520.4,
+    "parcel_identity": {
+      "apn_uid": "23312045070000",
+      "address": "742 Dixon Trail, Escondido, CA",
+      "county_fips": "06073",
+      "state": "CA",
+      "h3_res11": "8b29a5b3e1c2fff",
+      "h3_res13": "8d29a5b3e1c2d1f",
+      "rcv_usd": 720000.0,
+      "year_built": 2016,
+      "centroid": [
+        -117.0861,
+        33.1289
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0863125,
+                    33.128638
+                  ],
+                  [
+                    -117.0858875,
+                    33.128638
+                  ],
+                  [
+                    -117.0858875,
+                    33.129162
+                  ],
+                  [
+                    -117.0863125,
+                    33.129162
+                  ],
+                  [
+                    -117.0863125,
+                    33.128638
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "parcel_polygon",
+              "label": "Parcel boundary"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ],
+                  [
+                    -117.0860085,
+                    33.1288449
+                  ],
+                  [
+                    -117.0860085,
+                    33.1289551
+                  ],
+                  [
+                    -117.0861915,
+                    33.1289551
+                  ],
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ],
+                  [
+                    -117.0859921,
+                    33.1288311
+                  ],
+                  [
+                    -117.0859921,
+                    33.1289689
+                  ],
+                  [
+                    -117.0862079,
+                    33.1289689
+                  ],
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ]
+                ],
+                [
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ],
+                  [
+                    -117.0861915,
+                    33.1289551
+                  ],
+                  [
+                    -117.0860085,
+                    33.1289551
+                  ],
+                  [
+                    -117.0860085,
+                    33.1288449
+                  ],
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ],
+                  [
+                    -117.0859104,
+                    33.1287621
+                  ],
+                  [
+                    -117.0859104,
+                    33.1290379
+                  ],
+                  [
+                    -117.0862896,
+                    33.1290379
+                  ],
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ]
+                ],
+                [
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ],
+                  [
+                    -117.0862079,
+                    33.1289689
+                  ],
+                  [
+                    -117.0859921,
+                    33.1289689
+                  ],
+                  [
+                    -117.0859921,
+                    33.1288311
+                  ],
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0865185,
+                    33.1285691
+                  ],
+                  [
+                    -117.0856815,
+                    33.1285691
+                  ],
+                  [
+                    -117.0856815,
+                    33.1292309
+                  ],
+                  [
+                    -117.0865185,
+                    33.1292309
+                  ],
+                  [
+                    -117.0865185,
+                    33.1285691
+                  ]
+                ],
+                [
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ],
+                  [
+                    -117.0862896,
+                    33.1290379
+                  ],
+                  [
+                    -117.0859104,
+                    33.1290379
+                  ],
+                  [
+                    -117.0859104,
+                    33.1287621
+                  ],
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0861785,
+                    33.1288531
+                  ],
+                  [
+                    -117.0860215,
+                    33.1288531
+                  ],
+                  [
+                    -117.0860215,
+                    33.1289469
+                  ],
+                  [
+                    -117.0861785,
+                    33.1289469
+                  ],
+                  [
+                    -117.0861785,
+                    33.1288531
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "Class 4 impact-rated roof"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 702.0,
+      "est_ffe_ft": 704.0,
+      "freeboard_delta_h_ft": 0.0,
+      "hand_rel_elev_ft": 95.0,
+      "twi_index": 5.3,
+      "noaa_atlas15_p24h_100yr_in": 7.2,
+      "atlas15_cmip6_mult": 1.09,
+      "landfire_fbfm40_code": "GS2",
+      "slope_deg": 9.0,
+      "wui_class": "INTERFACE",
+      "openfema_tract_claim_count": 11,
+      "openfema_tract_mean_lcr": 0.0012
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "CLASS_A_IMPACT_4",
+      "cv_confidence": 0.97,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": true,
+      "cv_zone1_no_shed": true,
+      "cv_enclosed_eaves": true,
+      "cv_ember_vents": true,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "PLUS",
+      "iot_shutoff_active": true,
+      "unpermitted_footprint_delta_sqft": 0.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.016,
+      "parcel_raw_lcr": 0.001361,
+      "credibility_weight_z": 0.97,
+      "posterior_lcr": 0.0018,
+      "expected_annual_loss_usd": 1296.0,
+      "peril_split": [
+        {
+          "peril": "WILDFIRE",
+          "zip_immunity_pi": 0.1,
+          "expected_freq_n": 0.004,
+          "expected_sev_s": 210000.0,
+          "peril_aal_usd": 756.0
+        },
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.4,
+          "expected_freq_n": 0.006,
+          "expected_sev_s": 150000.0,
+          "peril_aal_usd": 540.0
+        }
+      ],
+      "resili_score": 815,
+      "baseline_macro_score": 465,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 23.23,
+      "annual_base_premium_usd": 3900.0,
+      "annual_discounted_premium_usd": 2994.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "CA_IBHS_WPH_PLUS",
+        "title": "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1+B2; IBHS WPH Plus",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": -42.0,
+        "score_delta_pts": 150,
+        "annual_premium_savings_usd": 720.0,
+        "payback_years": 20.83,
+        "resale_value_bump_pct": 1.5,
+        "currently_applied": true
+      },
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -12.0,
+        "score_delta_pts": 40,
+        "annual_premium_savings_usd": 186.0,
+        "payback_years": 48.39,
+        "resale_value_bump_pct": 0.8,
+        "currently_applied": true
+      }
+    ],
+    "hitl_status": {
+      "escalated": false,
+      "trigger_code": "NONE",
+      "trigger_reason": null,
+      "recommended_underwriter_action": null
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": true,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": true,
+        "cat_b1_no_sheds_within_30ft": true,
+        "cat_b1_prc_4291_compliance": true,
+        "cat_b2_class_a_roof": true,
+        "cat_b2_enclosed_eaves": true,
+        "cat_b2_ember_vents": true,
+        "cat_b2_multi_pane_windows": true,
+        "cat_b2_vertical_siding_clearance_6in": true
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "2025-05-01",
+        "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
+        "OpenFEMA": "FimaNfipClaims_v2",
+        "LANDFIRE": "LF2024_FBFM40",
+        "USGS_HAND": "NHDPlusHR_2024",
+        "FEMA_NFHL": "2026-03",
+        "CAL_FIRE_FHSZ": "2025",
+        "FLO_BY_MOEN": "telemetry_2026-10"
+      }
+    }
+  },
+  "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED": {
+    "request_id": "5b1c2d3e-0a11-4f6b-9c21-7e1a00000004",
+    "processing_time_ms": 3520.4,
+    "parcel_identity": {
+      "apn_uid": "23312045070000",
+      "address": "742 Dixon Trail, Escondido, CA",
+      "county_fips": "06073",
+      "state": "CA",
+      "h3_res11": "8b29a5b3e1c2fff",
+      "h3_res13": "8d29a5b3e1c2d1f",
+      "rcv_usd": 720000.0,
+      "year_built": 2016,
+      "centroid": [
+        -117.0861,
+        33.1289
+      ],
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0863125,
+                    33.128638
+                  ],
+                  [
+                    -117.0858875,
+                    33.128638
+                  ],
+                  [
+                    -117.0858875,
+                    33.129162
+                  ],
+                  [
+                    -117.0863125,
+                    33.129162
+                  ],
+                  [
+                    -117.0863125,
+                    33.128638
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "parcel_polygon",
+              "label": "Parcel boundary"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ],
+                  [
+                    -117.0860085,
+                    33.1288449
+                  ],
+                  [
+                    -117.0860085,
+                    33.1289551
+                  ],
+                  [
+                    -117.0861915,
+                    33.1289551
+                  ],
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "building_footprint",
+              "label": "Building footprint"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ],
+                  [
+                    -117.0859921,
+                    33.1288311
+                  ],
+                  [
+                    -117.0859921,
+                    33.1289689
+                  ],
+                  [
+                    -117.0862079,
+                    33.1289689
+                  ],
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ]
+                ],
+                [
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ],
+                  [
+                    -117.0861915,
+                    33.1289551
+                  ],
+                  [
+                    -117.0860085,
+                    33.1289551
+                  ],
+                  [
+                    -117.0860085,
+                    33.1288449
+                  ],
+                  [
+                    -117.0861915,
+                    33.1288449
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_0_ring_0_5ft",
+              "label": "Zone 0 (0-5 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ],
+                  [
+                    -117.0859104,
+                    33.1287621
+                  ],
+                  [
+                    -117.0859104,
+                    33.1290379
+                  ],
+                  [
+                    -117.0862896,
+                    33.1290379
+                  ],
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ]
+                ],
+                [
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ],
+                  [
+                    -117.0862079,
+                    33.1289689
+                  ],
+                  [
+                    -117.0859921,
+                    33.1289689
+                  ],
+                  [
+                    -117.0859921,
+                    33.1288311
+                  ],
+                  [
+                    -117.0862079,
+                    33.1288311
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_1_ring_5_30ft",
+              "label": "Zone 1 (5-30 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0865185,
+                    33.1285691
+                  ],
+                  [
+                    -117.0856815,
+                    33.1285691
+                  ],
+                  [
+                    -117.0856815,
+                    33.1292309
+                  ],
+                  [
+                    -117.0865185,
+                    33.1292309
+                  ],
+                  [
+                    -117.0865185,
+                    33.1285691
+                  ]
+                ],
+                [
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ],
+                  [
+                    -117.0862896,
+                    33.1290379
+                  ],
+                  [
+                    -117.0859104,
+                    33.1290379
+                  ],
+                  [
+                    -117.0859104,
+                    33.1287621
+                  ],
+                  [
+                    -117.0862896,
+                    33.1287621
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "zone_2_ring_30_100ft",
+              "label": "Zone 2 (30-100 ft)"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0861785,
+                    33.1288531
+                  ],
+                  [
+                    -117.0860215,
+                    33.1288531
+                  ],
+                  [
+                    -117.0860215,
+                    33.1289469
+                  ],
+                  [
+                    -117.0861785,
+                    33.1289469
+                  ],
+                  [
+                    -117.0861785,
+                    33.1288531
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "Class 4 impact-rated roof"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -117.0859888,
+                    33.1288724
+                  ],
+                  [
+                    -117.0859496,
+                    33.1288724
+                  ],
+                  [
+                    -117.0859496,
+                    33.1289276
+                  ],
+                  [
+                    -117.0859888,
+                    33.1289276
+                  ],
+                  [
+                    -117.0859888,
+                    33.1288724
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "kind": "cv_detection",
+              "label": "Unpermitted 240 sq ft structure (Zone 1)"
+            }
+          }
+        ]
+      }
+    },
+    "public_hazard_layer": {
+      "fema_flood_zone": "X",
+      "bfe_ft_navd88": null,
+      "usgs_lag_ft": 702.0,
+      "est_ffe_ft": 704.0,
+      "freeboard_delta_h_ft": 0.0,
+      "hand_rel_elev_ft": 95.0,
+      "twi_index": 5.3,
+      "noaa_atlas15_p24h_100yr_in": 7.2,
+      "atlas15_cmip6_mult": 1.09,
+      "landfire_fbfm40_code": "GS2",
+      "slope_deg": 9.0,
+      "wui_class": "INTERFACE",
+      "openfema_tract_claim_count": 11,
+      "openfema_tract_mean_lcr": 0.0012
+    },
+    "private_verification_layer": {
+      "cv_roof_class": "CLASS_A_IMPACT_4",
+      "cv_confidence": 0.97,
+      "cv_overhang_ft": 0.0,
+      "cv_zone0_clear": true,
+      "cv_zone1_no_shed": false,
+      "cv_enclosed_eaves": true,
+      "cv_ember_vents": true,
+      "elev_cert_verified": false,
+      "ibhs_fortified_tier": "NONE",
+      "ibhs_wph_tier": "PLUS",
+      "iot_shutoff_active": true,
+      "unpermitted_footprint_delta_sqft": 240.0
+    },
+    "actuarial_breakdown": {
+      "tract_prior_lcr": 0.016,
+      "parcel_raw_lcr": 0.001361,
+      "credibility_weight_z": 0.97,
+      "posterior_lcr": 0.0018,
+      "expected_annual_loss_usd": 1296.0,
+      "peril_split": [
+        {
+          "peril": "WILDFIRE",
+          "zip_immunity_pi": 0.1,
+          "expected_freq_n": 0.004,
+          "expected_sev_s": 210000.0,
+          "peril_aal_usd": 756.0
+        },
+        {
+          "peril": "WIND_HAIL",
+          "zip_immunity_pi": 0.4,
+          "expected_freq_n": 0.006,
+          "expected_sev_s": 150000.0,
+          "peril_aal_usd": 540.0
+        }
+      ],
+      "resili_score": 815,
+      "baseline_macro_score": 465,
+      "underwriting_tier": "TIER_1_AUTO_BIND",
+      "statutory_discount_pct": 23.23,
+      "annual_base_premium_usd": 3900.0,
+      "annual_discounted_premium_usd": 2994.0
+    },
+    "prescriptive_mitigations": [
+      {
+        "action_id": "CA_IBHS_WPH_PLUS",
+        "title": "IBHS Wildfire Prepared Home Plus (30% wildfire peril discount)",
+        "peril": "WILDFIRE",
+        "statutory_authority": "10 CCR 2644.9 Cat B1+B2; IBHS WPH Plus",
+        "gross_capex_usd": 15000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 15000.0,
+        "lcr_delta_bps": -42.0,
+        "score_delta_pts": 150,
+        "annual_premium_savings_usd": 720.0,
+        "payback_years": 20.83,
+        "resale_value_bump_pct": 1.5,
+        "currently_applied": true
+      },
+      {
+        "action_id": "HAIL_CLASS4_ROOF",
+        "title": "Class 4 impact-resistant roof (12.4% hail discount)",
+        "peril": "WIND_HAIL",
+        "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+        "gross_capex_usd": 9000.0,
+        "grant_subsidy_usd": 0.0,
+        "net_capex_usd": 9000.0,
+        "lcr_delta_bps": -12.0,
+        "score_delta_pts": 40,
+        "annual_premium_savings_usd": 186.0,
+        "payback_years": 48.39,
+        "resale_value_bump_pct": 0.8,
+        "currently_applied": true
+      }
+    ],
+    "hitl_status": {
+      "escalated": true,
+      "trigger_code": "HITL_TRIGGER_02_UNPERMITTED_ADDITION",
+      "trigger_reason": "CV detected a +240 sq ft unpermitted structure in Zone 1 (5-30 ft) versus the permitted footprint.",
+      "recommended_underwriter_action": "Hold auto-bind; request permit history or mobile-QR photo verification before applying wildfire credits."
+    },
+    "regulatory_compliance": {
+      "monotonicity_verified": true,
+      "ny_dfs_cl7_ecdis_free": true,
+      "ca_2644_9_factors": {
+        "cat_a_fire_risk_reduction_community": false,
+        "cat_a_firewise_usa": true,
+        "cat_a_shelter_in_place": false,
+        "cat_b1_under_deck_clearing": false,
+        "cat_b1_zone0_clear_0_5ft": true,
+        "cat_b1_no_sheds_within_30ft": true,
+        "cat_b1_prc_4291_compliance": true,
+        "cat_b2_class_a_roof": true,
+        "cat_b2_enclosed_eaves": true,
+        "cat_b2_ember_vents": true,
+        "cat_b2_multi_pane_windows": true,
+        "cat_b2_vertical_siding_clearance_6in": true
+      },
+      "dataset_vintages": {
+        "USGS_3DEP": "2025-05-01",
+        "NOAA_PFDS": "Atlas15_Vol1_Prelim_2026",
+        "OpenFEMA": "FimaNfipClaims_v2",
+        "LANDFIRE": "LF2024_FBFM40",
+        "USGS_HAND": "NHDPlusHR_2024",
+        "FEMA_NFHL": "2026-03",
+        "CAL_FIRE_FHSZ": "2025",
+        "FLO_BY_MOEN": "telemetry_2026-10"
+      }
+    }
+  }
+}
