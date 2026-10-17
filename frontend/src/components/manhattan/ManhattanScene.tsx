@@ -75,7 +75,7 @@ function NeighborhoodMesh({ neighborhood, terrain, selected, muted, underground,
       <meshStandardMaterial color={selected ? "#74978c" : "#76867a"} roughness={1} side={DoubleSide} transparent={underground} opacity={underground ? 0.1 : 1} depthWrite={!underground} />
     </mesh>
     <lineSegments geometry={border} renderOrder={3} raycast={() => null}>
-      <lineBasicMaterial color={selected ? "#7ff4e5" : muted ? "#667b7a" : "#a7bdb0"} transparent opacity={selected ? 1 : 0.75} depthTest={false} />
+      <lineBasicMaterial color={selected ? "#7ff4e5" : underground ? "#9ab5b3" : "#16343f"} transparent opacity={selected ? 1 : muted ? 0.85 : 1} depthTest={false} />
     </lineSegments>
   </group>;
 }
