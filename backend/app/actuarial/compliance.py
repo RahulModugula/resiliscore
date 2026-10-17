@@ -175,7 +175,7 @@ def hitl_status(
     if BOUNDARY_SCORE[0] <= resili_score <= BOUNDARY_SCORE[1]:
         return _escalate(
             "HITL_TRIGGER_04_BOUNDARY_CONFLICT",
-            f"ResiliScore {resili_score} sits on the Tier 2 / Tier 3 boundary "
+            f"SaveMyHome {resili_score} sits on the Tier 2 / Tier 3 boundary "
             f"({BOUNDARY_SCORE[0]}-{BOUNDARY_SCORE[1]}).",
             "Underwriter to review the verification evidence before binding or declining.",
         )

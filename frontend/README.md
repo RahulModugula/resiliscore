@@ -1,4 +1,4 @@
-# ResiliScore frontend
+# SaveMyHome frontend
 
 Next.js 15 Manhattan property explorer and underwriting workspace. The map uses locally bundled NYC geometry and needs no backend, map token, remote font, or runtime imagery service. The golden underwriting demo remains available at `/assessment?demo=true`.
 

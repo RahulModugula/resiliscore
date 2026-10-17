@@ -42,12 +42,12 @@ export function RegulatoryAuditTab({ parcel, simulated = false }: { parcel: Parc
     parcel,
   };
   const notice = [
-    "RESILISCORE DEMO CONSUMER MITIGATION NOTICE",
+    "SaveMyHome DEMO CONSUMER MITIGATION NOTICE",
     "Sample only. This is not a filed or approved adverse action notice.",
     `Property: ${parcel.parcel_identity.address}`,
     `APN: ${parcel.parcel_identity.apn_uid}`,
     `Request: ${parcel.request_id}`,
-    `ResiliScore: ${actuarial.resili_score}; ${tierLabel(actuarial.resili_score)}`,
+    `SaveMyHome: ${actuarial.resili_score}; ${tierLabel(actuarial.resili_score)}`,
     `Underwriting route: ${actuarial.underwriting_tier}`,
     `Posterior loss cost ratio: ${bps(actuarial.posterior_lcr)}`,
     `Annual premium in demo: ${money(actuarial.annual_discounted_premium_usd)}`,

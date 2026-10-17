@@ -1,4 +1,4 @@
-"""ResiliScore MCP server (SPEC Prompt 1D, item 3, "FastMCP"): four deterministic tools backed by the golden scenarios.
+"""SaveMyHome MCP server (SPEC Prompt 1D, item 3, "FastMCP"): four deterministic tools backed by the golden scenarios.
 
 Run over stdio:  python -m app.integrations.mcp_server   (from the `backend/` directory)
 
@@ -40,7 +40,7 @@ def _parcel(apn_uid: str) -> ParcelScoreResponse:
 
 @mcp.tool()
 def get_parcel_resiliscore(address: str) -> dict[str, Any]:
-    """Get the ResiliScore (300-850) and underwriting tier for a property address.
+    """Get the SaveMyHome (300-850) and underwriting tier for a property address.
 
     Returns the full ParcelScoreResponse: score, tier (TIER_1_AUTO_BIND 720+, TIER_2_CONDITIONAL 580-719,
     TIER_3_DECLINE_ESCALATE below 580), credibility weight, annual loss, premium, ranked mitigations and
@@ -184,7 +184,7 @@ def what_if_mitigation(address_or_apn: str, action_ids: list[str]) -> dict[str, 
 
 @mcp.tool()
 def explain_score(apn_uid: str) -> dict[str, Any]:
-    """Explain a parcel's ResiliScore: which perils drive the expected annual loss, largest first.
+    """Explain a parcel's SaveMyHome: which perils drive the expected annual loss, largest first.
 
     Returns the contract v2 factor_contributions when the model fills them; always includes the peril split (each peril's
     share of the annual loss) and gives the credibility weight Z, which says how far the score rests on the

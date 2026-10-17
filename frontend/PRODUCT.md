@@ -1,6 +1,6 @@
-# ResiliScore frontend
+# SaveMyHome frontend
 
-ResiliScore helps property underwriters compare a census-tract risk estimate with parcel evidence, test physical mitigations, and decide whether to bind or request human review. The frontend owns the cockpit and workflow surfaces described in docs/SPEC.md section 5, prompts 2A through 2D.
+SaveMyHome helps property underwriters compare a census-tract risk estimate with parcel evidence, test physical mitigations, and decide whether to bind or request human review. The frontend owns the cockpit and workflow surfaces described in docs/SPEC.md section 5, prompts 2A through 2D.
 
 The demo starts from the shared golden scenarios and runs with the backend stopped. Users can select Louisiana flood, California wildfire, or Escondido verification scenarios, inspect parcel overlays, compare scores and premium, build an action plan, and inspect simulated workflow receipts. A live API option validates responses against the shared schema and falls back to the local demo on failure. Fonts, QR generation, and map imagery are local. California uses cached aerial imagery; Louisiana uses an illustrative basemap. Synthetic contract geometry is not surveyed to the imagery.
 

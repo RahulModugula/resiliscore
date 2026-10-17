@@ -111,7 +111,7 @@ export default function ManhattanExplorer() {
   return <div className={`app-shell ${styles.explorer}`}>
     <a className="skip-link" href="#map-directory">Skip to neighborhood and property list</a>
     <header className={styles.header}>
-      <Link href="/" className="brand" aria-label="ResiliScore map home"><span className="brand-mark"><ShieldCheck size={23} /></span>ResiliScore</Link>
+      <Link href="/" className="brand" aria-label="SaveMyHome map home"><span className="brand-mark"><ShieldCheck size={23} /></span>SaveMyHome</Link>
       <span className={styles.headerContext}>Manhattan property explorer</span>
       <Link href="/assessment?demo=true" className={styles.demoLink}>Open demo workspace<ArrowRight size={15} /></Link>
     </header>

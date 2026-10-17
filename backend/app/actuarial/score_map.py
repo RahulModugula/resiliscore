@@ -1,4 +1,4 @@
-"""LCR -> ResiliScore (300-850) map. Decision D1 (docs/DECISIONS.md) overrides spec section 3.3.
+"""LCR -> SaveMyHome (300-850) map. Decision D1 (docs/DECISIONS.md) overrides spec section 3.3.
 
 The spec sigmoid misses its own golden scenarios by up to 44 points, so the production map is a strictly
 decreasing piecewise-linear curve in ln(LCR), anchored at the golden reference parcels. Strict

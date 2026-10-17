@@ -1,6 +1,6 @@
-# ResiliScore: 2-Person Parallel Execution Plan & Prompt Engineering Blueprint
+# SaveMyHome: 2-Person Parallel Execution Plan & Prompt Engineering Blueprint
 
-This execution blueprint divides the **ResiliScore** build across two engineers working in parallel—**Builder 1 (Backend, Spatial Pipeline, Actuarial Engine & MCP/Core Integration)** and **Builder 2 (Frontend, Geospatial Map Canvas, Underwriting Copilot UI & HITL Workflows)**—so neither person blocks the other during the hackathon while establishing a clean, modular monorepo that scales directly into long-term production.
+This execution blueprint divides the **SaveMyHome** build across two engineers working in parallel—**Builder 1 (Backend, Spatial Pipeline, Actuarial Engine & MCP/Core Integration)** and **Builder 2 (Frontend, Geospatial Map Canvas, Underwriting Copilot UI & HITL Workflows)**—so neither person blocks the other during the hackathon while establishing a clean, modular monorepo that scales directly into long-term production.
 
 ## 1\. Parallel Architecture & Division of Labor
 
@@ -30,7 +30,7 @@ Use this prompt first to generate the shared data contract and the 3 determinist
 
 ### Prompt 0: Shared API Schema & Golden Scenarios Generator
 
-You are a Principal Insurtech Architect. Generate two files that form the strict interface contract between our FastAPI backend and Next.js 15 frontend for "ResiliScore" (a 300–850 Property Catastrophe Resilience Score and Underwriting Copilot):
+You are a Principal Insurtech Architect. Generate two files that form the strict interface contract between our FastAPI backend and Next.js 15 frontend for "SaveMyHome" (a 300–850 Property Catastrophe Resilience Score and Underwriting Copilot):
 
 1. `backend/app/models/schemas.py` (Pydantic v2 models)  
 2. `frontend/src/types/resiliscore.ts` (Exact matching TypeScript interfaces)  
@@ -89,9 +89,9 @@ You are a Principal Insurtech Architect. Generate two files that form the strict
 
 ### POPULATE `golden_scenarios.json` WITH THESE 3 EXACT SCENARIOS:
 
-1. `SCENARIO_1_LA_FLOOD`: "412 Bayou Rd, Jefferson Parish, LA" \-\> RCV $450,000,FEMAZoneAE(BFE9.0ft),USGSLAG7.2ft,1mLiDARFFE13.2ft(+4.2ftfreeboard),HAND+6.4ft,IBHSFORTIFIEDRoof($10k LA grant), Tract Prior LCR 185 bps (Baseline Score 430\) \-\> Credibility Z \= 0.94, Posterior LCR \= 24 bps (\$1,080 AAL), Final ResiliScore \= 765 (TIER\_1\_AUTO\_BIND, 38% discount).  
-2. `SCENARIO_2_CA_WUI`: "1840 Canyon Crest Dr, Altadena, CA" \-\> RCV \$850,000, Pre-2008 home (1974), LANDFIRE SH7 chaparral, 28-deg slope, Wood shake roof, 16.5 ft Zone 0 canopy overhang, Zone 1 shed at 18 ft. Tract Prior LCR 210 bps, Parcel Posterior LCR 245 bps \-\> ResiliScore \= 385 (TIER\_3\_DECLINE\_ESCALATE). Include 3 toggleable mitigations (Zone 0/1 clearance: \$1,800 \-\> \+65 pts; Ember vents \+ eaves: \$3,200 \-\> \+55 pts; IBHS WPH Class A roof: \$14,500 \-\> \+125 pts) that lift score from 385 to 630 (TIER\_2\_CONDITIONAL) and save \$2,140/yr.  
-3. `SCENARIO_3_ESCONDIDO_HITL`: "742 Dixon Trail, Escondido, CA" \-\> RCV \$720,000, IBHS Wildfire Prepared Home Plus, Class 4 hail roof, Zone 0 clear, Flo by Moen active \-\> Z \= 0.97, Posterior LCR \= 18 bps, ResiliScore \= 815 (TIER\_1\_AUTO\_BIND, 30% wildfire & 12.4% hail discount). Include a toggleable flag `simulate_unpermitted_delta` that injects a \+240 sq ft unpermitted Zone 1 structure and fires `HITL_TRIGGER_02_UNPERMITTED_ADDITION`.
+1. `SCENARIO_1_LA_FLOOD`: "412 Bayou Rd, Jefferson Parish, LA" \-\> RCV $450,000,FEMAZoneAE(BFE9.0ft),USGSLAG7.2ft,1mLiDARFFE13.2ft(+4.2ftfreeboard),HAND+6.4ft,IBHSFORTIFIEDRoof($10k LA grant), Tract Prior LCR 185 bps (Baseline Score 430\) \-\> Credibility Z \= 0.94, Posterior LCR \= 24 bps (\$1,080 AAL), Final SaveMyHome \= 765 (TIER\_1\_AUTO\_BIND, 38% discount).  
+2. `SCENARIO_2_CA_WUI`: "1840 Canyon Crest Dr, Altadena, CA" \-\> RCV \$850,000, Pre-2008 home (1974), LANDFIRE SH7 chaparral, 28-deg slope, Wood shake roof, 16.5 ft Zone 0 canopy overhang, Zone 1 shed at 18 ft. Tract Prior LCR 210 bps, Parcel Posterior LCR 245 bps \-\> SaveMyHome \= 385 (TIER\_3\_DECLINE\_ESCALATE). Include 3 toggleable mitigations (Zone 0/1 clearance: \$1,800 \-\> \+65 pts; Ember vents \+ eaves: \$3,200 \-\> \+55 pts; IBHS WPH Class A roof: \$14,500 \-\> \+125 pts) that lift score from 385 to 630 (TIER\_2\_CONDITIONAL) and save \$2,140/yr.  
+3. `SCENARIO_3_ESCONDIDO_HITL`: "742 Dixon Trail, Escondido, CA" \-\> RCV \$720,000, IBHS Wildfire Prepared Home Plus, Class 4 hail roof, Zone 0 clear, Flo by Moen active \-\> Z \= 0.97, Posterior LCR \= 18 bps, SaveMyHome \= 815 (TIER\_1\_AUTO\_BIND, 30% wildfire & 12.4% hail discount). Include a toggleable flag `simulate_unpermitted_delta` that injects a \+240 sq ft unpermitted Zone 1 structure and fires `HITL_TRIGGER_02_UNPERMITTED_ADDITION`.
 
 ## 4\. Builder 1 Prompts: Backend, Spatial Pipeline, Actuarial Engine & MCP
 
@@ -99,7 +99,7 @@ You are a Principal Insurtech Architect. Generate two files that form the strict
 
 ### Prompt 1A: Public Spatial & Federal API Ingestion Engine
 
-You are a Senior Geospatial & Backend Engineer building `backend/app/ingestion/` for ResiliScore in Python 3.11+ using `httpx`, `shapely`, and `duckdb`.
+You are a Senior Geospatial & Backend Engineer building `backend/app/ingestion/` for SaveMyHome in Python 3.11+ using `httpx`, `shapely`, and `duckdb`.
 
 Implement an asynchronous ingestion service (`SpatialIngestionEngine`) that takes `(address, lat, lng, county_fips, state)` and executes parallel non-blocking fetches with a strict 2.5-second timeout and deterministic fallback to local cache (`golden_scenarios.json`) so network glitches never fail a request:
 
@@ -117,7 +117,7 @@ Implement an asynchronous ingestion service (`SpatialIngestionEngine`) that take
 
 ### Prompt 1B: Concentric Buffer Geometry & Computer Vision Inspector
 
-You are a Computer Vision & Geospatial Engineer building `backend/app/vision/` for ResiliScore.
+You are a Computer Vision & Geospatial Engineer building `backend/app/vision/` for SaveMyHome.
 
 1. `parcel_rings.py`:  
    * Given a building footprint polygon `(lng, lat)` coordinates, project the geometry into an equal-area/feet projection (or local UTM meters converted to feet) using `shapely` and `pyproj`.  
@@ -138,7 +138,7 @@ You are a Computer Vision & Geospatial Engineer building `backend/app/vision/` f
 
 ### Prompt 1C: Actuarial Compound Risk, Bühlmann-Straub Credibility & Counterfactual Optimizer
 
-You are a Fellow of the Casualty Actuarial Society (FCAS) and Principal Python Architect building `backend/app/actuarial/` for ResiliScore. Every equation must be mathematically exact, deterministic, and compliant with NAIC ASOP Nos. 12, 25, 38, and 56, NY DFS Insurance Circular Letter No. 7, California 10 CCR § 2644.9, and Florida FCHLPM Standard G-4.
+You are a Fellow of the Casualty Actuarial Society (FCAS) and Principal Python Architect building `backend/app/actuarial/` for SaveMyHome. Every equation must be mathematically exact, deterministic, and compliant with NAIC ASOP Nos. 12, 25, 38, and 56, NY DFS Insurance Circular Letter No. 7, California 10 CCR § 2644.9, and Florida FCHLPM Standard G-4.
 
 Implement the following four modules plus a unit test suite:
 
@@ -152,17 +152,17 @@ Implement the following four modules plus a unit test suite:
    * Given census-tract prior mean `mu_0_tract = alpha_j / beta_j`, within-parcel process variance `sigma^2` (EVPV), and between-parcel heterogeneity variance `tau^2` (VHM), compute Bühlmann's `k = sigma^2 / tau^2`.  
    * Sum inverse-variance verification precision weights `w_ij = sum_m w_{ij,m}` across verified channels (1m LiDAR, Aerial CV weighted by `cv_confidence`, NFIP Elevation Certificate, IBHS Registry, IoT Smart Valve).  
    * Compute Credibility Factor `Z_ij = w_ij / (w_ij + k)` in `[0, 1]` and Posterior Loss Cost Ratio: `LCR_post = Z_ij * LCR_parcel + (1 - Z_ij) * mu_0_tract`.  
-   * Map `LCR_post` to the 300–850 ResiliScore scale using the exact log-logistic sigmoid anchored at `LCR_0 = 0.0085` (85 bps \-\> 575 midpoint) and slope `kappa = 1.15`: `ResiliScore = 300 + round( 550 / (1 + (LCR_post / 0.0085)^1.15) )`.  
+   * Map `LCR_post` to the 300–850 SaveMyHome scale using the exact log-logistic sigmoid anchored at `LCR_0 = 0.0085` (85 bps \-\> 575 midpoint) and slope `kappa = 1.15`: `SaveMyHome = 300 + round( 550 / (1 + (LCR_post / 0.0085)^1.15) )`.  
    * Classify tiers: `720–850` \-\> `TIER_1_AUTO_BIND`, `580–719` \-\> `TIER_2_CONDITIONAL`, `300–579` \-\> `TIER_3_DECLINE_ESCALATE`.  
 3. `optimizer.py` (Counterfactual Prescriptive Mitigation Engine):  
-   * Accept a set of toggled mitigation IDs (`zone0_clear`, `ember_vents_eaves`, `ibhs_wph_plus`, `ibhs_fortified_roof`, `smart_water_shutoff`) and recompute `LCR_post`, `ResiliScore`, statutory premium discounts (up to 30% wildfire / 55% wind), state grant offsets (\$10,000 LA/AL FORTIFIED grants), net payback period in years, and \+6.8% resale value bump.  
+   * Accept a set of toggled mitigation IDs (`zone0_clear`, `ember_vents_eaves`, `ibhs_wph_plus`, `ibhs_fortified_roof`, `smart_water_shutoff`) and recompute `LCR_post`, `SaveMyHome`, statutory premium discounts (up to 30% wildfire / 55% wind), state grant offsets (\$10,000 LA/AL FORTIFIED grants), net payback period in years, and \+6.8% resale value bump.  
 4. `compliance.py` & `tests/test_monotonicity.py`:  
-   * Implement a numerical Jacobian check verifying `d(ResiliScore)/d(m_k) > 0` across every mitigation variable `m_k` and verifying zero socio-economic ECDIS variables are present.  
+   * Implement a numerical Jacobian check verifying `d(SaveMyHome)/d(m_k) > 0` across every mitigation variable `m_k` and verifying zero socio-economic ECDIS variables are present.  
    * Implement the 4 deterministic Human-in-the-Loop (HITL) escalation triggers (`|delta_z_LiDAR - delta_z_Cert| > 1.5 ft` or `cv_confidence < 0.85`; `unpermitted_footprint_delta_sqft > 150`; `RCV > $5,000,000`; or boundary score `[570, 590]`).
 
 ### Prompt 1D: FastAPI Endpoints, Guidewire Cloud Mock & MCP Server
 
-You are a Staff Enterprise Systems Architect building `backend/app/main.py` and `backend/app/integrations/` for ResiliScore.
+You are a Staff Enterprise Systems Architect building `backend/app/main.py` and `backend/app/integrations/` for SaveMyHome.
 
 1. `main.py` (FastAPI Service):  
    * Expose `POST /v1/parcel/score` (accepts address or `scenario_id`, runs the pipeline, returns `ParcelScoreResponse`).  
@@ -172,7 +172,7 @@ You are a Staff Enterprise Systems Architect building `backend/app/main.py` and 
    * Expose `POST /v1/guidewire/submissions/{submission_id}/quote` and `/issue` simulating a Guidewire Integration Gateway & PricingCenter BYOM webhook.  
    * Return a realistic Guidewire REST response payload showing `ResiliScore_Ext` data model extension fields, Integration Data Manager (IDM) document ID, applied Gosu rule IDs (e.g., `CA_CCR_2644_9_CAT_B1_B2`, `LA_FORTIFIED_ROOF_CREDIT`), and auto-bind policy number.  
 3. `mcp_server.py` (Model Context Protocol Server):  
-   * Using the Python `mcp` SDK (`FastMCP`), expose 4 deterministic tools so AI agents (such as Guidewire Underwriting Assistant or any MCP client) can invoke ResiliScore natively:  
+   * Using the Python `mcp` SDK (`FastMCP`), expose 4 deterministic tools so AI agents (such as Guidewire Underwriting Assistant or any MCP client) can invoke SaveMyHome natively:  
      * `get_parcel_resiliscore(address: str)`  
      * `verify_zone0_clearance(apn_uid: str)`  
      * `query_usgs_freeboard(lat: float, lng: float)`  
@@ -184,12 +184,12 @@ You are a Staff Enterprise Systems Architect building `backend/app/main.py` and 
 
 ### Prompt 2A: Next.js 15 Enterprise Underwriting Copilot Cockpit & Scenario Switcher
 
-You are a Staff Frontend Architect & Insurtech Product Designer building the ResiliScore Underwriting Copilot in Next.js 15 (App Router, TypeScript, Tailwind CSS, Lucide Icons, Framer Motion).
+You are a Staff Frontend Architect & Insurtech Product Designer building the SaveMyHome Underwriting Copilot in Next.js 15 (App Router, TypeScript, Tailwind CSS, Lucide Icons, Framer Motion).
 
 Create a sleek, institutional-grade dark/light adaptive single-pane cockpit (`src/app/page.tsx` and `src/components/HeaderScenarioBar.tsx`) modeled after a Bloomberg Terminal meets Guidewire UnderwritingCenter:
 
 1. Top Navigation & Scenario Bar (`HeaderScenarioBar.tsx`):  
-   * Brand header: "ResiliScore™ | AI-Native Property Catastrophe Resilience Score (300–850) & Underwriting Copilot" with a live badge showing `Guidewire Cloud PolicyCenter & MCP Connected` and processing latency (`3.1s | $1.75 Consortium Tier`).  
+   * Brand header: "SaveMyHome™ | AI-Native Property Catastrophe Resilience Score (300–850) & Underwriting Copilot" with a live badge showing `Guidewire Cloud PolicyCenter & MCP Connected` and processing latency (`3.1s | $1.75 Consortium Tier`).  
    * Address / APN Autocomplete search input (`"Enter Parcel Address or 14-Digit APN..."`).  
    * Quick-Load Golden Demo Scenario Pills (1-click instant switching for the live hackathon demo, backed by `goldenScenarios.ts` with optional live backend API fetch):  
      * `[Scenario 1: Coastal Flood Freeboard — 412 Bayou Rd, LA (430 -> 765 Auto-Bind)]`  
@@ -202,7 +202,7 @@ Create a sleek, institutional-grade dark/light adaptive single-pane cockpit (`sr
 
 ### Prompt 2B: Geospatial Concentric Ring Map Canvas & Flood Freeboard Cross-Section
 
-You are a Geospatial Data Visualization Engineer building `src/components/ParcelMapCanvas.tsx` and `src/components/FreeboardCrossSection.tsx` for ResiliScore.
+You are a Geospatial Data Visualization Engineer building `src/components/ParcelMapCanvas.tsx` and `src/components/FreeboardCrossSection.tsx` for SaveMyHome.
 
 1. `ParcelMapCanvas.tsx`:  
    * Build an interactive satellite/aerial parcel map view (using `react-map-gl` / Mapbox GL JS or an interactive high-res SVG/Canvas satellite orthophoto viewport with smooth zoom/pan that works even without an external Mapbox token).  
@@ -223,9 +223,9 @@ You are a Geospatial Data Visualization Engineer building `src/components/Parcel
 You are a Senior Fintech/Insurtech UI Engineer building `src/components/ScoreGaugeCard.tsx` and `src/components/MitigationDrawer.tsx`.
 
 1. `ScoreGaugeCard.tsx`:  
-   * Render a dramatic FICO-style 300–850 ResiliScore gauge showing BOTH:  
+   * Render a dramatic FICO-style 300–850 SaveMyHome gauge showing BOTH:  
      * `Macro Census-Tract Prior Score` (e.g., `430 - Tier 3 Decline`, showing what First Street / legacy ZIP-code models see)  
-     * `Verified Parcel ResiliScore` (e.g., `765 - Tier 1 Instant Auto-Bind`, with an animated delta badge `+335 pts from Parcel Verification`).  
+     * `Verified Parcel SaveMyHome` (e.g., `765 - Tier 1 Instant Auto-Bind`, with an animated delta badge `+335 pts from Parcel Verification`).  
    * Render the **Bühlmann-Straub Bayesian Credibility Breakdown Bar**:  
      * Display the exact formula `LCR_post = Z * LCR_parcel + (1 - Z) * mu_tract` with live values (`Z = 0.94`, `Tract Prior = 185 bps`, `Parcel Raw = 14 bps`, `Posterior = 24 bps`, `AAL = $1,080/yr`).  
      * Show the individual precision weights `w_{ij,m}` contributing to `Z` (USGS 1m LiDAR: Verified, OpenFEMA Elevation Cert: Verified, Nearmap 7.5cm CV: 96% Conf, IBHS Registry: Verified, Flo IoT Valve: Active).  
@@ -239,7 +239,7 @@ You are a Senior Fintech/Insurtech UI Engineer building `src/components/ScoreGau
      * 1/4-Inch Ember-Resistant Mesh Vents \+ Enclosed Eaves (`$3,200 CapEx` | `+55 pts` | `-$540/yr` | `5.9 yr payback`)  
      * IBHS Wildfire Prepared Home Plus Upgrade (`$15,000 CapEx` | `+150 pts` | `-$1,450/yr` | `1.4 yr rebuild delta payback`)  
      * IBHS FORTIFIED Roof \+ Class 4 Shingles (`$12,500 Gross` | `-$10,000 LA/AL State Grant` \-\> `$2,500 Net CapEx` | `+115 pts` | `-$1,250/yr` | `2.0 yr net payback` | `+6.8% Home Resale Value`).  
-   * As checkboxes are toggled, smoothly animate the ResiliScore needle, Posterior LCR, Net Out-of-Pocket CapEx, Annual Premium Savings, and Map Zone 0/1 ring colors.
+   * As checkboxes are toggled, smoothly animate the SaveMyHome needle, Posterior LCR, Net Out-of-Pocket CapEx, Annual Premium Savings, and Map Zone 0/1 ring colors.
 
 ### Prompt 2D: HITL Escalation Workbench, Mobile Self-Inspection & Regulatory Audit Dossier
 
@@ -252,8 +252,8 @@ You are a Lead Enterprise Workflow Engineer building `src/components/HitlWorkben
      * `"Request 60-Second Cryptographic Smartphone Verification"`: Opens a simulated mobile phone viewport showing a geofenced RTK-GPS (`Footprint Match: Verified`) \+ iPhone LiDAR depth scan confirming the structure is an open noncombustible aluminum pergola, allowing the underwriter to click `"Verify & Restore Tier 1 Auto-Bind (Score: 815)"`.  
      * `"Apply Unpermitted Structure Loading (+35 bps LCR)"`: Adjusts RCV and routes to Conditional Bind.  
 2. `RegulatoryAuditTab.tsx` (State Regulator Rate-Filing Proof):  
-   * Render a clean actuarial compliance dashboard proving why CDI, NY DFS, and FL OIR approve ResiliScore:  
-     * **Strict Mathematical Monotonicity Matrix**: Green checkmarks showing live partial derivatives `d(ResiliScore)/d(m_k) > 0` for all physical mitigation variables.  
+   * Render a clean actuarial compliance dashboard proving why CDI, NY DFS, and FL OIR approve SaveMyHome:  
+     * **Strict Mathematical Monotonicity Matrix**: Green checkmarks showing live partial derivatives `d(SaveMyHome)/d(m_k) > 0` for all physical mitigation variables.  
      * **NY DFS Insurance Circular Letter No. 7 (July 2024\) Audit**: Shows `Socio-Economic / Credit / Behavioral ECDIS Features Used: 0`, Step 1 BISG Adverse Impact Ratio Pass status, and downloadable Article 24 Consumer Adverse Action / Mitigation Notice.  
      * **California 10 CCR § 2644.9 Checklist**: Visual grid of all 12 mandatory Category A (Community), Category B1 (Immediate Surroundings), and Category B2 (Structure Hardening) wildfire rating factors with parcel pass/fail status.  
      * **Florida FCHLPM Standard G-4 Independence & Data Vintages**: Shows strict separation of Meteorology (NOAA Atlas 15 / USGS), Vulnerability (USACE / IBHS), and Actuarial (Bühlmann-Straub) modules with exact dataset timestamps.
@@ -277,7 +277,7 @@ Because the hackathon codebase enforces strict separation between **Ingestion** 
 2. **Dedicated Vision Pipeline (`API/ONNX` \\to `Triton Inference Server`):** Deploy custom-trained Vision Transformer (ViT) and Mask R-CNN weights on NVIDIA Triton reading 7.5cm Nearmap WMTS and 30cm Airbus Pléiades Neo Cloud-Optimized GeoTIFFs \[cite: \].  
 3. **Guidewire Cloud Marketplace Certification:** Package the `guidewire_mock.py` schemas and `mcp_server.py` tools into a certified **Guidewire Cloud Integration Framework** app utilizing the **Integration Data Manager (IDM)** for regulatory audit JSON persistence, **PricingCenter BYOM** for posterior \\widehat{\\text{LCR}}\_i ingestion, and **Guidewire Cloud Data Access (CDA)** to power the "Give-to-Get" closed-loss-run consortium flywheel \[cite: \].
 
-ResiliScore: Architectural and Actuarial Blueprint for an AI-Native Property Catastrophe Resilience Score and Underwriting Copilot
+SaveMyHome: Architectural and Actuarial Blueprint for an AI-Native Property Catastrophe Resilience Score and Underwriting Copilot
 
 Section 1: System Thesis and Problem Statement
 
@@ -319,7 +319,7 @@ Legacy underwriting presents carriers with three flawed choices:
 
 3\. Unverified Self-Attestations: Granting discounts without verification, causing severe premium leakage. Milliman analyses of California Regulation 10 CCR § 2644.9 showed that carriers lacking parcel verification data suffered two-year rate adequacy erosion while awaiting California Department of Insurance (CDI) rate approvals.
 
-ResiliScore eliminates this trilemma via an AI-native Property Catastrophe Resilience Score (300–850 scale) and Underwriting Copilot. By fusing federal topographic/hydrological datasets with sub-decimeter computer vision, IoT telematics, and Bühlmann-Straub Bayesian credibility updating, ResiliScore verifies parcel resilience in under 5 seconds for less than \$2.00 per API call.
+SaveMyHome eliminates this trilemma via an AI-native Property Catastrophe Resilience Score (300–850 scale) and Underwriting Copilot. By fusing federal topographic/hydrological datasets with sub-decimeter computer vision, IoT telematics, and Bühlmann-Straub Bayesian credibility updating, SaveMyHome verifies parcel resilience in under 5 seconds for less than \$2.00 per API call.
 
 Section 2: End-to-End Data Ingestion and Pipeline Architecture
 
@@ -353,14 +353,14 @@ Section 2: End-to-End Data Ingestion and Pipeline Architecture
 
 2.3 Data Harmonization Pipeline and Schema Mapping
 
-ResiliScore unifies point, raster, and vector layers onto a canonical 14-digit Assessor's Parcel Number (`apn_uid`), Overture/Microsoft Building Footprint (`building_id`), and Uber H3 Hierarchical Spatial Index (Resolution 11 for \~25 sq m cells; Resolution 13 for \~0.8 sq m sub-building footprints).
+SaveMyHome unifies point, raster, and vector layers onto a canonical 14-digit Assessor's Parcel Number (`apn_uid`), Overture/Microsoft Building Footprint (`building_id`), and Uber H3 Hierarchical Spatial Index (Resolution 11 for \~25 sq m cells; Resolution 13 for \~0.8 sq m sub-building footprints).
 
 | Pipeline Stage | Architectural Component & Engine | Processing Logic & Spatial Transformation | Input / Output Schema Format |
 | ----- | ----- | ----- | ----- |
 | Stage 1: Multi-Modal Ingestion Bus | Async Python/Rust Connectors, Apache Kafka, & S3 Raw Lake | Paginates OpenFEMA REST JSON (1,000-record batches); queries USGS EPQS REST JSON; pulls NOAA Atlas 14/15 NetCDF/GeoTIFFs, LANDFIRE 16-bit GeoTIFFs, USGS HAND rasters, Nearmap WMTS tiles, and IoT webhooks. | Raw REST JSON, OGC WMTS Tiles, 16-bit Signed Integer GeoTIFF, and NetCDF4. |
 | Stage 2: APN & Footprint Resolution | PostGIS & Apache Sedona Vector Engine (EPSG:5070 Albers Equal-Area) | Geocodes address; runs ST\_Intersects(parcel.geom, point.geom) to bind canonical apn\_uid polygon and building\_footprint\_geom; generates concentric ring polygons R0 (0–5ft), R1 (5–30ft), and R2 (30–100ft) via ST\_Buffer and ST\_Difference. | GeoJSON FeatureCollection (Polygon & MultiPolygon keyed to apn\_uid and building\_id). |
 | Stage 3: Vector-Raster Clipping & CV | Py3DEP, Rasterio Zonal Stats, & ONNX ViT / Mask R-CNN | Clips 1m USGS 3DEP LiDAR DEM/DSM to footprint to derive LAG, FFE, and freeboard delta\_h; runs Mask R-CNN over R0, R1, R2 orthophotos to measure canopy overhang (ft) and sheds; projects metrics to H3 Res 11/13 hexagons. | Apache Iceberg / Columnar Parquet Feature Store partitioned by state\_fips and h3\_res6\_index. |
-| Stage 4: Actuarial Scoring & Delivery | Bayesian Credibility Engine, Guidewire Integration Gateway, & MCP Server | Evaluates ZIP/GPD compound AAL and Bühlmann-Straub posterior LCR; normalizes to ResiliScore \[300, 850\]; writes audit JSON with dataset vintages (USGS\_3DEP: 2025-05-01) to Guidewire Integration Data Manager (IDM). | Outbound REST JSON payload & AsyncAPI / Model Context Protocol (MCP) tool responses. |
+| Stage 4: Actuarial Scoring & Delivery | Bayesian Credibility Engine, Guidewire Integration Gateway, & MCP Server | Evaluates ZIP/GPD compound AAL and Bühlmann-Straub posterior LCR; normalizes to SaveMyHome \[300, 850\]; writes audit JSON with dataset vintages (USGS\_3DEP: 2025-05-01) to Guidewire Integration Data Manager (IDM). | Outbound REST JSON payload & AsyncAPI / Model Context Protocol (MCP) tool responses. |
 
 | Data Source | Ingestion Protocol / Endpoint | Update Cadence | Spatial Resolution | Key Extracted / Engineered Attributes | Target Parquet / PostGIS Column Mapping |
 | ----- | ----- | ----- | ----- | ----- | ----- |
@@ -431,7 +431,7 @@ With tail exceedance probability ${p}_{tail,i,p}=\Phi \left({{\alpha }_{0,p}-{\a
 
 3.2 Bayesian Hierarchical Credibility Updating (Bühlmann-Straub)
 
-To balance parcel-level verification against census-tract hazard priors, ResiliScore embeds the compound loss estimate into a hierarchical Bühlmann-Straub Empirical Bayes Credibility Model.
+To balance parcel-level verification against census-tract hazard priors, SaveMyHome embeds the compound loss estimate into a hierarchical Bühlmann-Straub Empirical Bayes Credibility Model.
 
 1\. Macro Census-Tract Prior: Latent tract risk ${\Theta }_{j}$ for tract $j$ follows a conjugate Gamma prior calibrated on OpenFEMA historical paid loss ratios, NOAA Atlas 15 posteriors, and regional burn probabilities:
 
@@ -451,11 +451,11 @@ ${\widehat{LCR}}_{ij}^{post}={Z}_{ij}\cdot {X}_{ij}^{parcel}+(1-{Z}_{ij})\cdot {
 
 3.3 FICO-Style Normalization (300–850 Scale)
 
-Posterior Loss Cost Ratio ${\widehat{LCR}}_{i}={\widehat{LCR}}_{ij}^{post}$ maps onto $[300,850]$ via a continuous log-logistic sigmoidal transformation anchored at midpoint $LC{R}_{0}=0.0085$ (85 bps of RCV, or \$4,250 pure cat loss on \$500k RCV $\rightarrow ResiliScore=575$) and slope $\kappa =1.15$:
+Posterior Loss Cost Ratio ${\widehat{LCR}}_{i}={\widehat{LCR}}_{ij}^{post}$ maps onto $[300,850]$ via a continuous log-logistic sigmoidal transformation anchored at midpoint $LC{R}_{0}=0.0085$ (85 bps of RCV, or \$4,250 pure cat loss on \$500k RCV $\rightarrow SaveMyHome=575$) and slope $\kappa =1.15$:
 
 $ResiliScor{e}_{i}=300+round\left({\frac{550}{1+\exp \left({\kappa \cdot \left[{\ln \left({{\widehat{LCR}}_{i}}\right)-\ln \left({LC{R}_{0}}\right)}\right]}\right)}}\right)=300+round\left({\frac{550}{1+{\left({\frac{{\widehat{LCR}}_{i}}{LC{R}_{0}}}\right)}^{\kappa }}}\right)$
 
-| Underwriting Tier | ResiliScore Range | Implied Posterior LCR (AAL / RCV) | Annual Pure Cat Loss Cost (per \$500k RCV) | Automated Underwriting Copilot Action & Binding Protocol |
+| Underwriting Tier | SaveMyHome Range | Implied Posterior LCR (AAL / RCV) | Annual Pure Cat Loss Cost (per \$500k RCV) | Automated Underwriting Copilot Action & Binding Protocol |
 | ----- | ----- | ----- | ----- | ----- |
 | Tier 1: Preferred Resilient | 720 – 850 | \<= 0.0032 (\<= 32 bps) | \<= \$1,600 / yr | Instant Auto-Bind Eligibility: Zero human touch; automated API quote issuance with statutory mitigation credits applied (21%–30% wildfire or 20%–55% wind discount). |
 | Tier 2: Conditional Mitigable | 580 – 719 | 0.0033 to 0.0082 (33 to 82 bps) | \$1,650 to \$4,100 / yr | Conditional Bind with Remediation: Automated policy issuance contingent on completing a 60-day Prescriptive Mitigation Action Plan verified via mobile photo/CV upload. |
@@ -471,11 +471,11 @@ $\frac{\partial ResiliScor{e}_{i}}{\partial {\widehat{LCR}}_{i}}=-\frac{550\cdot
 
 application of the chain rule guarantees that any physical mitigation ${m}_{i,k}$ strictly improves the score and reduces pure premium:
 
-\$\$\\frac{\\partial \\text{ResiliScore}\_i}{\\partial m\_{i,k}} \= \\underbrace{\\frac{\\partial \\text{ResiliScore}\_i}{\\partial \\widehat{\\text{LCR}}\_i}}\_{\< 0} \\cdot \\underbrace{Z\_{ij}}\_{\> 0} \\cdot \\left( \\sum\_{p \\in \\mathcal{P}} \\left\[ \\underbrace{\\frac{\\partial \\mathbb{E}\[N\_{i,p}\]}{\\partial m\_{i,k}}}\_{\\le 0} \\mathbb{E}\[S\_{i,p}\] \+ \\mathbb{E}\[N\_{i,p}\] \\underbrace{\\frac{\\partial \\mathbb{E}\[S\_{i,p}\]}{\\partial m\_{i,k}}}\_{\\le 0} \\right\] \\right) \> 0\$\$
+\$\$\\frac{\\partial \\text{SaveMyHome}\_i}{\\partial m\_{i,k}} \= \\underbrace{\\frac{\\partial \\text{SaveMyHome}\_i}{\\partial \\widehat{\\text{LCR}}\_i}}\_{\< 0} \\cdot \\underbrace{Z\_{ij}}\_{\> 0} \\cdot \\left( \\sum\_{p \\in \\mathcal{P}} \\left\[ \\underbrace{\\frac{\\partial \\mathbb{E}\[N\_{i,p}\]}{\\partial m\_{i,k}}}\_{\\le 0} \\mathbb{E}\[S\_{i,p}\] \+ \\mathbb{E}\[N\_{i,p}\] \\underbrace{\\frac{\\partial \\mathbb{E}\[S\_{i,p}\]}{\\partial m\_{i,k}}}\_{\\le 0} \\right\] \\right) \> 0\$\$
 
 2\. Multi-State Regulatory Filing Matrix
 
-| Regulatory Jurisdiction & Mandate | Core Statutory & Supervisory Requirements | ResiliScore Architectural & Actuarial Compliance Implementation |
+| Regulatory Jurisdiction & Mandate | Core Statutory & Supervisory Requirements | SaveMyHome Architectural & Actuarial Compliance Implementation |
 | ----- | ----- | ----- |
 | New York DFS Insurance Circular Letter No. 7 (July 11, 2024\) | Enforces NY Ins. Law §§ 2303, 2606, 4224 & 11 NYCRR § 90.2; mandates two-step proxy discrimination testing (Step 1 BISG Adverse Impact Ratio & Step 2 Business Necessity), board governance, third-party vendor auditability, and Article 24 disclosures. | Excludes all socio-economic/behavioral ECDIS (credit, occupation, shopping data); provides contractual audit rights, full GLM/GPD parameter tables, pre-deployment BISG disparate-impact audits, and exact log-odds feature attributions with dataset vintages (protected under NY Public Officers Law § 87(2)(d)). |
 | California Proposition 103 & 10 CCR § 2644.9 (CDI Bulletin 2023-2) | Mandates rate relief for 12 wildfire mitigations across Cat A (Fire Risk Reduction Community, Firewise USA, Shelter-in-Place), Cat B1 (under-deck clearing, 0–5ft Zone 0 clearing, 0–5ft noncombustible materials, no sheds within 30ft, PRC § 4291 compliance), and Cat B2 (Class A roof, enclosed eaves, ember vents, multi-pane windows, 6-in vertical siding clearance). | Maps CV and registry indicators 1-to-1 to all 12 mandatory factors plus optional fuel/slope modifiers; provides empirical loss-cost relativities via the Consortium Flywheel to prevent rate erosion; generates mandatory policyholder score appeal and disclosure notices. |
@@ -483,20 +483,20 @@ application of the chain rule guarantees that any physical mitigation ${m}_{i,k}
 
 Section 4: The Redesigned PMAI Workflow
 
-4.1 Legacy vs. ResiliScore Workflow Comparison
+4.1 Legacy vs. SaveMyHome Workflow Comparison
 
-| Workflow Stage | Legacy Carrier Workflow | ResiliScore AI-Native Copilot Workflow | Quantified Operational Impact |
+| Workflow Stage | Legacy Carrier Workflow | SaveMyHome AI-Native Copilot Workflow | Quantified Operational Impact |
 | ----- | ----- | ----- | ----- |
 | 1\. Submission Intake | Applicant/broker fills out a 45-question ACORD PDF manually estimating roof age, brush distance, and flood zone; high error rate. | Zero-Input Address/APN Autocomplete: Street address resolves APN, building footprint polygon, and pre-populates 35+ verified structural and topographic attributes via API. | Intake time cut from 25 minutes to 4 seconds; eliminates applicant misrepresentation. |
 | 2\. Hazard Screen | Underwriter checks census tract or 5-digit ZIP against static FEMA FIRMs and macro wildfire tables; applies binary ZIP moratoriums. | Continuous Parcel Micro-Hazard Screen: Queries USGS 3DEP 1m LiDAR freeboard, USGS HAND, NOAA Atlas 15 non-stationary grids, and LANDFIRE FBFM40 fuels. | Unlocks 30%–45% of profitable hardened risks blocked by binary territory freezes. |
 | 3\. Physical Inspection | Orders third-party physical field survey ($250–$450 cost, 14–21 days turnaround) to photograph roof, eaves, and yard clearance. | Automated CV & Registry Verification: ViT segments 7.5cm Nearmap/Pléiades Neo imagery for Class A roof, canopy overhang, and Zone 0/1/2 clearance; cross-checks IBHS & permit APIs. | Inspection cost cut by 99.5% ($450to<$2.00); cycle time cut from 14 days to 3.8 seconds. |
-| 4\. Pricing & Binding | Applies coarse territorial base rates; underwriter manually reviews inspection PDFs; unverified discounts erode rate adequacy. | Bühlmann-Straub Credibility & Tiered Routing: Computes posterior LCR and ResiliScore (300–850); Tier 1 (720–850) auto-binds; Tier 2 (580–719) triggers conditional bind. | Straight-through processing (STP) rises from 18% to 74%; 100% compliant with 10 CCR § 2644.9 and NY DFS CL No. 7\. |
-| 5\. Mitigation Guidance | Generic adverse action notice ("Declined due to wildfire/flood hazard") with zero remediation path. | Prescriptive Mitigation Action Plan: Counterfactual engine computes exact ResiliScore boost, annual premium savings, and grant offsets per retrofit. | Converts 35%+ of conditional declines into bound policies; fulfills CA disclosure laws. |
+| 4\. Pricing & Binding | Applies coarse territorial base rates; underwriter manually reviews inspection PDFs; unverified discounts erode rate adequacy. | Bühlmann-Straub Credibility & Tiered Routing: Computes posterior LCR and SaveMyHome (300–850); Tier 1 (720–850) auto-binds; Tier 2 (580–719) triggers conditional bind. | Straight-through processing (STP) rises from 18% to 74%; 100% compliant with 10 CCR § 2644.9 and NY DFS CL No. 7\. |
+| 5\. Mitigation Guidance | Generic adverse action notice ("Declined due to wildfire/flood hazard") with zero remediation path. | Prescriptive Mitigation Action Plan: Counterfactual engine computes exact SaveMyHome boost, annual premium savings, and grant offsets per retrofit. | Converts 35%+ of conditional declines into bound policies; fulfills CA disclosure laws. |
 | 6\. Claims Adjudication | Post-cat adjusters measure water lines and roof damage manually from scratch; slow FNOL triage. | Pre-Loss Digital Twin & Closed-Loop FNOL: Pre-loss LiDAR FFE and baseline CV roof masks feed Guidewire ClaimCenter; post-event aerial/IoT data automates triage. | Accelerates post-cat claim triage by 60%; streams closed loss runs back into Bayesian likelihood. |
 
 4.2 The Human-in-the-Loop (HITL) Protocol
 
-⚬ Autonomous AI Execution (\< 5 Seconds): (1) Resolves APN polygon, extracts 1m LiDAR freeboard ($\Delta h$), evaluates USGS HAND, and pulls NOAA Atlas 14/15 grids; (2) Segments Zone 0/1/2 buffers and roof condition via CV while querying IBHS and IoT shutoff APIs; (3) Computes ZIP/GPD $AA{L}_{i}$, Bühlmann-Straub ${Z}_{ij}$, and ResiliScore $[300,850]$, executing straight-through binding in Guidewire PolicyCenter for Tier 1 parcels.
+⚬ Autonomous AI Execution (\< 5 Seconds): (1) Resolves APN polygon, extracts 1m LiDAR freeboard ($\Delta h$), evaluates USGS HAND, and pulls NOAA Atlas 14/15 grids; (2) Segments Zone 0/1/2 buffers and roof condition via CV while querying IBHS and IoT shutoff APIs; (3) Computes ZIP/GPD $AA{L}_{i}$, Bühlmann-Straub ${Z}_{ij}$, and SaveMyHome $[300,850]$, executing straight-through binding in Guidewire PolicyCenter for Tier 1 parcels.
 
 ⚬ Deterministic Escalation to Human Underwriter (Guidewire UnderwritingCenter):
 
@@ -515,7 +515,7 @@ $\Delta ResiliScor{e}_{i}(a)=ResiliScor{e}_{i}({m}_{i}+{e}_{a})-ResiliScor{e}_{i
 
 Empirical benchmarks anchor each calculation: IBHS FORTIFIED Roofs cut hurricane claim frequency by 73% (Hurricane Sally) and total hurricane losses by 72%–76%, unlocking 20%–55% statutory wind discounts (\$1,250/yr average savings in Alabama), a 6.8% home resale value bump, 8.1%–72% homeowner ROI, and \$6.00 in disaster recovery savings per \$1.00 spent, backed by \$10,000 grants and $10,000taxcreditsinLouisianaand12.4%($420/yr) Class 4 hail discounts at Mercury Insurance. IBHS Wildfire Prepared Home Plus adds just 3% (\~$15,000,or~$2,000 over CA code) to rebuild costs while cutting premiums by 21% on average—unlocking up to 30% off wildfire peril rates at Mercury, 4%–18% at State Farm, and 16.4% under the CA FAIR Plan's November 2025 discount stack.
 
-| Prescriptive Mitigation Measure | Target Peril & Statutory Authority | Gross CapEx / Grant Offset | Posterior LCR Impact | ResiliScore Boost | Verified Annual Premium Savings | Net Payback Period & Equity Impact |
+| Prescriptive Mitigation Measure | Target Peril & Statutory Authority | Gross CapEx / Grant Offset | Posterior LCR Impact | SaveMyHome Boost | Verified Annual Premium Savings | Net Payback Period & Equity Impact |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | Zone 0 (0–5 ft) Noncombustible Buffer \+ PRC § 4291 Tree Pruning (15 ft clearance) | Wildfire (10 CCR § 2644.9 Cat B1 & IBHS WPH) | \$1,800 Gross / \$0 Grant | \-18 bps (Boosts ember immunity & cuts arrival rate) | \+65 pts | \-\$680 / yr (Up to 16.4% off FAIR Plan / admitted wildfire rate) | 2.6 Years; immediately unlocks conditional bind eligibility. |
 | 1/4-Inch Metal Mesh Ember Vents \+ Enclosed Soffit Eaves | Wildfire (10 CCR § 2644.9 Cat B2 & Chapter 7A) | \$3,200 Gross / \$0 Grant | \-15 bps (Blocks attic ember ingress) | \+55 pts | \-\$540 / yr (Mandated B2 hardening credit) | 5.9 Years; prevents catastrophic attic ignition. |
@@ -527,7 +527,7 @@ Section 5: Enterprise B2B Go-To-Market and Moat Strategy
 
 5.1 Core System Integration and Dual-Engine GTM
 
-ResiliScore integrates natively into Guidewire Cloud Platform (InsuranceSuite), Duck Creek OnDemand, and Applied Epic without intrusive core code customization:
+SaveMyHome integrates natively into Guidewire Cloud Platform (InsuranceSuite), Duck Creek OnDemand, and Applied Epic without intrusive core code customization:
 
 ⚬ Ingestion & Storage (PolicyCenter & IDM): An App Event (`PolicyPeriodCreated` or `SubmissionQuoted`) triggers an outbound REST API Client call via the Guidewire Integration Gateway (Apache Camel middleware) to `POST /v1/parcel/score`. In \< 3.8 seconds, top-level scores populate upgrade-safe Data Model Extensions (`ResiliScore_Ext`) and Typelists on underwriter Page Configuration Files (PCFs), while full CV/regulatory audit JSONs are stored in Guidewire's Integration Data Manager (IDM).
 
@@ -535,57 +535,57 @@ ResiliScore integrates natively into Guidewire Cloud Platform (InsuranceSuite), 
 
 ⚬ Agentic Copilot & Claims (UnderwritingCenter & ClaimCenter): Exposes a Model Context Protocol (MCP) Server (`get_parcel_resiliscore`, `verify_zone0_clearance`, `query_usgs_freeboard`, `simulate_mitigation_roi`) for Guidewire's Agentic Framework, Underwriting Assistant, and ProNavigator, while feeding pre-loss digital twins into ClaimCenter (`POST /fnol`, `GET /claims/{claimId}/exposures`).
 
-To bypass 9-to-18-month carrier procurement cycles while building enterprise scale, ResiliScore executes a Dual-Engine Go-To-Market:
+To bypass 9-to-18-month carrier procurement cycles while building enterprise scale, SaveMyHome executes a Dual-Engine Go-To-Market:
 
 | Strategic Dimension | Phase 1: Catastrophe-Resilient MGA & Take-Out Facility (Months 1–18) | Phase 2: Direct Carrier Enterprise B2B SaaS & API Platform (Months 6–36+) |
 | ----- | ----- | ----- |
 | Target Customer / Channel | Independent retail brokers, E\&S wholesalers, and state depopulation clearinghouses (FL Citizens, CA FAIR Plan, LA Citizens). | Tier-1 and Tier-2 admitted P\&C carriers (State Farm, Mercury, CSAA, Allstate, mutuals) and global reinsurers / ILS cat bond funds. |
 | Commercial Mechanism | Tech-enabled MGA backed by A-rated fronting paper and collateralized reinsurance / Lloyd's syndicates; scans all 573,739+ CA FAIR Plan and FL Citizens parcels overnight to cherry-pick Tier 1 (\>= 720\) hardened homes. | Annual Enterprise SaaS license \+ usage-based API tiers ($1.50–$3.50 per quote screen; \$0.45 per renewal monitor) embedded in Guidewire/Duck Creek. |
 | Unit Economics & Take Rate | 18%–22% MGA Gross Written Premium (GWP) commission \+ 25% sliding-scale profit commission on sub-55% loss ratio alpha. | 85%+ Gross Margin SaaS with 140%+ Net Dollar Retention (NDR) across nationwide book rolls. |
-| Strategic Purpose | Proves live actuarial loss-ratio alpha within 6 months; monetizes mispriced Tier 1 FAIR Plan / Citizens policies directly. | Scales to 85M+ U.S. residential parcels without balance-sheet constraints; cements ResiliScore as the industry standard. |
+| Strategic Purpose | Proves live actuarial loss-ratio alpha within 6 months; monetizes mispriced Tier 1 FAIR Plan / Citizens policies directly. | Scales to 85M+ U.S. residential parcels without balance-sheet constraints; cements SaveMyHome as the industry standard. |
 
 5.2 The "Give-to-Get" Consortium Data Flywheel
 
-Carriers lack parcel-level empirical loss data to calibrate multi-mitigation discount relativities accurately. ResiliScore solves this via a contractual "Give-to-Get" Consortium Flywheel:
+Carriers lack parcel-level empirical loss data to calibrate multi-mitigation discount relativities accurately. SaveMyHome solves this via a contractual "Give-to-Get" Consortium Flywheel:
 
 ⚬ Standalone API Tier (\$3.50/call): Uses baseline public OpenFEMA and USACE/IBHS priors.
 
-⚬ Consortium Flywheel Tier (\$1.75/call — 50% SaaS Discount): Requires enabling an automated, read-only Guidewire Cloud Data Access (CDA) connector that streams anonymized closed claim records (`apn_hash`, `event_id`, `incurred_building_loss`, `water_line_depth_ft`, `ember_ignition_vector`, `pre_loss_mitigation_vector`) into ResiliScore's federated enclave. Post-catastrophe loss runs continuously update log-likelihood parameters $(\gamma ,\beta ,\psi ,\theta )$ and shrink within-group process variance ${\sigma }^{2}$ in ${Z}_{ij}=\frac{{w}_{ij}}{{w}_{ij}+{\sigma }^{2}/{\tau }^{2}}$, creating a compounding actuarial moat against non-participating carriers.
+⚬ Consortium Flywheel Tier (\$1.75/call — 50% SaaS Discount): Requires enabling an automated, read-only Guidewire Cloud Data Access (CDA) connector that streams anonymized closed claim records (`apn_hash`, `event_id`, `incurred_building_loss`, `water_line_depth_ft`, `ember_ignition_vector`, `pre_loss_mitigation_vector`) into SaveMyHome's federated enclave. Post-catastrophe loss runs continuously update log-likelihood parameters $(\gamma ,\beta ,\psi ,\theta )$ and shrink within-group process variance ${\sigma }^{2}$ in ${Z}_{ij}=\frac{{w}_{ij}}{{w}_{ij}+{\sigma }^{2}/{\tau }^{2}}$, creating a compounding actuarial moat against non-participating carriers.
 
 5.3 Consumer, Real Estate, and Mortgage Capital Markets Distribution
 
-⚬ Real Estate Portal Syndication (Zillow / Redfin): Static macro scores (e.g., First Street 1–10) stigmatize listings without rewarding retrofits. ResiliScore syndicates a dynamic "Verified ResiliScore (300–850)" widget; when a seller completes the Prescriptive Mitigation Action Plan or links an IBHS certificate (via the GAF-IBHS contractor pipeline), the listing updates instantly from `540 (Tier 3)` to `745 (Tier 1 Auto-Bind Eligible — Est. Savings: $1,850/yr)`, unlocking the documented \+6.8% property resale value premium.
+⚬ Real Estate Portal Syndication (Zillow / Redfin): Static macro scores (e.g., First Street 1–10) stigmatize listings without rewarding retrofits. SaveMyHome syndicates a dynamic "Verified SaveMyHome (300–850)" widget; when a seller completes the Prescriptive Mitigation Action Plan or links an IBHS certificate (via the GAF-IBHS contractor pipeline), the listing updates instantly from `540 (Tier 3)` to `745 (Tier 1 Auto-Bind Eligible — Est. Savings: $1,850/yr)`, unlocking the documented \+6.8% property resale value premium.
 
-⚬ Mortgage & RMBS Transaction Gate: Moody's Analytics and GARP research confirms that insurance burden predicts mortgage delinquency independently of LTV, DTI, and FICO. By licensing ResiliScore to mortgage originators, GSEs (Fannie Mae/Freddie Mac), and RMBS rating desks to price FAIR Plan/Citizens concentration risk, lenders mandate a minimum Tier 2 ResiliScore ($\geq 580$) (or an escrow holdback for the Mitigation Action Plan) prior to loan closing.
+⚬ Mortgage & RMBS Transaction Gate: Moody's Analytics and GARP research confirms that insurance burden predicts mortgage delinquency independently of LTV, DTI, and FICO. By licensing SaveMyHome to mortgage originators, GSEs (Fannie Mae/Freddie Mac), and RMBS rating desks to price FAIR Plan/Citizens concentration risk, lenders mandate a minimum Tier 2 SaveMyHome ($\geq 580$) (or an escrow holdback for the Mitigation Action Plan) prior to loan closing.
 
 Section 6: Hackathon Winning Artifacts (PMAI NYC 2026\)
 
 6.1 Three-Minute Live Pitch Script
 
 \> \[0:00 – 0:30 | THE HOOK & THE \$645 BILLION PARADOX\]  
-"Right now, a homeowner in Pacific Palisades or Miami-Dade can spend twenty-five thousand dollars installing a Class A fire-rated FORTIFIED roof, clearing five feet of noncombustible Zone 0 defensible space, and elevating mechanical utilities four feet above Base Flood Elevation—and still get non-renewed by an insurance carrier in thirty milliseconds. Why? Because legacy catastrophe models score the *neighborhood*, not the *structure*. That single architectural blind spot drove eleven carrier insolvencies in Louisiana after Hurricane Ida, pushed Florida Citizens to 1.42 million policies, and ballooned the California FAIR Plan to \$645 billion in exposure before the January 2025 Los Angeles wildfires triggered a \$4.8 billion FAIR Plan claim shock and its first bailout assessment in thirty-one years. Meet ResiliScore: the AI-native 300-to-850 Property Catastrophe Resilience Score and Underwriting Copilot that replaces binary ZIP-code freezes with parcel-level physical verification in under four seconds."
+"Right now, a homeowner in Pacific Palisades or Miami-Dade can spend twenty-five thousand dollars installing a Class A fire-rated FORTIFIED roof, clearing five feet of noncombustible Zone 0 defensible space, and elevating mechanical utilities four feet above Base Flood Elevation—and still get non-renewed by an insurance carrier in thirty milliseconds. Why? Because legacy catastrophe models score the *neighborhood*, not the *structure*. That single architectural blind spot drove eleven carrier insolvencies in Louisiana after Hurricane Ida, pushed Florida Citizens to 1.42 million policies, and ballooned the California FAIR Plan to \$645 billion in exposure before the January 2025 Los Angeles wildfires triggered a \$4.8 billion FAIR Plan claim shock and its first bailout assessment in thirty-one years. Meet SaveMyHome: the AI-native 300-to-850 Property Catastrophe Resilience Score and Underwriting Copilot that replaces binary ZIP-code freezes with parcel-level physical verification in under four seconds."
 
 \> \[0:30 – 1:15 | THE LEGACY WORKFLOW BREAKDOWN\]  
 "Today, when a property submission hits an underwriter's desk at a carrier running Guidewire or Duck Creek, the workflow is completely broken. Macro vendors like First Street, CoreLogic, and Moody's RMS flag an entire census tract as high hazard. To check if the actual house is hardened, the carrier has to order a manual physical inspection—costing \$450 and taking fourteen days—or guess at discounts and watch rate adequacy bleed for two years. Yet the empirical science is crystal clear: in the 2025 Palisades Fire, 95% of damaged homes predated California's 2008 Chapter 7A building code. In Hurricane Ian, zero structures built to the modern Florida Building Code suffered structural wind damage. And IBHS FORTIFIED roofs cut hurricane claims by 73%. The resilience signal exists on the parcel—carriers simply lack the pipeline to ingest and price it at the point of quote."
 
 \> \[1:15 – 2:00 | LIVE PRODUCT & WORKFLOW TRANSFORMATION\]  
-"ResiliScore automates that entire fourteen-day workflow in 3.8 seconds for under two dollars. When an address enters the ResiliScore Copilot, the spatial harmonization engine resolves the national parcel polygon and queries five federal foundation layers in parallel: 2.5 million FEMA NFIP claims, USGS 1-meter 3DEP LiDAR to measure exact First Floor Elevation freeboard against Base Flood Elevation, USGS Height Above Nearest Drainage, LANDFIRE 40 surface fuel models, and NOAA's new non-stationary Atlas 15 precipitation grids. Next, the Vision Transformer segments high-resolution aerial imagery across the exact statutory rings mandated by California Regulation 2644.9 and IBHS: Zone 0 at five feet, Zone 1 at thirty feet, and Zone 2 at one hundred feet, grading roof class and tree canopy overhang while pulling real-time smart water valve telemetry. When the parcel scores above 720—Tier 1—Guidewire PolicyCenter auto-binds it instantly. When it scores between 580 and 719—Tier 2—the Copilot generates a Prescriptive Mitigation Action Plan showing the exact point boost, premium savings, and state grant ROI required to unlock coverage."
+"SaveMyHome automates that entire fourteen-day workflow in 3.8 seconds for under two dollars. When an address enters the SaveMyHome Copilot, the spatial harmonization engine resolves the national parcel polygon and queries five federal foundation layers in parallel: 2.5 million FEMA NFIP claims, USGS 1-meter 3DEP LiDAR to measure exact First Floor Elevation freeboard against Base Flood Elevation, USGS Height Above Nearest Drainage, LANDFIRE 40 surface fuel models, and NOAA's new non-stationary Atlas 15 precipitation grids. Next, the Vision Transformer segments high-resolution aerial imagery across the exact statutory rings mandated by California Regulation 2644.9 and IBHS: Zone 0 at five feet, Zone 1 at thirty feet, and Zone 2 at one hundred feet, grading roof class and tree canopy overhang while pulling real-time smart water valve telemetry. When the parcel scores above 720—Tier 1—Guidewire PolicyCenter auto-binds it instantly. When it scores between 580 and 719—Tier 2—the Copilot generates a Prescriptive Mitigation Action Plan showing the exact point boost, premium savings, and state grant ROI required to unlock coverage."
 
 \> \[2:00 – 2:35 | ACTUARIAL & REGULATORY DEFENSIBILITY\]  
-"Unlike black-box wrappers, ResiliScore is engineered from the ground up for state rate filings. The actuarial core pairs a Zero-Inflated Poisson frequency GLM and a USACE Depth-Damage plus Generalized Pareto tail severity model inside a Bühlmann-Straub Bayesian credibility framework. When parcel verification confidence is high, the credibility factor $Z$ approaches one, mathematically decoupling a hardened home from a toxic census-tract prior. Every partial derivative is strictly monotonic, all socio-economic proxies are excluded to satisfy New York DFS Circular Letter No. 7, and every California Regulation 2644.9 and Florida FCHLPM standard is mapped out of the box."
+"Unlike black-box wrappers, SaveMyHome is engineered from the ground up for state rate filings. The actuarial core pairs a Zero-Inflated Poisson frequency GLM and a USACE Depth-Damage plus Generalized Pareto tail severity model inside a Bühlmann-Straub Bayesian credibility framework. When parcel verification confidence is high, the credibility factor $Z$ approaches one, mathematically decoupling a hardened home from a toxic census-tract prior. Every partial derivative is strictly monotonic, all socio-economic proxies are excluded to satisfy New York DFS Circular Letter No. 7, and every California Regulation 2644.9 and Florida FCHLPM standard is mapped out of the box."
 
 \> \[2:35 – 3:00 | ENTERPRISE MOAT & MARKET CLOSE\]  
-"ResiliScore launches via a dual engine: capturing immediate underwriting margin by cherry-picking Tier 1 hardened policies out of the \$645 billion California FAIR Plan and Florida Citizens depopulation clearinghouses, while licensing an MCP-ready API directly into Guidewire PolicyCenter under a 'Give-to-Get' closed-loss-run flywheel. With an \$8 billion to \$10 billion annual premium gap in California alone and mortgage investors demanding loan-level resilience scoring across 85 million U.S. homes, ResiliScore establishes the FICO score for physical climate resilience."
+"SaveMyHome launches via a dual engine: capturing immediate underwriting margin by cherry-picking Tier 1 hardened policies out of the \$645 billion California FAIR Plan and Florida Citizens depopulation clearinghouses, while licensing an MCP-ready API directly into Guidewire PolicyCenter under a 'Give-to-Get' closed-loss-run flywheel. With an \$8 billion to \$10 billion annual premium gap in California alone and mortgage investors demanding loan-level resilience scoring across 85 million U.S. homes, SaveMyHome establishes the FICO score for physical climate resilience."
 
 6.2 Interactive Demo Walkthrough Guide
 
-⚬ Scenario 1: Coastal Flood with High Freeboard (412 Bayou Rd, Jefferson Parish, LA): Located in FEMA Zone AE (`baseFloodElevation = 9.0 ft NAVD88`) where 11 insurers failed post-Ida. Macro census-tract prior LCR is 1.85% (185 bps) $\rightarrow$ Baseline Score: 430 (Tier 3 Decline). Clicking `Run ResiliScore Spatial & LiDAR Verification` executes in 3.1s: `USGS_3DEP_EPQS` extracts LAG of 7.2 ft and 1m LiDAR elevated FFE of 13.2 ft; `OpenFEMA_NFIP_v2` confirms `elevatedBuildingIndicator = true`, `elevationCertificateIndicator = true`, and positive freeboard $\Delta h=+4.2ft$ above BFE; `NOAA_Atlas15_PFDS` and `USGS_HAND` confirm \+6.4 ft drainage clearance under a 14.8-in 24h storm; `Nearmap_CV_v4` verifies an IBHS FORTIFIED Roof funded by Louisiana's \$10,000 Fortify Homes grant. Credibility jumps to ${Z}_{ij}=0.94$, shifting the USACE curve right by \+4.2 ft and cutting posterior LCR from 185 bps to 24 bps (\$1,080 AAL on \$450k RCV). Score leaps from 430 to 765 (Tier 1 Auto-Bind) via Guidewire `/submissions/quote` with a 38% wind and freeboard credit.
+⚬ Scenario 1: Coastal Flood with High Freeboard (412 Bayou Rd, Jefferson Parish, LA): Located in FEMA Zone AE (`baseFloodElevation = 9.0 ft NAVD88`) where 11 insurers failed post-Ida. Macro census-tract prior LCR is 1.85% (185 bps) $\rightarrow$ Baseline Score: 430 (Tier 3 Decline). Clicking `Run SaveMyHome Spatial & LiDAR Verification` executes in 3.1s: `USGS_3DEP_EPQS` extracts LAG of 7.2 ft and 1m LiDAR elevated FFE of 13.2 ft; `OpenFEMA_NFIP_v2` confirms `elevatedBuildingIndicator = true`, `elevationCertificateIndicator = true`, and positive freeboard $\Delta h=+4.2ft$ above BFE; `NOAA_Atlas15_PFDS` and `USGS_HAND` confirm \+6.4 ft drainage clearance under a 14.8-in 24h storm; `Nearmap_CV_v4` verifies an IBHS FORTIFIED Roof funded by Louisiana's \$10,000 Fortify Homes grant. Credibility jumps to ${Z}_{ij}=0.94$, shifting the USACE curve right by \+4.2 ft and cutting posterior LCR from 185 bps to 24 bps (\$1,080 AAL on \$450k RCV). Score leaps from 430 to 765 (Tier 1 Auto-Bind) via Guidewire `/submissions/quote` with a 38% wind and freeboard credit.
 
-⚬ Scenario 2: Wildfire WUI with Zero Brush Clearance (1840 Canyon Crest Dr, Altadena Foothills, CA): Pre-2008 Chapter 7A foothill parcel overlaid with Zone 0 (0–5 ft), Zone 1 (5–30 ft), and Zone 2 (30–100 ft) rings. Clicking `Execute Multi-Spectral CV & LANDFIRE Scan` flags `LANDFIRE_FBFM40` heavy chaparral (`SH7`) on a 28-degree slope while ViT highlights an unrated wood-shake roof, 16.5 ft of eucalyptus canopy overhanging Zone 0, and a wooden shed at 18 ft in Zone 1 $\rightarrow$ Posterior LCR \= 245 bps, ResiliScore \= 385 (Tier 3 Decline). Clicking `Generate 10 CCR § 2644.9 Prescriptive Mitigation Action Plan` toggles three retrofits: clearing Zone 0 overhang \+ moving Zone 1 shed (\$1,800 $\rightarrow$ \+65 pts), 1/4-in ember vents \+ enclosed eaves (\$3,200 $\rightarrow$ \+55 pts), and IBHS Wildfire Prepared Home Class A roof upgrade (\$14,500 $\rightarrow$ \+125 pts). Score updates live from 385 to 630 (Tier 2 Conditional Bind), cutting annual premium by \-\$2,140/yr and issuing a 60-day FAIR Plan take-out endorsement.
+⚬ Scenario 2: Wildfire WUI with Zero Brush Clearance (1840 Canyon Crest Dr, Altadena Foothills, CA): Pre-2008 Chapter 7A foothill parcel overlaid with Zone 0 (0–5 ft), Zone 1 (5–30 ft), and Zone 2 (30–100 ft) rings. Clicking `Execute Multi-Spectral CV & LANDFIRE Scan` flags `LANDFIRE_FBFM40` heavy chaparral (`SH7`) on a 28-degree slope while ViT highlights an unrated wood-shake roof, 16.5 ft of eucalyptus canopy overhanging Zone 0, and a wooden shed at 18 ft in Zone 1 $\rightarrow$ Posterior LCR \= 245 bps, SaveMyHome \= 385 (Tier 3 Decline). Clicking `Generate 10 CCR § 2644.9 Prescriptive Mitigation Action Plan` toggles three retrofits: clearing Zone 0 overhang \+ moving Zone 1 shed (\$1,800 $\rightarrow$ \+65 pts), 1/4-in ember vents \+ enclosed eaves (\$3,200 $\rightarrow$ \+55 pts), and IBHS Wildfire Prepared Home Class A roof upgrade (\$14,500 $\rightarrow$ \+125 pts). Score updates live from 385 to 630 (Tier 2 Conditional Bind), cutting annual premium by \-\$2,140/yr and issuing a 60-day FAIR Plan take-out endorsement.
 
-⚬ Scenario 3: Suburban Full Mitigation & HITL Guardrail (Dixon Trail Subdivision, Escondido, CA): Modeled on the first IBHS Wildfire Prepared Neighborhood. Webhooks verify `ibhs_wph_tier = PLUS`, `cv_roof_class = CLASS_A_IMPACT_4`, `cv_zone0_clear = true`, and active Flo by Moen shutoff telemetry (`iot_shutoff_active = true`), driving ${Z}_{ij}=0.97$, posterior LCR \= 18 bps, and ResiliScore \= 815 (Tier 1 Auto-Bind) with a 30% wildfire discount and 12.4% (\$420) Class 4 hail credit. Clicking `Simulate HITL Edge-Case Trigger: Unpermitted Footprint Delta` injects a satellite alert showing an unrecorded 240 sq ft structure in Zone 1; the Copilot immediately halts auto-binding, flags `HITL_TRIGGER_02`, and routes the dossier to `Guidewire UnderwritingCenter`.
+⚬ Scenario 3: Suburban Full Mitigation & HITL Guardrail (Dixon Trail Subdivision, Escondido, CA): Modeled on the first IBHS Wildfire Prepared Neighborhood. Webhooks verify `ibhs_wph_tier = PLUS`, `cv_roof_class = CLASS_A_IMPACT_4`, `cv_zone0_clear = true`, and active Flo by Moen shutoff telemetry (`iot_shutoff_active = true`), driving ${Z}_{ij}=0.97$, posterior LCR \= 18 bps, and SaveMyHome \= 815 (Tier 1 Auto-Bind) with a 30% wildfire discount and 12.4% (\$420) Class 4 hail credit. Clicking `Simulate HITL Edge-Case Trigger: Unpermitted Footprint Delta` injects a satellite alert showing an unrecorded 240 sq ft structure in Zone 1; the Copilot immediately halts auto-binding, flags `HITL_TRIGGER_02`, and routes the dossier to `Guidewire UnderwritingCenter`.
 
-| Demo Scenario & Location | Macro Census-Tract Prior | Live Sensor & Registry Signals Ingested | Credibility Z\_ij & Posterior LCR | Final ResiliScore & Copilot Execution |
+| Demo Scenario & Location | Macro Census-Tract Prior | Live Sensor & Registry Signals Ingested | Credibility Z\_ij & Posterior LCR | Final SaveMyHome & Copilot Execution |
 | ----- | ----- | ----- | ----- | ----- |
 | Scenario 1: Coastal Flood with High Freeboard (Jefferson Parish, LA) | 430 (Tier 3 Decline); FEMA Zone AE (BFE \= 9.0 ft); Tract LCR \= 185 bps. | USGS 3DEP 1m LiDAR (FFE \= 13.2 ft, delta\_h \= \+4.2 ft above BFE); OpenFEMA Elevation Cert; USGS HAND (+6.4 ft); IBHS FORTIFIED Roof. | Z\_ij \= 0.94; Posterior LCR \= 24 bps (AAL \= \$1,080) | 765 (Tier 1 Auto-Bind); Guidewire /submissions/quote binds with 38% wind & freeboard credit. |
 | Scenario 2: WUI Wildfire Unmitigated to Remediated (Altadena Foothills, CA) | 385 (Tier 3 Decline); Pre-2008 Chapter 7A home; LANDFIRE SH7 fuel on 28-deg slope. | ViT/Mask R-CNN detects wood shake roof, 16.5 ft Zone 0 overhang, and Zone 1 shed (18 ft); user toggles 3-step 10 CCR § 2644.9 remediation plan. | Z\_ij \= 0.91; Posterior LCR: 245 bps to 58 bps | 385 to 630 (Tier 2 Conditional Bind); \+245 pts boost, \-\$2,140/yr savings, 60-day FAIR Plan take-out bind. |
@@ -594,13 +594,13 @@ Section 6: Hackathon Winning Artifacts (PMAI NYC 2026\)
 6.3 Judge Defense FAQ
 
 1\. "Why can't carriers just use First Street Foundation / Risk Factor, CoreLogic, or Moody's RMS?"  
-First Street scores *environmental hazard* (1–10) at a 3m–30m grid resolution but is structurally blind to *parcel-level mitigation*: if a homeowner spends \$15,000 on an IBHS Wildfire Prepared Home Plus retrofit or \$12,500 on an IBHS FORTIFIED Roof (cutting hurricane claims by 73%), their First Street score does not change by a single point, making it unusable for statutory mitigation compliance under California 10 CCR § 2644.9. Meanwhile, Moody's RMS and Verisk include secondary structural modifiers in their stochastic models, but primary carriers have no automated pipeline to populate those inputs at point-of-quote without a \$450, 14-day physical inspection—defaulting back to coarse census-tract averages. ResiliScore populates and prices those exact parcel features in 3.8 seconds via 1m LiDAR, 7.5cm CV, and Bühlmann-Straub credibility updating.
+First Street scores *environmental hazard* (1–10) at a 3m–30m grid resolution but is structurally blind to *parcel-level mitigation*: if a homeowner spends \$15,000 on an IBHS Wildfire Prepared Home Plus retrofit or \$12,500 on an IBHS FORTIFIED Roof (cutting hurricane claims by 73%), their First Street score does not change by a single point, making it unusable for statutory mitigation compliance under California 10 CCR § 2644.9. Meanwhile, Moody's RMS and Verisk include secondary structural modifiers in their stochastic models, but primary carriers have no automated pipeline to populate those inputs at point-of-quote without a \$450, 14-day physical inspection—defaulting back to coarse census-tract averages. SaveMyHome populates and prices those exact parcel features in 3.8 seconds via 1m LiDAR, 7.5cm CV, and Bühlmann-Straub credibility updating.
 
 2\. "Why will state regulators (CDI, NY DFS, FL OIR) approve a Bayesian AI model over traditional catastrophe models?"  
-Regulators reject black-box deep-learning *pricing* models because neural networks violate monotonicity and lack physical causality. ResiliScore restricts neural networks (ViT / Mask R-CNN) strictly to *visual feature extraction* (replacing a human inspector's roof and Zone 0/1/2 measurements with an auditable image mask). The *pricing engine* is a closed-form Zero-Inflated Poisson and Generalized Pareto compound model updated via Bühlmann-Straub Empirical Bayes credibility—the gold standard under ASOP No. 25 for over 50 years. It satisfies CA 10 CCR § 2644.9 (12 mandatory mitigation factors), NY DFS Circular Letter No. 7 (zero socio-economic ECDIS, strict monotonicity $\partial ResiliScore/\partial Mitigation>0$, and pre-computed BISG disparate impact audits), and Florida FCHLPM Standard G-4 (strict independence of meteorology, vulnerability, and actuarial components under Fla. Stat. § 627.0628).
+Regulators reject black-box deep-learning *pricing* models because neural networks violate monotonicity and lack physical causality. SaveMyHome restricts neural networks (ViT / Mask R-CNN) strictly to *visual feature extraction* (replacing a human inspector's roof and Zone 0/1/2 measurements with an auditable image mask). The *pricing engine* is a closed-form Zero-Inflated Poisson and Generalized Pareto compound model updated via Bühlmann-Straub Empirical Bayes credibility—the gold standard under ASOP No. 25 for over 50 years. It satisfies CA 10 CCR § 2644.9 (12 mandatory mitigation factors), NY DFS Circular Letter No. 7 (zero socio-economic ECDIS, strict monotonicity $\partial SaveMyHome/\partial Mitigation>0$, and pre-computed BISG disparate impact audits), and Florida FCHLPM Standard G-4 (strict independence of meteorology, vulnerability, and actuarial components under Fla. Stat. § 627.0628).
 
 3\. "How do you verify homeowner mitigations without sending an inspector?"  
-ResiliScore uses a Four-Tiered Multi-Modal Verification Protocol where each channel adds precision weight ${w}_{ij,m}$ to total parcel credibility ${Z}_{ij}=\frac{{w}_{ij}}{{w}_{ij}+k}$:
+SaveMyHome uses a Four-Tiered Multi-Modal Verification Protocol where each channel adds precision weight ${w}_{ij,m}$ to total parcel credibility ${Z}_{ij}=\frac{{w}_{ij}}{{w}_{ij}+k}$:
 
 	⚬ *Tier 1 (Federal & Cryptographic Registries):* Intersects 1m USGS 3DEP LiDAR DEM/DSM with OpenFEMA NFIP `elevationCertificateIndicator` records ($\pm 0.3ft$ vertical precision) and queries IBHS FORTIFIED / Wildfire Prepared registries and municipal permit APIs (e.g., Louisiana 2025 Acts 144/239/422 roofing permits and CA Chapter 7A certificates).
 

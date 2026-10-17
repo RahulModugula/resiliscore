@@ -12,7 +12,7 @@ test("selected property survives reload and shows an offline canonical screen wi
   await page.goto(`/assessment?property=${building.id}`);
   await expect(page.getByRole("heading", { name: "Address unavailable", exact: true })).toBeVisible();
   await expect(page.getByRole("status").filter({hasText:"Offline model screening"})).toBeVisible();
-  await expect(page.getByText(`ResiliScore ${result.parcel.actuarial_breakdown.resili_score} / 850`, { exact: true })).toBeVisible();
+  await expect(page.getByText(`SaveMyHome ${result.parcel.actuarial_breakdown.resili_score} / 850`, { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /auto-bind|conditional bind/i })).toHaveCount(0);
   await expect(page.getByText("Golden demo parcel", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Verified parcel", { exact: true })).toHaveCount(0);
