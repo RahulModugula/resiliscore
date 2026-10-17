@@ -47,7 +47,7 @@
       "factor_contributions": [
         {
           "factor": "Construction era",
-          "input_value": 2010.0,
+          "input_value": 2002.0,
           "score_points": 17.0433,
           "source": "parcel identity"
         },
@@ -244,7 +244,7 @@
         "h3_res13": "",
         "rcv_usd": 350000.0,
         "state": "NY",
-        "year_built": 2010
+        "year_built": 2002
       },
       "premium_build": {
         "deductible_usd": 3500.0,
@@ -554,7 +554,7 @@
         "h3_res13": "",
         "rcv_usd": 350000.0,
         "state": "NY",
-        "year_built": 1990
+        "year_built": 2001
       },
       "premium_build": {
         "deductible_usd": 3500.0,

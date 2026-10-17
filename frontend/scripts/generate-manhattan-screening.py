@@ -12,10 +12,11 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
+from app.actuarial.constants import get as constant
 from app.actuarial.optimizer import simulate
 from app.ingestion.engine import SpatialIngestionEngine
 from app.models.schemas import Ca26449Factors, ParcelScoreResponse
-from app.pipeline import DEFAULT_RCV_USD
+from app.pipeline import DEFAULT_RCV_USD, DEFAULT_YEAR_BUILT
 
 OUT = ROOT / "frontend/src/data/manhattan/screening.json"
 ENGINE_FILES = sorted((ROOT / "backend/app/actuarial").glob("*.py")) + [
@@ -54,13 +55,21 @@ def screen(year):
     result["processing_time_ms"] = 0
     return result
 
+cutoff = int(constant("wind.pre_code_year"))
+pre = screen(cutoff - 1)
+post = screen(cutoff)
+# Geometry/elevation are not risk inputs under this no-live-evidence path. If the engine gains a
+# continuous construction-age effect, these checks reject a cache that covers only two eras.
+assert screen(1800)["actuarial_breakdown"] == pre["actuarial_breakdown"]
+assert screen(2026)["actuarial_breakdown"] == post["actuarial_breakdown"]
+
 result = {
     "engineSha256": engine_hash.hexdigest(),
     "engineFiles": [p.relative_to(ROOT).as_posix() for p in ENGINE_FILES],
     "method": "Canonical backend optimizer.simulate, NY state, national-default hazards, no property verification, default $350,000 RCV, nearest reference NRI stand-in. No live geographic hazard lookup. Model assumes a LiDAR weight even though local evidence is absent. Not a production underwriting model or filed quote.",
-    "yearCutoff": 2002,
-    "defaultYearBuilt": 1990,
-    "screens": {"pre2002": screen(1990), "post2002": screen(2010)},
+    "yearCutoff": cutoff,
+    "defaultYearBuilt": DEFAULT_YEAR_BUILT,
+    "screens": {"pre2002": pre, "post2002": post},
 }
 serialized = json.dumps(result, indent=2, sort_keys=True) + "\n"
 if "--check" in sys.argv:

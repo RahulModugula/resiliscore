@@ -44,6 +44,7 @@ function localScreening(building: Building): ParcelScoreResponse {
     { field: "map_ground_elevation_m", value_source: building.groundElevationM === null ? "UNAVAILABLE" : "LIVE", source_name: `${NYC_SOURCE}; vertical datum not confirmed for flood comparison; excluded from risk model`, vintage: null },
     { field: "offline_screening_model", value_source: "DEFAULT", source_name: `Canonical backend optimizer.simulate snapshot ${screening.engineSha256}; no live geographic hazard lookup`, vintage: null },
   ];
+  parcel.factor_contributions?.forEach(row => { if (row.factor === "Construction era") row.input_value = year; });
   parcel.input_provenance = [...(parcel.input_provenance ?? []).filter(row => row.field !== "year_built"), ...mapProvenance];
   return parcel;
 }

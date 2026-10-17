@@ -38,6 +38,8 @@ test("offline risk values are canonical cached engine output selected by constru
     const expected = (year ?? 1990) < 2002 ? screening.screens.pre2002 : screening.screens.post2002;
     assert.deepEqual(result.parcel.actuarial_breakdown, expected.actuarial_breakdown);
     assert.equal(result.parcel.parcel_identity.year_built, year ?? 1990);
+    const construction = result.parcel.factor_contributions?.find(row => row.factor === "Construction era");
+    if (construction) assert.equal(construction.input_value, year ?? 1990);
     assert.equal(result.parcel.input_provenance?.find(row => row.field === "year_built")?.value_source, year === null ? "DEFAULT" : "LIVE");
   }
 });
