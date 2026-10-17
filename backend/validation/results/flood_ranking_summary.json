@@ -1,0 +1,118 @@
+{
+  "tracts": 400,
+  "states": [
+    "FL",
+    "LA",
+    "NY",
+    "TX"
+  ],
+  "tracts_with_zero_claims": 125,
+  "claims_total": 24373,
+  "spearman": 0.30284208756058323,
+  "spearman_ci95": [
+    0.21118106056892433,
+    0.3940819636743092
+  ],
+  "gini": 0.3718760858194199,
+  "spearman_by_state": {
+    "FL": 0.2368876344139407,
+    "LA": 0.28846154762722115,
+    "NY": 0.2806672983297688,
+    "TX": 0.3053555496132985
+  },
+  "top_over_bottom_decile_incidence": 5.437630152986179,
+  "nri_version": "December 2025",
+  "max_abs_model_vs_nri": 3.0357660829594124e-18,
+  "deciles": [
+    {
+      "decile": 1,
+      "tracts": 40,
+      "claims": 1548,
+      "expected_claims": 975.1791405035246,
+      "actual_over_expected": 1.5874006484600405,
+      "claims_per_m_per_yr": 0.0019182317084671253,
+      "mean_model_rate": 0.00030807693626822236
+    },
+    {
+      "decile": 2,
+      "tracts": 40,
+      "claims": 892,
+      "expected_claims": 1141.042269799168,
+      "actual_over_expected": 0.7817414162553318,
+      "claims_per_m_per_yr": 0.001340862447894553,
+      "mean_model_rate": 0.00042841916944635124
+    },
+    {
+      "decile": 3,
+      "tracts": 40,
+      "claims": 2512,
+      "expected_claims": 1668.0534416315265,
+      "actual_over_expected": 1.5059469542792392,
+      "claims_per_m_per_yr": 0.0030153487284995785,
+      "mean_model_rate": 0.0005008242362266087
+    },
+    {
+      "decile": 4,
+      "tracts": 40,
+      "claims": 424,
+      "expected_claims": 1843.2916317521858,
+      "actual_over_expected": 0.23002328698088673,
+      "claims_per_m_per_yr": 0.0005345969850876821,
+      "mean_model_rate": 0.000580728071002193
+    },
+    {
+      "decile": 5,
+      "tracts": 40,
+      "claims": 591,
+      "expected_claims": 1430.8814203368738,
+      "actual_over_expected": 0.4130321294275107,
+      "claims_per_m_per_yr": 0.0011023040941257546,
+      "mean_model_rate": 0.0006640171767099218
+    },
+    {
+      "decile": 6,
+      "tracts": 40,
+      "claims": 1464,
+      "expected_claims": 1962.2033581838612,
+      "actual_over_expected": 0.7461000379466384,
+      "claims_per_m_per_yr": 0.002272864505828023,
+      "mean_model_rate": 0.0007629719857652667
+    },
+    {
+      "decile": 7,
+      "tracts": 40,
+      "claims": 1754,
+      "expected_claims": 2700.430563714324,
+      "actual_over_expected": 0.6495260509818294,
+      "claims_per_m_per_yr": 0.002303423656976609,
+      "mean_model_rate": 0.0008986484014690927
+    },
+    {
+      "decile": 8,
+      "tracts": 40,
+      "claims": 2930,
+      "expected_claims": 2720.763018942714,
+      "actual_over_expected": 1.076903787503917,
+      "claims_per_m_per_yr": 0.004594118109421459,
+      "mean_model_rate": 0.001062339331579928
+    },
+    {
+      "decile": 9,
+      "tracts": 40,
+      "claims": 3697,
+      "expected_claims": 3520.920392309594,
+      "actual_over_expected": 1.0500095395723799,
+      "claims_per_m_per_yr": 0.005436354256550804,
+      "mean_model_rate": 0.0013099716431696482
+    },
+    {
+      "decile": 10,
+      "tracts": 40,
+      "claims": 8561,
+      "expected_claims": 6410.23476282623,
+      "actual_over_expected": 1.3355205100515715,
+      "claims_per_m_per_yr": 0.010430634578375033,
+      "mean_model_rate": 0.0019884455258943256
+    }
+  ]
+}

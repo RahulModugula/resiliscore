@@ -1,7 +1,7 @@
 # Flood model validation against NFIP claims
 
-Status: partial. The severity backtest, the held-out fit and the event table are done. The tract ranking test is in
-the last section. Everything below was computed on 2026-10-17. The engine under test is model v2 (PR #18); no file
+Status: severity backtest, held-out fit, event table and tract ranking are done. Everything below was computed on
+2026-10-17. The engine under test is model v2 (PR #18); no file
 under `app/` was changed.
 
 ## Verdict
@@ -146,9 +146,72 @@ to the basement level only and the ratio is against the whole building value. Th
 closer to unbiased for them, which is a coincidence of two effects and not evidence the curve fits basements. For
 NYC a basement-specific curve and a basement flag are still needed.
 
-## Tract ranking test
+## Tract ranking test: this validates the NRI prior, not our relativities
 
-See the section at the end of this file once the run is complete.
+**What is being tested.** The engine solves each tract's flood intercept so that the reference home's loss rate equals
+the tract's FEMA National Risk Index flood rate (inland plus coastal expected annual loss over exposed building
+value). The reference home has none of our relativities switched on (freeboard 0, no elevation certificate), so the
+engine's tract-level flood loss cost IS the NRI rate. I called the engine for 400 tracts and the largest difference
+from the NRI rate was 3e-18. Ranking tracts by "the model" therefore ranks them by NRI, and this test validates NRI as
+a ranker of flood claims. It says nothing about our freeboard, rain or terrain terms: their lift beyond NRI is not
+measurable at tract level, and the redacted claims (coordinates rounded to 0.1 degree, no policies) cannot test it at
+parcel level. NRI's flood rate is itself partly built from historical loss, so this is also not an out-of-sample test
+of NRI.
+
+**Method.** 100 tracts each in LA, TX, FL and NY (400 in all), chosen at random within each decile of the state's NRI
+flood rate so the full range is covered. NRI version December 2025. Claims: single-family NFIP claims (occupancy 1 or
+11, any depth or building type), 2005 on, whose census block group starts with the tract FIPS, counted live on
+2026-10-17: 24,373 claims, 125 of the 400 tracts with none. Exposure is the tract's NRI flood-exposed building value
+(inland plus coastal summed; overlap is not knowable, so some is double counted) in $M, over 21 loss years.
+Incidence = claims per $1M exposed per year.
+
+| Result | Value |
+|---|---|
+| Tracts, n | 400 |
+| Spearman, NRI flood rate vs claim incidence | 0.303 (95% bootstrap interval 0.211 to 0.394, 2,000 resamples over tracts) |
+| By state | FL 0.237, LA 0.288, NY 0.281, TX 0.305 |
+| Gini of the ordering against claims, weighted by exposure | 0.372 |
+| Incidence, top decile over bottom decile | 5.4 times |
+
+Deciles of the NRI rate (1 lowest), 40 tracts each. Expected claims scale the rate so the total matches the observed
+total, so only the shape is compared:
+
+| Decile | Claims | Expected | Actual / expected | Claims per $1M per year | Mean NRI rate |
+|---|---|---|---|---|---|
+| 1 | 1,548 | 975 | 1.59 | 0.0019 | 0.031% |
+| 2 | 892 | 1,141 | 0.78 | 0.0013 | 0.043% |
+| 3 | 2,512 | 1,668 | 1.51 | 0.0030 | 0.050% |
+| 4 | 424 | 1,843 | 0.23 | 0.0005 | 0.058% |
+| 5 | 591 | 1,431 | 0.41 | 0.0011 | 0.066% |
+| 6 | 1,464 | 1,962 | 0.75 | 0.0023 | 0.076% |
+| 7 | 1,754 | 2,700 | 0.65 | 0.0023 | 0.090% |
+| 8 | 2,930 | 2,721 | 1.08 | 0.0046 | 0.106% |
+| 9 | 3,697 | 3,521 | 1.05 | 0.0054 | 0.131% |
+| 10 | 8,561 | 6,410 | 1.34 | 0.0104 | 0.199% |
+
+**Reading it.** NRI ranks flood claim incidence in the right direction but only moderately: Spearman 0.30, and the
+claim incidence rises about five-fold from the lowest to the highest decile. The decile pattern is not smooth.
+Deciles 1 and 3 carry 1.59 and 1.51 times the expected claims, so low-NRI tracts are not safely low, while deciles 4
+to 7 carry only 0.23 to 0.75 times. The top decile has 1.34 times the expected claims, so NRI understates the worst
+tracts.
+
+**Per event.** The same comparison inside each event, over tracts with a claim in the event window (tracts with at
+least 30 required; claims are the no-basement single-family subset used above):
+
+| Event | Tracts | Spearman |
+|---|---|---|
+| Katrina 2005 | 353 | 0.307 |
+| Sandy 2012 | 267 | 0.519 |
+| Harvey 2017 | 1,166 | 0.134 |
+| Florence 2018 | 232 | 0.070 |
+| Ida 2021, LA surge | 275 | 0.256 |
+| Ida 2021, NY/NJ pluvial | 69 | 0.139 |
+| Ian 2022 | 511 | -0.041 |
+| Helene 2024 | 361 | 0.081 |
+
+NRI ranks tracts within an event best for Sandy (0.52), a surge event on a coast where the NRI coastal flood term
+should be informative, and not at all for Ian (-0.04). These use only tracts that were hit, so they ask which hit
+tracts had more claims, not which tracts would be hit.
 
 ## Limitations
 
