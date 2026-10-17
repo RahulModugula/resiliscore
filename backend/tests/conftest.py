@@ -14,3 +14,11 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if "live" in item.keywords:
             item.add_marker(skip)
+
+
+@pytest.fixture(autouse=True)
+def _fresh_ingestion_caches(monkeypatch):
+    """Module-level TTL caches would carry one test's upstream answers into the next."""
+    from app.ingestion import engine
+
+    monkeypatch.setattr(engine, "DEFAULT_CACHES", engine.Caches())

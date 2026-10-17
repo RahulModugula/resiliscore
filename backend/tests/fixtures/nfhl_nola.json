@@ -1,0 +1,51 @@
+{
+ "displayFieldName": "FLD_AR_ID",
+ "fieldAliases": {
+  "FLD_ZONE": "FLD_ZONE",
+  "SFHA_TF": "SFHA_TF",
+  "STATIC_BFE": "STATIC_BFE",
+  "ZONE_SUBTY": "ZONE_SUBTY",
+  "DEPTH": "DEPTH"
+ },
+ "fields": [
+  {
+   "name": "FLD_ZONE",
+   "type": "esriFieldTypeString",
+   "alias": "FLD_ZONE",
+   "length": 17
+  },
+  {
+   "name": "SFHA_TF",
+   "type": "esriFieldTypeString",
+   "alias": "SFHA_TF",
+   "length": 1
+  },
+  {
+   "name": "STATIC_BFE",
+   "type": "esriFieldTypeDouble",
+   "alias": "STATIC_BFE"
+  },
+  {
+   "name": "ZONE_SUBTY",
+   "type": "esriFieldTypeString",
+   "alias": "ZONE_SUBTY",
+   "length": 76
+  },
+  {
+   "name": "DEPTH",
+   "type": "esriFieldTypeDouble",
+   "alias": "DEPTH"
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "FLD_ZONE": "X",
+    "SFHA_TF": "F",
+    "STATIC_BFE": -9999.0,
+    "ZONE_SUBTY": "0.2 PCT ANNUAL CHANCE FLOOD HAZARD",
+    "DEPTH": -9999.0
+   }
+  }
+ ]
+}
