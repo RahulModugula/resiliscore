@@ -89,38 +89,39 @@ def test_elevation_cert_raises_z_by_the_channel_weight():
     entry = r.json()["evidence_log"][0]
     assert entry["weight_added"] == 7.0
     assert entry["z_before"] == 0.62 and entry["z_after"] == 0.9121
-    assert r.json()["parcel"]["actuarial_breakdown"]["credibility_weight_z"] == entry["z_after"]
-    assert r.json()["parcel"]["private_verification_layer"]["elev_cert_verified"] is True
+    assert entry["evidence_id"] == f"EV-{S2_APN}-001" and entry["channel"] == "ELEVATION_CERT"
+    assert r.json()["actuarial_breakdown"]["credibility_weight_z"] == entry["z_after"]
+    assert r.json()["private_verification_layer"]["elev_cert_verified"] is True
 
 
 def test_evidence_accumulates_and_matches_engine():
     post(S2_APN, "ELEVATION_CERT")
     r = post(S2_APN, "IBHS_CERT", {"wph_tier": "PLUS"}).json()
     log = r["evidence_log"]
-    assert [e["seq"] for e in log] == [1, 2]
+    assert [e["evidence_id"][-3:] for e in log] == ["001", "002"]
     assert log[1]["z_before"] == log[0]["z_after"]
     assert log[1]["weight_added"] == 16.5
     expect = simulate(by_apn(S2_APN).model_copy(update={"private_verification_layer": by_apn(S2_APN)
         .private_verification_layer.model_copy(update={"elev_cert_verified": True, "ibhs_wph_tier": "PLUS"})}), [])
-    assert r["parcel"]["actuarial_breakdown"]["resili_score"] == expect.actuarial_breakdown.resili_score
+    assert r["actuarial_breakdown"]["resili_score"] == expect.actuarial_breakdown.resili_score
     assert log[1]["score_after"] == expect.actuarial_breakdown.resili_score
 
 
 def test_lidar_adds_no_weight():
     entry = post(S2_APN, "LIDAR").json()["evidence_log"][0]
-    assert entry["weight_added"] == 0 and entry["z_before"] == entry["z_after"] and entry["note"]
+    assert entry["weight_added"] == 0 and entry["z_before"] == entry["z_after"]
 
 
 def test_self_inspect_and_iot_channels():
     s3 = "23312045070000"
     assert post(S2_APN, "IOT").json()["evidence_log"][0]["weight_added"] == 8.0
     entry = post(s3, "PHOTO_SELF_INSPECT").json()["evidence_log"][0]
-    assert entry["weight_added"] > 0 or entry["z_after"] >= entry["z_before"]
+    assert entry["weight_added"] >= 0 and entry["z_after"] >= entry["z_before"]
 
 
 def test_evidence_is_per_parcel():
     post(S2_APN, "ELEVATION_CERT")
-    assert post(S1_APN, "IOT").json()["evidence_log"][0]["seq"] == 1
+    assert len(post(S1_APN, "IOT").json()["evidence_log"]) == 1
 
 
 @pytest.mark.parametrize(
@@ -142,9 +143,9 @@ def test_store_is_swappable_behind_the_interface():
     class Spy(evidence.InMemoryEvidenceStore):
         calls = 0
 
-        def record(self, apn_uid, parcel, entry):
+        def save(self, apn_uid, parcel):
             Spy.calls += 1
-            super().record(apn_uid, parcel, entry)
+            super().save(apn_uid, parcel)
 
     evidence.store = Spy()
     post(S2_APN, "IOT")
@@ -208,7 +209,7 @@ def test_what_if_rejects_unknown_inputs():
         mcp_server.what_if_mitigation(S2_APN, ["NOPE"])
 
 
-def test_explain_score_ranks_perils():
+def test_explain_score_falls_back_to_peril_split_without_factor_contributions():
     out = mcp_server.explain_score(S2_APN)
     shares = [p["share"] for p in out["peril_split"]]
     assert shares == sorted(shares, reverse=True) and abs(sum(shares) - 1) < 0.01

@@ -186,18 +186,21 @@ def what_if_mitigation(address_or_apn: str, action_ids: list[str]) -> dict[str, 
 def explain_score(apn_uid: str) -> dict[str, Any]:
     """Explain a parcel's ResiliScore: which perils drive the expected annual loss, largest first.
 
-    Stub until contract v2 adds per-factor contributions: today it ranks the peril split (each peril's
+    Returns the contract v2 factor_contributions when the model fills them; always includes the peril split (each peril's
     share of the annual loss) and gives the credibility weight Z, which says how far the score rests on the
     parcel's own verified evidence rather than the census-tract prior.
     """
-    ab = simulate(_parcel(apn_uid), []).actuarial_breakdown
+    parcel = simulate(_parcel(apn_uid), [])
+    ab = parcel.actuarial_breakdown
     total = sum(p.peril_aal_usd for p in ab.peril_split)
     perils = sorted(ab.peril_split, key=lambda p: p.peril_aal_usd, reverse=True)
+    factors = sorted(parcel.factor_contributions, key=lambda f: abs(f.score_points), reverse=True)
     return {
         "apn_uid": apn_uid,
         "resili_score": ab.resili_score,
         "credibility_weight_z": ab.credibility_weight_z,
-        "factor_contributions": "stub: peril_split only, until contract v2",
+        "factor_contributions": [f.model_dump(mode="json") for f in factors]
+        or "none yet: the model does not populate factor_contributions, so see peril_split",
         "peril_split": [
             {"peril": p.peril, "aal_usd": p.peril_aal_usd, "share": round(p.peril_aal_usd / total, 4) if total else 0.0}
             for p in perils

@@ -99,12 +99,13 @@ def test_bad_requests(path, body, status):
     assert client.post(path, json=body).status_code == status
 
 
-def test_mcp_registers_four_tools():
+def test_mcp_registers_all_tools():
     import asyncio
 
     names = {t.name for t in asyncio.run(mcp_server.mcp.list_tools())}
     assert names == {
-        "get_parcel_resiliscore", "verify_zone0_clearance", "query_usgs_freeboard", "simulate_mitigation_roi"
+        "get_parcel_resiliscore", "verify_zone0_clearance", "query_usgs_freeboard", "simulate_mitigation_roi",
+        "what_if_mitigation", "explain_score",
     }
 
 
