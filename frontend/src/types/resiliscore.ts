@@ -54,7 +54,7 @@ export type State =
   | "WV"
   | "WI"
   | "WY";
-export type Peril = "FLOOD" | "WILDFIRE" | "WIND_HAIL";
+export type Peril = "FLOOD" | "WILDFIRE" | "WIND_HAIL" | "PLUVIAL" | "SEWER_BACKUP";
 export type RoofClass = "CLASS_A_FORTIFIED" | "CLASS_A_IMPACT_4" | "CLASS_A_ASPHALT" | "WOOD_SHAKE_UNRATED";
 export type FortifiedTier = "ROOF" | "SILVER" | "GOLD" | "NONE";
 export type WphTier = "BASE" | "PLUS" | "NONE";
@@ -210,7 +210,41 @@ export interface RegulatoryCompliance {
   dataset_vintages: Record<string, string>;
 }
 
-export type ValueSource = "LIVE" | "DEFAULT" | "UNAVAILABLE" | "REFERENCE_PARCEL";
+export type BasementType = "NONE" | "FULL" | "PARTIAL" | "UNKNOWN";
+export type DepScenario = "LIMITED_CURRENT" | "MODERATE_CURRENT" | "MODERATE_2050" | "EXTREME_2080";
+export type DepFloodClass = "NONE" | "NUISANCE" | "DEEP_CONTIGUOUS" | "UNAVAILABLE";
+
+export interface DepStormwater {
+  scenario: DepScenario;
+  flood_class: DepFloodClass;
+}
+
+// Contract v3: NYC-specific evidence. Null or absent outside the five boroughs.
+export interface NycLayer {
+  bbl: string;
+  bin: string | null;
+  borough: string;
+  bldg_class: string | null;
+  year_built: number | null;
+  num_floors: number | null;
+  basement_code: string | null;
+  basement_type: BasementType;
+  ground_elevation_ft: number | null;
+  roof_height_ft: number | null;
+  dep_stormwater: DepStormwater[];
+  floodnet_events_500m_5y: number | null;
+  floodnet_max_depth_in: number | null;
+  sewer_backup_311_500m_5y: number | null;
+  street_flooding_311_500m_5y: number | null;
+  residential_units_500m: number | null; // sum of PLUTO unitsres within 500 m
+  catch_basins_150m: number | null;
+  dob_open_violations: number | null;
+  dob_cellar_conversion_flag: boolean | null;
+  sandy_inundated: boolean | null;
+  evacuation_zone: string | null;
+}
+
+export type ValueSource ="LIVE" | "DEFAULT" | "UNAVAILABLE" | "REFERENCE_PARCEL";
 
 export interface InputProvenance {
   field: string;
@@ -276,6 +310,8 @@ export interface ParcelScoreResponse {
   premium_build?: PremiumBuild | null;
   evidence_log?: EvidenceLogEntry[];
   indicative_only?: boolean;
+  // Contract v3: optional, additive.
+  nyc?: NycLayer | null;
 }
 
 export type GoldenScenarioKey =

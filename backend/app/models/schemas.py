@@ -11,7 +11,7 @@ UUID_PATTERN = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 State = Literal[
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 ]
-Peril = Literal["FLOOD", "WILDFIRE", "WIND_HAIL"]
+Peril = Literal["FLOOD", "WILDFIRE", "WIND_HAIL", "PLUVIAL", "SEWER_BACKUP"]
 RoofClass = Literal["CLASS_A_FORTIFIED", "CLASS_A_IMPACT_4", "CLASS_A_ASPHALT", "WOOD_SHAKE_UNRATED"]
 FortifiedTier = Literal["ROOF", "SILVER", "GOLD", "NONE"]
 WphTier = Literal["BASE", "PLUS", "NONE"]
@@ -177,6 +177,42 @@ class RegulatoryCompliance(_Strict):
 ValueSource = Literal["LIVE", "DEFAULT", "UNAVAILABLE", "REFERENCE_PARCEL"]
 
 
+BasementType = Literal["NONE", "FULL", "PARTIAL", "UNKNOWN"]
+DepScenario = Literal["LIMITED_CURRENT", "MODERATE_CURRENT", "MODERATE_2050", "EXTREME_2080"]
+DepFloodClass = Literal["NONE", "NUISANCE", "DEEP_CONTIGUOUS", "UNAVAILABLE"]
+
+
+class DepStormwater(_Strict):
+    scenario: DepScenario
+    flood_class: DepFloodClass
+
+
+class NycLayer(_Strict):
+    """Contract v3: NYC-specific evidence. Null on responses outside the five boroughs."""
+
+    bbl: str
+    bin: str | None
+    borough: str
+    bldg_class: str | None
+    year_built: int | None
+    num_floors: float | None
+    basement_code: str | None
+    basement_type: BasementType
+    ground_elevation_ft: float | None
+    roof_height_ft: float | None
+    dep_stormwater: list[DepStormwater]
+    floodnet_events_500m_5y: int | None
+    floodnet_max_depth_in: float | None
+    sewer_backup_311_500m_5y: int | None
+    street_flooding_311_500m_5y: int | None
+    residential_units_500m: int | None  # sum of PLUTO unitsres within 500 m: the denominator for 311 density
+    catch_basins_150m: int | None
+    dob_open_violations: int | None
+    dob_cellar_conversion_flag: bool | None
+    sandy_inundated: bool | None
+    evacuation_zone: str | None
+
+
 class InputProvenance(_Strict):
     field: str
     value_source: ValueSource
@@ -241,3 +277,5 @@ class ParcelScoreResponse(_Strict):
     premium_build: PremiumBuild | None = None
     evidence_log: list[EvidenceLogEntry] = Field(default_factory=list)
     indicative_only: bool = False
+    # Contract v3: optional, additive.
+    nyc: NycLayer | None = None

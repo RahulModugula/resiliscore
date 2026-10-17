@@ -27,6 +27,16 @@ def get_client() -> httpx.AsyncClient | None:
 
 
 @asynccontextmanager
+async def borrowed_client() -> AsyncIterator[httpx.AsyncClient]:
+    """The lifespan client when the app runs, else a short-lived one (tests, scripts)."""
+    if _client is not None:
+        yield _client
+        return
+    async with new_client() as own:
+        yield own
+
+
+@asynccontextmanager
 async def lifespan(_app: object) -> AsyncIterator[None]:
     global _client
     client = _client = new_client()

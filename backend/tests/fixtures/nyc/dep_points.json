@@ -1,0 +1,445 @@
+[
+ {
+  "scenario": "EXTREME_2080",
+  "url": "https://services6.arcgis.com/yG5s3afENB5iO9fj/arcgis/rest/services/NYC_Stormwater_Flood_Map___Extreme_Flood_with_2080_Sea_Level_Rise/FeatureServer/0/query",
+  "fixed_class": null,
+  "point": [
+   -74.2410771949693,
+   40.4983355097667
+  ],
+  "code": 1,
+  "response": {
+   "objectIdFieldName": "FID",
+   "uniqueIdField": {
+    "name": "FID",
+    "isSystemMaintained": true
+   },
+   "globalIdFieldName": "",
+   "geometryProperties": {
+    "shapeAreaFieldName": "Shape__Area",
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriMeters"
+   },
+   "geometryType": "esriGeometryPolygon",
+   "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+   },
+   "fields": [
+    {
+     "name": "FID",
+     "type": "esriFieldTypeOID",
+     "alias": "FID",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "OBJECTID",
+     "type": "esriFieldTypeDouble",
+     "alias": "OBJECTID",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Flooding_C",
+     "type": "esriFieldTypeInteger",
+     "alias": "Flooding_Category",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Leng",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Leng",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Length",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    }
+   ],
+   "features": [
+    {
+     "attributes": {
+      "FID": 1,
+      "OBJECTID": 1,
+      "Flooding_C": 1,
+      "Shape_Leng": 32643837.862494733,
+      "Shape_Area": 397215235.1141243,
+      "Shape__Area": 64241159.640625,
+      "Shape__Length": 13128007.657744369
+     }
+    }
+   ]
+  }
+ },
+ {
+  "scenario": "EXTREME_2080",
+  "url": "https://services6.arcgis.com/yG5s3afENB5iO9fj/arcgis/rest/services/NYC_Stormwater_Flood_Map___Extreme_Flood_with_2080_Sea_Level_Rise/FeatureServer/0/query",
+  "fixed_class": null,
+  "point": [
+   -74.24084555869563,
+   40.498206582036
+  ],
+  "code": 2,
+  "response": {
+   "objectIdFieldName": "FID",
+   "uniqueIdField": {
+    "name": "FID",
+    "isSystemMaintained": true
+   },
+   "globalIdFieldName": "",
+   "geometryProperties": {
+    "shapeAreaFieldName": "Shape__Area",
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriMeters"
+   },
+   "geometryType": "esriGeometryPolygon",
+   "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+   },
+   "fields": [
+    {
+     "name": "FID",
+     "type": "esriFieldTypeOID",
+     "alias": "FID",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "OBJECTID",
+     "type": "esriFieldTypeDouble",
+     "alias": "OBJECTID",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Flooding_C",
+     "type": "esriFieldTypeInteger",
+     "alias": "Flooding_Category",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Leng",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Leng",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Length",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    }
+   ],
+   "features": [
+    {
+     "attributes": {
+      "FID": 2,
+      "OBJECTID": 2,
+      "Flooding_C": 2,
+      "Shape_Leng": 16564889.1975287,
+      "Shape_Area": 305454990.47826207,
+      "Shape__Area": 49412265.37109375,
+      "Shape__Length": 6662310.793796397
+     }
+    }
+   ]
+  }
+ },
+ {
+  "scenario": "EXTREME_2080",
+  "url": "https://services6.arcgis.com/yG5s3afENB5iO9fj/arcgis/rest/services/NYC_Stormwater_Flood_Map___Extreme_Flood_with_2080_Sea_Level_Rise/FeatureServer/0/query",
+  "fixed_class": null,
+  "point": [
+   -74.24795944977234,
+   40.496532570007695
+  ],
+  "code": 3,
+  "response": {
+   "objectIdFieldName": "FID",
+   "uniqueIdField": {
+    "name": "FID",
+    "isSystemMaintained": true
+   },
+   "globalIdFieldName": "",
+   "geometryProperties": {
+    "shapeAreaFieldName": "Shape__Area",
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriMeters"
+   },
+   "geometryType": "esriGeometryPolygon",
+   "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+   },
+   "fields": [
+    {
+     "name": "FID",
+     "type": "esriFieldTypeOID",
+     "alias": "FID",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "OBJECTID",
+     "type": "esriFieldTypeDouble",
+     "alias": "OBJECTID",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Flooding_C",
+     "type": "esriFieldTypeInteger",
+     "alias": "Flooding_Category",
+     "sqlType": "sqlTypeInteger",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Leng",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Leng",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape_Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape_Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Area",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Length",
+     "sqlType": "sqlTypeFloat",
+     "domain": null,
+     "defaultValue": null
+    }
+   ],
+   "features": [
+    {
+     "attributes": {
+      "FID": 3,
+      "OBJECTID": 3,
+      "Flooding_C": 3,
+      "Shape_Leng": 8042524.691032183,
+      "Shape_Area": 345584598.214244,
+      "Shape__Area": 55809067.38671875,
+      "Shape__Length": 3233532.688782335
+     }
+    }
+   ]
+  }
+ },
+ {
+  "scenario": "MODERATE_2050",
+  "url": "https://services.arcgis.com/at3rDjch5X7i9Bag/arcgis/rest/services/Moderate_Flood_SLR_2050/FeatureServer/4/query",
+  "fixed_class": "DEEP_CONTIGUOUS",
+  "point": [
+   -73.85848006173879,
+   40.702807495494895
+  ],
+  "code": null,
+  "response": {
+   "objectIdFieldName": "OBJECTID",
+   "uniqueIdField": {
+    "name": "OBJECTID",
+    "isSystemMaintained": true
+   },
+   "globalIdFieldName": "",
+   "geometryProperties": {
+    "shapeAreaFieldName": "Shape__Area",
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriMeters"
+   },
+   "geometryType": "esriGeometryPolygon",
+   "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+   },
+   "fields": [
+    {
+     "name": "OBJECTID",
+     "type": "esriFieldTypeOID",
+     "alias": "OBJECTID",
+     "sqlType": "sqlTypeOther",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Model",
+     "type": "esriFieldTypeString",
+     "alias": "Model",
+     "sqlType": "sqlTypeOther",
+     "length": 255,
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Area",
+     "sqlType": "sqlTypeDouble",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Length",
+     "sqlType": "sqlTypeDouble",
+     "domain": null,
+     "defaultValue": null
+    }
+   ],
+   "features": [
+    {
+     "attributes": {
+      "OBJECTID": 1,
+      "Model": "BB",
+      "Shape__Area": 1114.71875,
+      "Shape__Length": 179.45289917419476
+     }
+    }
+   ]
+  }
+ },
+ {
+  "scenario": "MODERATE_2050",
+  "url": "https://services.arcgis.com/at3rDjch5X7i9Bag/arcgis/rest/services/Moderate_Flood_SLR_2050/FeatureServer/5/query",
+  "fixed_class": "NUISANCE",
+  "point": [
+   -73.85873112163063,
+   40.702695466698415
+  ],
+  "code": null,
+  "response": {
+   "objectIdFieldName": "OBJECTID",
+   "uniqueIdField": {
+    "name": "OBJECTID",
+    "isSystemMaintained": true
+   },
+   "globalIdFieldName": "",
+   "geometryProperties": {
+    "shapeAreaFieldName": "Shape__Area",
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriMeters"
+   },
+   "geometryType": "esriGeometryPolygon",
+   "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+   },
+   "fields": [
+    {
+     "name": "OBJECTID",
+     "type": "esriFieldTypeOID",
+     "alias": "OBJECTID",
+     "sqlType": "sqlTypeOther",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Model",
+     "type": "esriFieldTypeString",
+     "alias": "Model",
+     "sqlType": "sqlTypeOther",
+     "length": 255,
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Area",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Area",
+     "sqlType": "sqlTypeDouble",
+     "domain": null,
+     "defaultValue": null
+    },
+    {
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble",
+     "alias": "Shape__Length",
+     "sqlType": "sqlTypeDouble",
+     "domain": null,
+     "defaultValue": null
+    }
+   ],
+   "features": [
+    {
+     "attributes": {
+      "OBJECTID": 1,
+      "Model": "BB",
+      "Shape__Area": 756.01171875,
+      "Shape__Length": 231.39585377303655
+     }
+    }
+   ]
+  }
+ }
+]

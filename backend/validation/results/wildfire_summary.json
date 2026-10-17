@@ -1,0 +1,415 @@
+{
+ "method": "Logistic regression of destroyed on DINS-coded hardening features, year-built era and fire fixed effects (Newton-Raphson, numpy), fitted on every fire except the holdout. Unknown values are kept as their own level. Observed ratios are fire-stratified; each fire is scored by a model fitted without it. model_implied_ratio converts the engine's risk ratio to an odds ratio at the unfavourable group's destroyed share.",
+ "data_source": "CAL FIRE Damage Inspection (DINS) database, ArcGIS FeatureServer https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/ArcGIS/rest/services/POSTFIRE_MASTER_DATA_SHARE/FeatureServer/0",
+ "data_vintage": "DINS layer last edited 2026-01-06; 32 fires, 2015 to 2025; seeded sample of 12,362 single residences",
+ "fetched_on": "2026-10-17",
+ "verdict": "Class A roof, enclosed eaves and screened vents each lower the destroyed share within a fire, and the engine's 8% credit per feature understates all three. Zone 0 clearance cannot be tested in DINS. Hardening features alone discriminate weakly (mean AUC 0.55 current, 0.63 refit on complete-case homes; Palisades holdout 0.53 vs 0.57). DINS attributes are recorded after the fire, so Unknown mostly marks destroyed homes.",
+ "fires": [
+  {
+   "fire": "Camp",
+   "year": 2018,
+   "n_structures": 23624,
+   "destroyed_share": 0.79935,
+   "auc_current": 0.5863,
+   "auc_fitted": 0.57564,
+   "calibration_slope": 0.63943,
+   "note": "Sampled 1228 single residences. Complete-case AUC (roof, eaves, vents recorded; n=718): current 0.56, fitted 0.56."
+  },
+  {
+   "fire": "Eaton",
+   "year": 2025,
+   "n_structures": 18388,
+   "destroyed_share": 0.50717,
+   "auc_current": 0.66459,
+   "auc_fitted": 0.77579,
+   "calibration_slope": 2.46399,
+   "note": "Sampled 1500 single residences. Complete-case AUC (roof, eaves, vents recorded; n=680): current 0.59, fitted 0.73."
+  },
+  {
+   "fire": "Palisades",
+   "year": 2025,
+   "n_structures": 12081,
+   "destroyed_share": 0.57397,
+   "auc_current": 0.62262,
+   "auc_fitted": 0.67367,
+   "calibration_slope": 1.10732,
+   "note": "Sampled 1500 single residences. Complete-case AUC (roof, eaves, vents recorded; n=502): current 0.53, fitted 0.57."
+  },
+  {
+   "fire": "LNU Lightning Cmplx",
+   "year": 2020,
+   "n_structures": 5110,
+   "destroyed_share": 0.29036,
+   "auc_current": 0.13911,
+   "auc_fitted": 0.16207,
+   "calibration_slope": -1.56794,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=63): current 0.52, fitted 0.68."
+  },
+  {
+   "fire": "Glass",
+   "year": 2020,
+   "n_structures": 4762,
+   "destroyed_share": 0.26387,
+   "auc_current": 0.6916,
+   "auc_fitted": 0.70581,
+   "calibration_slope": 1.40589,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=169): current 0.65, fitted 0.71."
+  },
+  {
+   "fire": "CZU Lightning Cmplx",
+   "year": 2020,
+   "n_structures": 4762,
+   "destroyed_share": 0.28523,
+   "auc_current": 0.11764,
+   "auc_fitted": 0.16704,
+   "calibration_slope": -2.12833,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=20) for a complete-case AUC."
+  },
+  {
+   "fire": "Caldor",
+   "year": 2021,
+   "n_structures": 4442,
+   "destroyed_share": 0.23607,
+   "auc_current": 0.51863,
+   "auc_fitted": 0.68052,
+   "calibration_slope": 1.30245,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=179): current 0.42, fitted 0.72."
+  },
+  {
+   "fire": "Dixie",
+   "year": 2021,
+   "n_structures": 3831,
+   "destroyed_share": 0.33922,
+   "auc_current": 0.6399,
+   "auc_fitted": 0.71976,
+   "calibration_slope": 1.31817,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=138) for a complete-case AUC."
+  },
+  {
+   "fire": "Creek",
+   "year": 2017,
+   "n_structures": 3467,
+   "destroyed_share": 0.26495,
+   "auc_current": 0.05004,
+   "auc_fitted": 0.0869,
+   "calibration_slope": -3.20601,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=50) for a complete-case AUC."
+  },
+  {
+   "fire": "North Complex",
+   "year": 2020,
+   "n_structures": 3204,
+   "destroyed_share": 0.76648,
+   "auc_current": 0.69443,
+   "auc_fitted": 0.66133,
+   "calibration_slope": 0.94878,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=77): current 0.72, fitted 0.73."
+  },
+  {
+   "fire": "Valley",
+   "year": 2015,
+   "n_structures": 2497,
+   "destroyed_share": 0.81818,
+   "auc_current": 0.44067,
+   "auc_fitted": 0.46465,
+   "calibration_slope": -0.12535,
+   "note": "Sampled 299 single residences. Too few complete-case destroyed or surviving homes (n=0) for a complete-case AUC."
+  },
+  {
+   "fire": "Park",
+   "year": 2024,
+   "n_structures": 2092,
+   "destroyed_share": 0.37688,
+   "auc_current": 0.70383,
+   "auc_fitted": 0.76804,
+   "calibration_slope": 1.76303,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=144) for a complete-case AUC."
+  },
+  {
+   "fire": "Mountain",
+   "year": 2019,
+   "n_structures": 1893,
+   "destroyed_share": 0.15008,
+   "auc_current": 0.64323,
+   "auc_fitted": 0.71427,
+   "calibration_slope": 1.49391,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=179) for a complete-case AUC."
+  },
+  {
+   "fire": "Kincade",
+   "year": 2019,
+   "n_structures": 1568,
+   "destroyed_share": 0.15647,
+   "auc_current": 0.22691,
+   "auc_fitted": 0.08792,
+   "calibration_slope": -3.35544,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=22) for a complete-case AUC."
+  },
+  {
+   "fire": "Atlas",
+   "year": 2017,
+   "n_structures": 1372,
+   "destroyed_share": 0.54227,
+   "auc_current": 0.65445,
+   "auc_fitted": 0.70144,
+   "calibration_slope": 1.27201,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=0) for a complete-case AUC."
+  },
+  {
+   "fire": "Bridge",
+   "year": 2024,
+   "n_structures": 901,
+   "destroyed_share": 0.0866,
+   "auc_current": 0.97226,
+   "auc_fitted": 0.9958,
+   "calibration_slope": 8.24001,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=167) for a complete-case AUC."
+  },
+  {
+   "fire": "SCU Lightning Cmplx",
+   "year": 2020,
+   "n_structures": 878,
+   "destroyed_share": 0.28964,
+   "auc_current": 0.44733,
+   "auc_fitted": 0.51677,
+   "calibration_slope": 0.21844,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=46) for a complete-case AUC."
+  },
+  {
+   "fire": "SQF Complex",
+   "year": 2020,
+   "n_structures": 798,
+   "destroyed_share": 0.33269,
+   "auc_current": 0.44613,
+   "auc_fitted": 0.5206,
+   "calibration_slope": 0.16531,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=123): current 0.42, fitted 0.51."
+  },
+  {
+   "fire": "Oak",
+   "year": 2020,
+   "n_structures": 761,
+   "destroyed_share": 0.31781,
+   "auc_current": 0.57618,
+   "auc_fitted": 0.62041,
+   "calibration_slope": 0.74749,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=177): current 0.42, fitted 0.45."
+  },
+  {
+   "fire": "Fawn",
+   "year": 2021,
+   "n_structures": 728,
+   "destroyed_share": 0.21792,
+   "auc_current": 0.65585,
+   "auc_fitted": 0.65082,
+   "calibration_slope": 1.03352,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=172) for a complete-case AUC."
+  },
+  {
+   "fire": "Mosquito",
+   "year": 2022,
+   "n_structures": 666,
+   "destroyed_share": 0.12022,
+   "auc_current": 0.58885,
+   "auc_fitted": 0.68266,
+   "calibration_slope": 1.02563,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=187) for a complete-case AUC."
+  },
+  {
+   "fire": "BEU Lightning Cmplx",
+   "year": 2020,
+   "n_structures": 589,
+   "destroyed_share": 0.16195,
+   "auc_current": 0.1196,
+   "auc_fitted": 0.11704,
+   "calibration_slope": -2.44122,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=32) for a complete-case AUC."
+  },
+  {
+   "fire": "Zogg",
+   "year": 2020,
+   "n_structures": 554,
+   "destroyed_share": 0.38868,
+   "auc_current": 0.57048,
+   "auc_fitted": 0.6987,
+   "calibration_slope": 1.1274,
+   "note": "Sampled 265 single residences. Complete-case AUC (roof, eaves, vents recorded; n=138): current 0.58, fitted 0.69."
+  },
+  {
+   "fire": "River",
+   "year": 2018,
+   "n_structures": 536,
+   "destroyed_share": 0.35817,
+   "auc_current": 0.63328,
+   "auc_fitted": 0.67087,
+   "calibration_slope": 0.99828,
+   "note": "Sampled 300 single residences. Too few complete-case destroyed or surviving homes (n=161) for a complete-case AUC."
+  },
+  {
+   "fire": "Beckwourth",
+   "year": 2021,
+   "n_structures": 508,
+   "destroyed_share": 0.37857,
+   "auc_current": 0.59057,
+   "auc_fitted": 0.71259,
+   "calibration_slope": 1.44753,
+   "note": "Sampled 280 single residences. Too few complete-case destroyed or surviving homes (n=91) for a complete-case AUC."
+  },
+  {
+   "fire": "Borel",
+   "year": 2024,
+   "n_structures": 505,
+   "destroyed_share": 0.49836,
+   "auc_current": 0.65649,
+   "auc_fitted": 0.74027,
+   "calibration_slope": 1.8357,
+   "note": "Sampled 300 single residences. Complete-case AUC (roof, eaves, vents recorded; n=109): current 0.66, fitted 0.70."
+  },
+  {
+   "fire": "Slater",
+   "year": 2020,
+   "n_structures": 435,
+   "destroyed_share": 0.80488,
+   "auc_current": 0.5,
+   "auc_fitted": 0.52336,
+   "calibration_slope": 0.20372,
+   "note": "Sampled 246 single residences. Too few complete-case destroyed or surviving homes (n=0) for a complete-case AUC."
+  },
+  {
+   "fire": "Airport",
+   "year": 2024,
+   "n_structures": 379,
+   "destroyed_share": 0.55607,
+   "auc_current": 0.50672,
+   "auc_fitted": 0.5866,
+   "calibration_slope": 0.60995,
+   "note": "Sampled 214 single residences. Complete-case AUC (roof, eaves, vents recorded; n=75): current 0.32, fitted 0.49."
+  },
+  {
+   "fire": "McKinney",
+   "year": 2022,
+   "n_structures": 357,
+   "destroyed_share": 0.56459,
+   "auc_current": 0.59243,
+   "auc_fitted": 0.70572,
+   "calibration_slope": 1.57187,
+   "note": "Sampled 209 single residences. Too few complete-case destroyed or surviving homes (n=66) for a complete-case AUC."
+  },
+  {
+   "fire": "August Complex",
+   "year": 2020,
+   "n_structures": 356,
+   "destroyed_share": 0.24339,
+   "auc_current": 0.44968,
+   "auc_fitted": 0.72271,
+   "calibration_slope": 1.49237,
+   "note": "Sampled 189 single residences. Too few complete-case destroyed or surviving homes (n=86) for a complete-case AUC."
+  },
+  {
+   "fire": "Ranch",
+   "year": 2018,
+   "n_structures": 345,
+   "destroyed_share": 0.72821,
+   "auc_current": 0.62357,
+   "auc_fitted": 0.69439,
+   "calibration_slope": 1.49314,
+   "note": "Sampled 195 single residences. Too few complete-case destroyed or surviving homes (n=40) for a complete-case AUC."
+  },
+  {
+   "fire": "Mill",
+   "year": 2022,
+   "n_structures": 309,
+   "destroyed_share": 0.38397,
+   "auc_current": 0.66901,
+   "auc_fitted": 0.80585,
+   "calibration_slope": 3.33186,
+   "note": "Sampled 237 single residences. Complete-case AUC (roof, eaves, vents recorded; n=155): current 0.64, fitted 0.72."
+  }
+ ],
+ "features": [
+  {
+   "feature": "roof_class_a",
+   "n": 10188,
+   "odds_ratio": 0.34595,
+   "ci_low": 0.22421,
+   "ci_high": 0.53378,
+   "model_implied_ratio": 0.78084,
+   "supported": true
+  },
+  {
+   "feature": "enclosed_eaves",
+   "n": 6418,
+   "odds_ratio": 0.79545,
+   "ci_low": 0.67111,
+   "ci_high": 0.94281,
+   "model_implied_ratio": 0.89159,
+   "supported": true
+  },
+  {
+   "feature": "screened_vents",
+   "n": 6609,
+   "odds_ratio": 0.76487,
+   "ci_low": 0.65254,
+   "ci_high": 0.89652,
+   "model_implied_ratio": 0.85562,
+   "supported": true
+  },
+  {
+   "feature": "noncombustible_siding",
+   "n": 10261,
+   "odds_ratio": 1.6798,
+   "ci_low": 1.46506,
+   "ci_high": 1.92602,
+   "model_implied_ratio": null,
+   "supported": false
+  },
+  {
+   "feature": "multipane_windows",
+   "n": 9382,
+   "odds_ratio": 0.55058,
+   "ci_low": 0.48473,
+   "ci_high": 0.62536,
+   "model_implied_ratio": null,
+   "supported": true
+  },
+  {
+   "feature": "no_wood_deck",
+   "n": 9454,
+   "odds_ratio": 1.09123,
+   "ci_low": 0.9543,
+   "ci_high": 1.2478,
+   "model_implied_ratio": null,
+   "supported": false
+  },
+  {
+   "feature": "no_shed_within_30ft",
+   "n": 3454,
+   "odds_ratio": 0.76239,
+   "ci_low": 0.60278,
+   "ci_high": 0.96426,
+   "model_implied_ratio": 0.79581,
+   "supported": true
+  },
+  {
+   "feature": "era_1980_2007",
+   "n": 8345,
+   "odds_ratio": 0.735,
+   "ci_low": 0.63161,
+   "ci_high": 0.85533,
+   "model_implied_ratio": null,
+   "supported": true
+  },
+  {
+   "feature": "era_2008_plus",
+   "n": 8345,
+   "odds_ratio": 0.50592,
+   "ci_low": 0.34747,
+   "ci_high": 0.73663,
+   "model_implied_ratio": null,
+   "supported": true
+  }
+ ],
+ "pooled_auc": 0.55591,
+ "adopted": false,
+ "adoption_note": "Not adopted. Fitted relativities are proposed in backend/validation/fitted/wildfire_relativities.json for the actuarial lane to review; the engine is unchanged."
+}

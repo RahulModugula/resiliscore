@@ -3,6 +3,7 @@ import os
 import time
 import uuid
 from collections.abc import Mapping
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException
@@ -17,11 +18,13 @@ from app.ingestion.openfema import OPENFEMA_URL
 from app.ingestion.usgs_3dep import EPQS_URL
 from app.integrations.guidewire_mock import router as guidewire_router
 from app.models.schemas import ParcelScoreResponse, State
+from app.models.validation import ValidationReport
 from app.observability import RequestContextMiddleware, configure_logging, current_request_id
 from app.verification.consortium import router as consortium_router
 from app.verification.evidence import router as evidence_router
 
 DEFAULT_CORS_ORIGINS = "http://localhost:3000"
+VALIDATION_REPORT_PATH = Path(__file__).resolve().parents[2] / "contracts" / "validation_report.json"
 UPSTREAMS = {"openfema": OPENFEMA_URL, "usgs_3dep": EPQS_URL}
 
 
@@ -98,6 +101,12 @@ def readyz() -> dict[str, object]:
         "status": "ready",
         "upstreams": {name: {"configured": bool(url), "url": url} for name, url in UPSTREAMS.items()},
     }
+
+
+@app.get("/v1/model/validation", response_model=ValidationReport)
+def model_validation() -> ValidationReport:
+    """The committed validation report (contracts/validation_report.json)."""
+    return ValidationReport.model_validate_json(VALIDATION_REPORT_PATH.read_text())
 
 
 @app.post("/v1/parcel/score", response_model=ParcelScoreResponse)

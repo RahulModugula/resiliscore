@@ -1,0 +1,307 @@
+{
+  "method": "Observed damage ratio = buildingDamageAmount / buildingPropertyValue (actual cash value), capped at 1, for single-family one-floor no-basement NFIP claims; depth = waterDepth / 12 ft above the first floor (reference level unstated by OpenFEMA). Per-bucket CIs are percentile bootstraps over claims (1000 resamples). Bias = Hazus 129 predicted minus observed. Fitted curve: isotonic fit trained on everything outside the holdout (states ['NY', 'NJ'] (any year) plus Hurricane Ida (any state)); fitted_mae per event is leave-one-event-out. Tract Spearman: model tract flood rate against claims per exposed building $M, over tracts with a claim in the event (needs at least 30 tracts).",
+  "data_source": "OpenFEMA NfipClaims v3 (https://www.fema.gov/api/open/v3/NfipClaims), FEMA NRI for tract rates",
+  "data_vintage": "NfipClaims last refreshed 2026-09-09; losses 2005-2025",
+  "fetched_on": "2026-10-17",
+  "verdict": "keep Hazus",
+  "severity_by_depth": [
+    {
+      "depth_bucket": "0-0.5 ft",
+      "depth_mid_ft": 0.25,
+      "n": 83773,
+      "observed_mean_dr": 0.34774688499986517,
+      "observed_ci_low": 0.3460844987155603,
+      "observed_ci_high": 0.34956984164104427,
+      "hazus_pred_dr": 0.1400897663925131,
+      "fitted_pred_dr": 0.3036269767491948
+    },
+    {
+      "depth_bucket": "0.5-1 ft",
+      "depth_mid_ft": 0.75,
+      "n": 4529,
+      "observed_mean_dr": 0.48370877861584005,
+      "observed_ci_low": 0.4749637155731891,
+      "observed_ci_high": 0.4933151598292804,
+      "hazus_pred_dr": 0.1956528299109443,
+      "fitted_pred_dr": 0.46496732621957626
+    },
+    {
+      "depth_bucket": "1-2 ft",
+      "depth_mid_ft": 1.5,
+      "n": 3642,
+      "observed_mean_dr": 0.4099288007107926,
+      "observed_ci_low": 0.4014756065995333,
+      "observed_ci_high": 0.41731006475069443,
+      "hazus_pred_dr": 0.25692751235584843,
+      "fitted_pred_dr": 0.4649673262195763
+    },
+    {
+      "depth_bucket": "2-3 ft",
+      "depth_mid_ft": 2.5,
+      "n": 1562,
+      "observed_mean_dr": 0.43953490025404046,
+      "observed_ci_low": 0.4277475433053887,
+      "observed_ci_high": 0.4510126120142195,
+      "hazus_pred_dr": 0.3478745198463508,
+      "fitted_pred_dr": 0.4649673262195763
+    },
+    {
+      "depth_bucket": "3-4 ft",
+      "depth_mid_ft": 3.5,
+      "n": 931,
+      "observed_mean_dr": 0.4730099169685337,
+      "observed_ci_low": 0.45708627776031624,
+      "observed_ci_high": 0.4891096511810494,
+      "hazus_pred_dr": 0.4234273182957393,
+      "fitted_pred_dr": 0.4649673262195763
+    },
+    {
+      "depth_bucket": "4-6 ft",
+      "depth_mid_ft": 5.0,
+      "n": 935,
+      "observed_mean_dr": 0.527945298243687,
+      "observed_ci_low": 0.5096397743965192,
+      "observed_ci_high": 0.5455987984568127,
+      "hazus_pred_dr": 0.5093048128342247,
+      "fitted_pred_dr": 0.4649673262195763
+    },
+    {
+      "depth_bucket": "6-8 ft",
+      "depth_mid_ft": 7.0,
+      "n": 290,
+      "observed_mean_dr": 0.5025036713320613,
+      "observed_ci_low": 0.461242013667591,
+      "observed_ci_high": 0.5423042903195576,
+      "hazus_pred_dr": 0.6137241379310343,
+      "fitted_pred_dr": 0.4649673262195763
+    },
+    {
+      "depth_bucket": "8+ ft",
+      "depth_mid_ft": 10.0,
+      "n": 1818,
+      "observed_mean_dr": 0.2965738604305863,
+      "observed_ci_low": 0.2846567985443781,
+      "observed_ci_high": 0.309088536506317,
+      "hazus_pred_dr": 0.6822584341767509,
+      "fitted_pred_dr": 0.5158796068938927
+    }
+  ],
+  "events": [
+    {
+      "event": "Katrina 2005",
+      "year": 2005,
+      "states": [
+        "LA",
+        "MS"
+      ],
+      "n_claims": 4437,
+      "observed_mean_dr": 0.6402840907322108,
+      "hazus_mae": 0.47500911164972615,
+      "fitted_mae": 0.34931754927323,
+      "bias": -0.4536461596977281,
+      "tract_spearman": 0.30700260151813424,
+      "n_tracts": 353,
+      "note": "Surge and levee failure with long-lasting water; a likely reason a still-water curve is far low (not tested)."
+    },
+    {
+      "event": "Sandy 2012",
+      "year": 2012,
+      "states": [
+        "NY",
+        "NJ"
+      ],
+      "n_claims": 2469,
+      "observed_mean_dr": 0.37566513666638024,
+      "hazus_mae": 0.2412988960487011,
+      "fitted_mae": 0.22501042214422148,
+      "bias": -0.15919456828511927,
+      "tract_spearman": 0.519229484074096,
+      "n_tracts": 267,
+      "note": "Coastal surge; the basement claims are shown as a separate row."
+    },
+    {
+      "event": "Harvey 2017",
+      "year": 2017,
+      "states": [
+        "TX"
+      ],
+      "n_claims": 20910,
+      "observed_mean_dr": 0.4077574516128084,
+      "hazus_mae": 0.2951245000028321,
+      "fitted_mae": 0.20782240395688714,
+      "bias": -0.26205607268725445,
+      "tract_spearman": 0.1344063953223318,
+      "n_tracts": 1166,
+      "note": "Long-duration rain flooding; the largest event in the sample."
+    },
+    {
+      "event": "Florence 2018",
+      "year": 2018,
+      "states": [
+        "NC",
+        "SC"
+      ],
+      "n_claims": 1273,
+      "observed_mean_dr": 0.25530827258242994,
+      "hazus_mae": 0.19932564235263403,
+      "fitted_mae": 0.2338951891998071,
+      "bias": -0.1096968559812254,
+      "tract_spearman": 0.06972855470709546,
+      "n_tracts": 232,
+      "note": "Inland river flooding; Hazus is closest here."
+    },
+    {
+      "event": "Ida 2021 (LA surge)",
+      "year": 2021,
+      "states": [
+        "LA"
+      ],
+      "n_claims": 2416,
+      "observed_mean_dr": 0.3680755280715318,
+      "hazus_mae": 0.275171445771418,
+      "fitted_mae": 0.21656596910916368,
+      "bias": -0.22747398281766867,
+      "tract_spearman": 0.25633190040679726,
+      "n_tracts": 275,
+      "note": "Hurricane surge and rain in Louisiana."
+    },
+    {
+      "event": "Ida 2021 (NY/NJ pluvial)",
+      "year": 2021,
+      "states": [
+        "NY",
+        "NJ"
+      ],
+      "n_claims": 105,
+      "observed_mean_dr": 0.2648360964226538,
+      "hazus_mae": 0.17088408684595024,
+      "fitted_mae": 0.17897448977963668,
+      "bias": -0.11793133451789192,
+      "tract_spearman": 0.13949579831932776,
+      "n_tracts": 69,
+      "note": "Urban rain flooding; only about a hundred no-basement claims, so read as an indication."
+    },
+    {
+      "event": "Ian 2022",
+      "year": 2022,
+      "states": [
+        "FL"
+      ],
+      "n_claims": 10314,
+      "observed_mean_dr": 0.3848078896481158,
+      "hazus_mae": 0.3099310473242713,
+      "fitted_mae": 0.24741319378782298,
+      "bias": -0.2089381171705772,
+      "tract_spearman": -0.04138340695867387,
+      "n_tracts": 511,
+      "note": "Surge and rain flooding in Florida."
+    },
+    {
+      "event": "Helene 2024",
+      "year": 2024,
+      "states": [
+        "NC",
+        "FL"
+      ],
+      "n_claims": 9802,
+      "observed_mean_dr": 0.49141556510999335,
+      "hazus_mae": 0.3658842036911873,
+      "fitted_mae": 0.24981928011977708,
+      "bias": -0.33153790408843314,
+      "tract_spearman": 0.0807275166689623,
+      "n_tracts": 361,
+      "note": "Fast river flooding in mountain terrain plus Florida surge; a likely reason Hazus is low (not tested)."
+    },
+    {
+      "event": "Sandy 2012 (basement)",
+      "year": 2012,
+      "states": [
+        "NY",
+        "NJ"
+      ],
+      "n_claims": 27014,
+      "observed_mean_dr": 0.2357994279365119,
+      "hazus_mae": 0.17311427403294818,
+      "fitted_mae": null,
+      "bias": -0.03451808616311045,
+      "tract_spearman": null,
+      "n_tracts": null,
+      "note": "Basement claims against the no-basement Hazus 129 curve; the engine has no basement curve."
+    },
+    {
+      "event": "Ida 2021 (NY/NJ pluvial) (basement)",
+      "year": 2021,
+      "states": [
+        "NY",
+        "NJ"
+      ],
+      "n_claims": 2572,
+      "observed_mean_dr": 0.17530661082991508,
+      "hazus_mae": 0.13865678418190272,
+      "fitted_mae": null,
+      "bias": -0.01851552736698089,
+      "tract_spearman": null,
+      "n_tracts": null,
+      "note": "Basement claims against the no-basement Hazus 129 curve; the engine has no basement curve."
+    }
+  ],
+  "ranking": {
+    "n_tracts": 400,
+    "spearman": 0.30284208756058323,
+    "gini": 0.3718760858194199,
+    "deciles": [
+      {
+        "decile": 1,
+        "expected": 975.1791405035246,
+        "actual": 1548.0
+      },
+      {
+        "decile": 2,
+        "expected": 1141.042269799168,
+        "actual": 892.0
+      },
+      {
+        "decile": 3,
+        "expected": 1668.0534416315265,
+        "actual": 2512.0
+      },
+      {
+        "decile": 4,
+        "expected": 1843.2916317521858,
+        "actual": 424.0
+      },
+      {
+        "decile": 5,
+        "expected": 1430.8814203368738,
+        "actual": 591.0
+      },
+      {
+        "decile": 6,
+        "expected": 1962.2033581838612,
+        "actual": 1464.0
+      },
+      {
+        "decile": 7,
+        "expected": 2700.430563714324,
+        "actual": 1754.0
+      },
+      {
+        "decile": 8,
+        "expected": 2720.763018942714,
+        "actual": 2930.0
+      },
+      {
+        "decile": 9,
+        "expected": 3520.920392309594,
+        "actual": 3697.0
+      },
+      {
+        "decile": 10,
+        "expected": 6410.23476282623,
+        "actual": 8561.0
+      }
+    ]
+  },
+  "adopted": false,
+  "adoption_note": "Holdout MAE 0.220 (fitted) vs 0.247 (Hazus 129); 95% interval on the difference -0.047 to +0.069 includes zero, so Hazus 129 stays."
+}
