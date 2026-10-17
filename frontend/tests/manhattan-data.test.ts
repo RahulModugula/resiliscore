@@ -36,7 +36,7 @@ test("the bundled source cache covers every Manhattan NTA with real unique footp
   assert.equal(manifest.counts.neighborhoods, neighborhoods.length);
   assert.ok(manifest.counts.buildings > 40000);
   assert.ok(manifest.counts.parks > 250);
-  assert.equal(manifest.sources.length, 5);
+  assert.equal(manifest.sources.length, 6);
   const ids = new Set<string>();
   let count = 0;
   for (const neighborhood of neighborhoods) {
