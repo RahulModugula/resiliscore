@@ -41,7 +41,7 @@ uv run python -m scripts.benchmark --n 500 --warmup 50 --direct-n 1000 --concurr
 | verification/evidence S2, LIDAR | 500 | 16 | 68.83 | 90.01 | 108.35 | 226.7 |
 | simulate() direct, S2, 0 actions | 1000 | - | 1.20 | 1.77 | 2.89 | 770.3 |
 
-Reading the concurrency-16 rows: the simulate and evidence endpoints run synchronous code in a thread pool, and the GIL serialises most of it. Latency at 16 workers is roughly 16 ÷ req/s (for example 16 ÷ 434 ≈ 37 ms), so the extra latency is queueing, not slower handlers.
+Reading the concurrency-16 rows: the simulate and evidence endpoints run synchronous code in a thread pool, and the GIL serialises most of it. Latency at 16 workers is roughly 16 ÷ req/s (for example 16 ÷ 434 ≈ 37 ms), so the extra latency is queueing, not slower handlers. A deployment would scale this with `uvicorn --workers N` (one process per core, each with its own GIL), or move the CPU-bound simulate path to a process pool; making handlers `async` alone would not help, since the work is CPU-bound, not I/O-bound.
 
 ## Not benchmarked here
 
