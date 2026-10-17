@@ -1,6 +1,10 @@
 # Decisions (override docs/SPEC.md)
 
-## D1 — Score map: the spec's sigmoid doesn't reproduce the golden numbers (OPEN, 2026-10-17)
+## D1 — Score map: the spec's sigmoid doesn't reproduce the golden numbers (DECIDED, 2026-10-17)
+
+**Decided:** calibrated monotone piecewise-linear curve in ln(LCR), as recommended below. Implemented in
+`backend/app/actuarial/score_map.py` with the four anchors plus the golden baseline points (160 bps -> 465,
+210 bps -> 405) and end pins (1 bp -> 850, 1000 bps -> 300). `spec_sigmoid` is kept there as a reference only.
 
 The spec sets `score = 300 + round(550 / (1 + (LCR/0.0085)^1.15))`, but its golden scenarios disagree with that formula:
 
