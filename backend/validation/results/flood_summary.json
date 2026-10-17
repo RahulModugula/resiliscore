@@ -245,7 +245,63 @@
       "note": "Basement claims against the no-basement Hazus 129 curve; the engine has no basement curve."
     }
   ],
-  "ranking": null,
+  "ranking": {
+    "n_tracts": 400,
+    "spearman": 0.30284208756058323,
+    "gini": 0.3718760858194199,
+    "deciles": [
+      {
+        "decile": 1,
+        "expected": 975.1791405035246,
+        "actual": 1548.0
+      },
+      {
+        "decile": 2,
+        "expected": 1141.042269799168,
+        "actual": 892.0
+      },
+      {
+        "decile": 3,
+        "expected": 1668.0534416315265,
+        "actual": 2512.0
+      },
+      {
+        "decile": 4,
+        "expected": 1843.2916317521858,
+        "actual": 424.0
+      },
+      {
+        "decile": 5,
+        "expected": 1430.8814203368738,
+        "actual": 591.0
+      },
+      {
+        "decile": 6,
+        "expected": 1962.2033581838612,
+        "actual": 1464.0
+      },
+      {
+        "decile": 7,
+        "expected": 2700.430563714324,
+        "actual": 1754.0
+      },
+      {
+        "decile": 8,
+        "expected": 2720.763018942714,
+        "actual": 2930.0
+      },
+      {
+        "decile": 9,
+        "expected": 3520.920392309594,
+        "actual": 3697.0
+      },
+      {
+        "decile": 10,
+        "expected": 6410.23476282623,
+        "actual": 8561.0
+      }
+    ]
+  },
   "adopted": false,
   "adoption_note": "Holdout MAE 0.220 (fitted) vs 0.247 (Hazus 129); 95% interval on the difference -0.047 to +0.069 includes zero, so Hazus 129 stays."
 }
