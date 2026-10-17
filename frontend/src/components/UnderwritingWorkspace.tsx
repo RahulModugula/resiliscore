@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { SelectedPropertySummary, SelectedPropertyEvidence, SelectedPropertyMitigations } from "@/components/SelectedPropertyAssessment";
 import { ArrowRight, CheckCheck, Clock3, Download, FileCheck2, MapPin, ShieldAlert, Wrench, Moon, Sun, ChartNoAxesCombined } from "lucide-react";
 import { HeaderScenarioBar } from "@/components/HeaderScenarioBar";
@@ -22,6 +23,8 @@ import { downloadText } from "@/lib/download";
 import { money } from "@/lib/format";
 import type { GoldenScenarioKey, ParcelScoreResponse } from "@/types/resiliscore";
 
+const PropertyUnderwritingDemo = dynamic(() => import("./manhattan/PropertyUnderwritingDemo"), { loading: () => <section className="panel"><p role="status">Loading building demo scenarios…</p></section> });
+
 const tabs = ["Underwriting copilot", "Mitigation & grant ROI", "Regulatory audit", "Model Validation"];
 type Resolution = "none" | "verified" | "loaded";
 
@@ -36,9 +39,10 @@ export interface UnderwritingWorkspaceProps {
   selectedProperty?: SelectedProperty;
   assessmentSource?: "live" | "local";
   assessmentNotice?: string;
+  initialBuildingDemo?: boolean;
 }
 
-export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessmentSource, assessmentNotice }: UnderwritingWorkspaceProps = {}) {
+export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessmentSource, assessmentNotice, initialBuildingDemo = false }: UnderwritingWorkspaceProps = {}) {
   const [contextAddress, setContextAddress] = useState<{ id: string; address: string | null } | null>(null);
   const resolveAddress = useCallback((address: string | null) => { if (selectedProperty) setContextAddress({ id: selectedProperty.id, address }); }, [selectedProperty]);
   const propertyTitle = selectedProperty ? contextAddress?.id === selectedProperty.id ? contextAddress.address ?? "Address unavailable" : selectedProperty.label : initialParcel?.parcel_identity.address;
@@ -46,6 +50,7 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
   const [address, setAddress] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [tab, setTab] = useState(0);
+  const [buildingDemo, setBuildingDemo] = useState(initialBuildingDemo);
   const [dark, setDark] = useState(true);
   const [live, setLive] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
@@ -125,7 +130,7 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
     setResolution("loaded");
     setModal(null);
   }
-  const header = isSelectedProperty ? <header className="topbar"><Link className="brand" href="/">SaveMyHome</Link><span className="brand-description">Manhattan property assessment</span><div className="header-actions"><Link className="secondary-button" href={selectedProperty ? `/?neighborhood=${encodeURIComponent(selectedProperty.neighborhoodId)}` : "/"}>Back to Manhattan map</Link><button className="icon-button" onClick={() => setDark(v => !v)} aria-label={dark ? "Use light theme" : "Use dark theme"}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button></div></header> : <HeaderScenarioBar active={address ? null : scenario} onSelect={selectScenario} onAddress={searchAddress} live={live} onLive={changeLive} dark={dark} onTheme={() => setDark(v => !v)} loading={pending} />;
+  const header = isSelectedProperty ? <header className="topbar"><Link className="brand" href="/">SaveMyHome</Link><span className="brand-description">Manhattan property assessment</span><div className="header-actions"><Link className="secondary-button" href={selectedProperty ? `/?neighborhood=${encodeURIComponent(selectedProperty.neighborhoodId)}${buildingDemo ? "&workflow=demo" : ""}` : "/"}>Back to Manhattan map</Link><button className="icon-button" onClick={() => setDark(v => !v)} aria-label={dark ? "Use light theme" : "Use dark theme"}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button></div></header> : <HeaderScenarioBar active={address ? null : scenario} onSelect={selectScenario} onAddress={searchAddress} live={live} onLive={changeLive} dark={dark} onTheme={() => setDark(v => !v)} loading={pending} />;
   const notice = live && <div className={`status-notice ${network.status === "fallback" ? "warning" : ""}`} role="status">{network.key === key ? network.message : "Loading live evidence…"}</div>;
   if (!parcel || !baseline) return <div className="app-shell" data-theme={dark ? "dark" : "light"}>
     {header}<main className="main-content" id="workspace">{notice}<section className="panel parcel-empty">
@@ -152,14 +157,14 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
       {isSelectedProperty && <div className="status-notice warning" role="status">{assessmentNotice ?? "Selected property assessment. No policy is issued by this workspace."}</div>}
       {notice}
       {local.error && !isRemote && !pending && <div className="status-notice warning" role="status">{local.error}. Showing the baseline parcel. Reset the plan or enable Live API.</div>}
-      <div className="property-heading"><div><h2>{isSelectedProperty ? propertyTitle : p.address.split(",")[0]}</h2><p><MapPin size={14} />{p.address.split(",").slice(1).join(",").trim()}<span className="badge">{isSelectedProperty ? offlineScreening ? "Offline model screening" : parcel.indicative_only ? "Indicative live assessment" : "Live assessment" : address ? "Live address" : isRemote ? "Live API" : "Golden demo parcel"}</span></p></div><div className="property-details"><span>{isSelectedProperty ? "Building" : "APN"} <strong>{selectedProperty?.id ?? p.apn_uid}</strong></span><span>Built <strong>{p.year_built}{isSelectedProperty && parcel.input_provenance?.some(row => row.field === "year_built" && row.value_source === "DEFAULT") ? " (default)" : ""}</strong></span><span>Replacement value <strong>{offlineScreening ? `${money(p.rcv_usd)} default` : money(p.rcv_usd)}</strong></span><button className="icon-button" aria-label="Download parcel JSON" onClick={() => downloadText(`parcel-${p.apn_uid}.json`, JSON.stringify(parcel, null, 2))}><Download size={17} /></button></div></div>
+      <div className="property-heading"><div><h2>{isSelectedProperty ? propertyTitle : p.address.split(",")[0]}</h2><p><MapPin size={14} />{p.address.split(",").slice(1).join(",").trim()}<span className="badge">{isSelectedProperty ? offlineScreening ? "Offline model screening" : parcel.indicative_only ? "Indicative live assessment" : "Live assessment" : address ? "Live address" : isRemote ? "Live API" : "Golden demo parcel"}</span></p></div><div className="property-details"><span>{isSelectedProperty ? "Building" : "APN"} <strong>{selectedProperty?.id ?? p.apn_uid}</strong></span><span>Built <strong>{p.year_built}{isSelectedProperty && parcel.input_provenance?.some(row => row.field === "year_built" && row.value_source === "DEFAULT") ? " (default)" : ""}</strong></span><span>Replacement value <strong>{offlineScreening ? `${money(p.rcv_usd)} default` : money(p.rcv_usd)}</strong></span>{selectedProperty && <button className="secondary-button" onClick={() => { setBuildingDemo(value => !value); setTab(0); const url = new URL(window.location.href); if (buildingDemo) url.searchParams.delete("workflow"); else url.searchParams.set("workflow", "demo"); window.history.replaceState(null, "", `${url.pathname}${url.search}`); }}>{buildingDemo ? "Return to assessment" : "Open underwriting demo"}</button>}<button className="icon-button" aria-label={buildingDemo ? "Download recorded assessment JSON" : "Download parcel JSON"} onClick={() => downloadText(`parcel-${p.apn_uid}.json`, JSON.stringify(parcel, null, 2))}><Download size={17} /></button></div></div>
       {isEscondido && <label className="change-toggle"><input type="checkbox" checked={alert} onChange={e => toggleAlert(e.target.checked)} /><span><strong>Simulate satellite change-detection alert</strong><small>+240 sq ft unpermitted Zone 1 structure</small></span><span className="badge warning">HITL guardrail</span></label>}
       {escalated && !isSelectedProperty && !address && <div className="hitl-banner" role="alert"><ShieldAlert size={25} /><div><strong>{parcel.hitl_status.trigger_code.replaceAll("_", " ")}</strong><p>{parcel.hitl_status.trigger_reason}</p><p>Straight-through processing paused. Escalated to the demo UnderwritingCenter.</p></div><button className="secondary-button" onClick={() => setModal("hitl")}>Open review workbench<ArrowRight size={16} /></button></div>}
       {resolution !== "none" && !escalated && <div className="status-notice success" role="status"><CheckCheck size={17} />{resolution === "verified" ? `Demo mobile evidence accepted. Open aluminum pergola verified. Auto-bind restored at ${a.resili_score}.` : "Demo structure loading applied locally: +35 bps LCR and $60,000 RCV at an assumed $250/sq ft. Conditional review required. Live API off for this demo calculation."}</div>}
       </>}
       <div role="tabpanel" id={`workspace-panel-${tab}`} aria-labelledby={`workspace-tab-${tab}`} className="tab-content">
         {tab === 3 ? <ModelValidationTab live={live} /> : tab === 2 ? isSelectedProperty ? <SelectedPropertyEvidence parcel={parcel} offline={offlineScreening} /> : <RegulatoryAuditTab parcel={parcel} simulated={selected.length > 0 || resolution !== "none"} /> : <>
-          <div className="workspace-grid"><div className="spatial-column">{selectedProperty ? <BlockContextView property={selectedProperty} onAddressResolved={resolveAddress} /> : <ParcelMapCanvas key={source} parcel={parcel} showIllustrativeContext={!isSelectedProperty} />}<NycLotPanel nyc={parcel.nyc} />{isSelectedProperty ? <SelectedPropertyMitigations parcel={parcel} offline={offlineScreening} contextOnly={tab === 0} /> : tab === 0 ? <FreeboardCrossSection hazard={parcel.public_hazard_layer} /> : <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} />}</div>{isSelectedProperty ? <SelectedPropertySummary parcel={parcel} offline={offlineScreening} /> : <ScoreGaugeCard parcel={parcel} localProjection={!isRemote && !local.error && (selected.length > 0 || resolution === "loaded")} simulated={selected.length > 0 || resolution === "loaded"} onAction={() => { if (bindable) setModal("receipt"); else setTab(1); }} />}</div>
+          <div className="workspace-grid"><div className="spatial-column">{selectedProperty ? <BlockContextView property={selectedProperty} onAddressResolved={resolveAddress} /> : <ParcelMapCanvas key={source} parcel={parcel} showIllustrativeContext={!isSelectedProperty} />}<NycLotPanel nyc={parcel.nyc} />{isSelectedProperty ? <SelectedPropertyMitigations parcel={parcel} offline={offlineScreening} contextOnly={tab === 0} /> : tab === 0 ? <FreeboardCrossSection hazard={parcel.public_hazard_layer} /> : <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} />}</div>{selectedProperty && buildingDemo ? <PropertyUnderwritingDemo parcel={baseline} buildingId={selectedProperty.id} /> : isSelectedProperty ? <SelectedPropertySummary parcel={parcel} offline={offlineScreening} /> : <ScoreGaugeCard parcel={parcel} localProjection={!isRemote && !local.error && (selected.length > 0 || resolution === "loaded")} simulated={selected.length > 0 || resolution === "loaded"} onAction={() => { if (bindable) setModal("receipt"); else setTab(1); }} />}</div>
           {tab === 0 && !isSelectedProperty && <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} compact />}
         </>}
       </div>

@@ -1,0 +1,581 @@
+{
+  "engineSha256": "3be6b78f01d64cb77655bd609b89b99f78f59391a7dc54c2fc63860c19c4d7d9",
+  "method": "Canonical optimizer.simulate on NY national-default screening. Nonlocal NRI reference, no measured hazard lookup, hypothetical roof completion and CV review. No filed NY quote, actual verification or policy authority.",
+  "projections": {
+    "post2002": {
+      "0:0": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.4286,
+          "expected_annual_loss_usd": 109.22,
+          "parcel_raw_lcr": 6.3e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00035,
+              "expected_sev_s": 307971.12,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 109.22,
+              "zip_immunity_pi": 0.4013
+            }
+          ],
+          "posterior_lcr": 0.000312,
+          "resili_score": 836,
+          "statutory_discount_pct": 0.0,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": true,
+          "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+          "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+          "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 109.22,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 0.0,
+          "indicated_premium_usd": 158.54,
+          "modeled_mitigation_credit_pct": 0.0,
+          "net_expected_loss_usd": 103.05,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": false,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.08,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 1,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.0,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "WOOD_SHAKE_UNRATED",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "0:1": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.6309,
+          "expected_annual_loss_usd": 78.34,
+          "parcel_raw_lcr": 6.3e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00035,
+              "expected_sev_s": 220916.63,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 78.34,
+              "zip_immunity_pi": 0.4013
+            }
+          ],
+          "posterior_lcr": 0.000224,
+          "resili_score": 840,
+          "statutory_discount_pct": 0.0,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": false,
+          "recommended_underwriter_action": null,
+          "trigger_code": "NONE",
+          "trigger_reason": null
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 78.34,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 0.0,
+          "indicated_premium_usd": 113.73,
+          "modeled_mitigation_credit_pct": 0.0,
+          "net_expected_loss_usd": 73.92,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": false,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.12,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 1,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.99,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "WOOD_SHAKE_UNRATED",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "1:0": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.4286,
+          "expected_annual_loss_usd": 106.39,
+          "parcel_raw_lcr": 4.4e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00025,
+              "expected_sev_s": 428559.45,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 106.39,
+              "zip_immunity_pi": 0.5809
+            }
+          ],
+          "posterior_lcr": 0.000304,
+          "resili_score": 837,
+          "statutory_discount_pct": 12.4,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": true,
+          "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+          "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+          "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 106.39,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 12.4,
+          "indicated_premium_usd": 154.43,
+          "modeled_mitigation_credit_pct": 30.0,
+          "net_expected_loss_usd": 100.38,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": true,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.08,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 1,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.0,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "CLASS_A_IMPACT_4",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "1:1": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.6309,
+          "expected_annual_loss_usd": 74.18,
+          "parcel_raw_lcr": 4.4e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00025,
+              "expected_sev_s": 298814.27,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 74.18,
+              "zip_immunity_pi": 0.5809
+            }
+          ],
+          "posterior_lcr": 0.000212,
+          "resili_score": 841,
+          "statutory_discount_pct": 12.4,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": false,
+          "recommended_underwriter_action": null,
+          "trigger_code": "NONE",
+          "trigger_reason": null
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 74.18,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 12.4,
+          "indicated_premium_usd": 107.68,
+          "modeled_mitigation_credit_pct": 30.0,
+          "net_expected_loss_usd": 69.99,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": true,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.12,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 1,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.99,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "CLASS_A_IMPACT_4",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      }
+    },
+    "pre2002": {
+      "0:0": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.4286,
+          "expected_annual_loss_usd": 112.52,
+          "parcel_raw_lcr": 8.5e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00048,
+              "expected_sev_s": 235045.05,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 112.52,
+              "zip_immunity_pi": 0.4013
+            }
+          ],
+          "posterior_lcr": 0.000321,
+          "resili_score": 836,
+          "statutory_discount_pct": 0.0,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": true,
+          "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+          "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+          "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 112.52,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 0.0,
+          "indicated_premium_usd": 163.33,
+          "modeled_mitigation_credit_pct": 0.0,
+          "net_expected_loss_usd": 106.17,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": false,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.11,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 0,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.0,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "WOOD_SHAKE_UNRATED",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "0:1": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.6309,
+          "expected_annual_loss_usd": 83.2,
+          "parcel_raw_lcr": 8.5e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00048,
+              "expected_sev_s": 173807.85,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 83.2,
+              "zip_immunity_pi": 0.4013
+            }
+          ],
+          "posterior_lcr": 0.000238,
+          "resili_score": 840,
+          "statutory_discount_pct": 0.0,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": false,
+          "recommended_underwriter_action": null,
+          "trigger_code": "NONE",
+          "trigger_reason": null
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 83.2,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 0.0,
+          "indicated_premium_usd": 120.78,
+          "modeled_mitigation_credit_pct": 0.0,
+          "net_expected_loss_usd": 78.51,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": false,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.16,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 0,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.99,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "WOOD_SHAKE_UNRATED",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "1:0": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.4286,
+          "expected_annual_loss_usd": 108.7,
+          "parcel_raw_lcr": 5.9e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00034,
+              "expected_sev_s": 324379.08,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 108.7,
+              "zip_immunity_pi": 0.5809
+            }
+          ],
+          "posterior_lcr": 0.000311,
+          "resili_score": 836,
+          "statutory_discount_pct": 12.4,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": true,
+          "recommended_underwriter_action": "Request a fresh flyover or mobile photo verification before applying credits.",
+          "trigger_code": "HITL_TRIGGER_01_SENSOR_DIVERGENCE",
+          "trigger_reason": "Aerial CV confidence 0.00 is below 0.85."
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 108.7,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 12.4,
+          "indicated_premium_usd": 157.79,
+          "modeled_mitigation_credit_pct": 30.0,
+          "net_expected_loss_usd": 102.56,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": true,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.11,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 0,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.0,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "CLASS_A_IMPACT_4",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      },
+      "1:1": {
+        "actuarial_breakdown": {
+          "annual_base_premium_usd": 0.0,
+          "annual_discounted_premium_usd": 0.0,
+          "baseline_macro_score": 831,
+          "credibility_weight_z": 0.6309,
+          "expected_annual_loss_usd": 77.58,
+          "parcel_raw_lcr": 5.9e-05,
+          "peril_split": [
+            {
+              "expected_freq_n": 0.00034,
+              "expected_sev_s": 231515.84,
+              "peril": "WIND_HAIL",
+              "peril_aal_usd": 77.58,
+              "zip_immunity_pi": 0.5809
+            }
+          ],
+          "posterior_lcr": 0.000222,
+          "resili_score": 840,
+          "statutory_discount_pct": 12.4,
+          "tract_prior_lcr": 0.0004989146437508605,
+          "underwriting_tier": "TIER_1_AUTO_BIND"
+        },
+        "hitl_status": {
+          "escalated": false,
+          "recommended_underwriter_action": null,
+          "trigger_code": "NONE",
+          "trigger_reason": null
+        },
+        "premium_build": {
+          "deductible_usd": 3500.0,
+          "expected_loss_usd": 77.58,
+          "expense_load_pct": 30.0,
+          "filed_mitigation_credit_pct": 12.4,
+          "indicated_premium_usd": 112.61,
+          "modeled_mitigation_credit_pct": 30.0,
+          "net_expected_loss_usd": 73.2,
+          "profit_load_pct": 5.0
+        },
+        "prescriptive_mitigations": [
+          {
+            "action_id": "HAIL_CLASS4_ROOF",
+            "annual_premium_savings_usd": 0.0,
+            "currently_applied": true,
+            "grant_subsidy_usd": 0.0,
+            "gross_capex_usd": 9000.0,
+            "lcr_delta_bps": -0.16,
+            "net_capex_usd": 9000.0,
+            "payback_years": 99.0,
+            "peril": "WIND_HAIL",
+            "resale_value_bump_pct": 0.8,
+            "score_delta_pts": 0,
+            "statutory_authority": "IBHS FORTIFIED; UL 2218 Class 4",
+            "title": "Class 4 impact-resistant roof (12.4% hail discount)"
+          }
+        ],
+        "private_verification_layer": {
+          "cv_confidence": 0.99,
+          "cv_ember_vents": false,
+          "cv_enclosed_eaves": false,
+          "cv_overhang_ft": 0.0,
+          "cv_roof_class": "CLASS_A_IMPACT_4",
+          "cv_zone0_clear": false,
+          "cv_zone1_no_shed": false,
+          "elev_cert_verified": false,
+          "ibhs_fortified_tier": "NONE",
+          "ibhs_wph_tier": "NONE",
+          "iot_shutoff_active": false,
+          "unpermitted_footprint_delta_sqft": 0.0
+        }
+      }
+    }
+  },
+  "replacementValueUsd": 350000.0,
+  "screeningSha256": "df7e00b026114cd6fbe4831b4532d09e1c32b334c4aeb6c74296330e757622ca",
+  "yearCutoff": 2002
+}

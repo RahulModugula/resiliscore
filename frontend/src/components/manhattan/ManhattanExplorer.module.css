@@ -3,6 +3,11 @@
 .headerContext { color: var(--muted); font-size: 13px; }
 .demoLink { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; font-size: 13px; text-decoration: none; min-height: 40px; }
 .demoLink:hover { color: var(--accent); }
+.demoLink[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.demoIntro { margin-top: 18px; padding: 14px; border: 1px solid var(--accent); border-radius: 4px; background: var(--bg); }
+.demoIntro h2 { color: var(--accent); font-size: 15px; }
+.demoIntro p { font-size: 12px; margin-top: 8px; }
+.demoIntro small { display: block; margin-top: 10px; color: var(--muted); font-size: 10px; }
 .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 310px minmax(0, 1fr); }
 .directory { display: flex; min-height: 0; flex-direction: column; border-right: 1px solid var(--border); background: var(--surface); outline-offset: -4px; }
 .directoryHeading { padding: 28px 24px 20px; }
@@ -29,7 +34,8 @@
 .listMessage { padding: 24px; color: var(--muted); font-size: 13px; }
 .listMessage button { margin-top: 15px; }
 .more { color: var(--accent); background: transparent; border: 1px solid var(--border); padding: 8px 15px; margin: 14px 24px 24px; border-radius: 4px; font-size: 12px; }
-.directoryFoot { border-top: 1px solid var(--border); padding: 17px 24px; color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 8px; }
+.directoryFoot { border-top: 1px solid var(--border); padding: 17px 24px; color: var(--muted); font-size: 10px; display: grid; gap: 10px; }
+.directoryFoot > div, .directoryFoot a { display: flex; align-items: center; gap: 8px; }
 .map { min-width: 0; min-height: 0; position: relative; background: #101f25; isolation: isolate; }
 .mapToolbar { position: absolute; top: 20px; left: 24px; right: 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; pointer-events: none; }
 .breadcrumb { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: var(--bg); border: 1px solid var(--border); padding: 6px 12px; color: var(--muted); border-radius: 4px; font-size: 11px; max-width: 68%; pointer-events: auto; }
