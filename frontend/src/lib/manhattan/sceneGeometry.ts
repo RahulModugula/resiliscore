@@ -115,16 +115,28 @@ export function polygonGeometry(geometry: Geometry, elevation: (point: LngLat) =
 
 export function outlineGeometry(geometry: Geometry, terrain?: TerrainGrid | null, lift = 4, verticalScale = 1) {
   const positions: number[] = [];
-  const stepM = terrain ? Math.max(1, Math.min(Math.abs(projectLngLat([terrain.bounds[2], terrain.bounds[1]])[0] - projectLngLat([terrain.bounds[0], terrain.bounds[1]])[0]) / (terrain.width - 1), Math.abs(projectLngLat([terrain.bounds[0], terrain.bounds[3]])[1] - projectLngLat([terrain.bounds[0], terrain.bounds[1]])[1]) / (terrain.height - 1))) : Infinity;
   for (const polygon of geometryPolygons(geometry)) for (const sourceRing of polygon) {
     const ring = openRing(sourceRing);
     for (let i = 0; i < ring.length; i++) {
       const a = ring[i], b = ring[(i + 1) % ring.length];
-      const pa = projectLngLat(a), pb = projectLngLat(b);
-      const steps = Math.max(1, Math.ceil(Math.hypot(pa[0] - pb[0], pa[1] - pb[1]) / stepM));
-      for (let j = 0; j < steps; j++) {
-        const first: LngLat = [a[0] + (b[0] - a[0]) * j / steps, a[1] + (b[1] - a[1]) * j / steps];
-        const second: LngLat = [a[0] + (b[0] - a[0]) * (j + 1) / steps, a[1] + (b[1] - a[1]) * (j + 1) / steps];
+      const cuts = [0, 1];
+      if (terrain) {
+        const [w, south, e, north] = terrain.bounds;
+        const grid = (point: LngLat) => [(point[0] - w) / (e - w) * (terrain.width - 1), (point[1] - south) / (north - south) * (terrain.height - 1)];
+        const ga = grid(a), gb = grid(b);
+        for (const [first, last] of [[ga[0], gb[0]], [ga[1], gb[1]], [ga[0] + ga[1], gb[0] + gb[1]]]) {
+          if (Math.abs(last - first) < 1e-10) continue;
+          for (let value = Math.ceil(Math.min(first, last)); value <= Math.floor(Math.max(first, last)); value++) {
+            const t = (value - first) / (last - first);
+            if (t > 1e-10 && t < 1 - 1e-10) cuts.push(t);
+          }
+        }
+      }
+      cuts.sort((a, b) => a - b);
+      for (let j = 0; j < cuts.length - 1; j++) {
+        if (cuts[j + 1] - cuts[j] < 1e-10) continue;
+        const first: LngLat = [a[0] + (b[0] - a[0]) * cuts[j], a[1] + (b[1] - a[1]) * cuts[j]];
+        const second: LngLat = [a[0] + (b[0] - a[0]) * cuts[j + 1], a[1] + (b[1] - a[1]) * cuts[j + 1]];
         const h1 = terrain ? terrainElevation(first, terrain) : 0, h2 = terrain ? terrainElevation(second, terrain) : 0;
         if (h1 != null && h2 != null) positions.push(...worldPoint(first, h1 * verticalScale + lift), ...worldPoint(second, h2 * verticalScale + lift));
       }

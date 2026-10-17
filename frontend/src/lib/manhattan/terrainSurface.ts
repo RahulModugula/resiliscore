@@ -99,18 +99,62 @@ function buildLayout(terrain: TerrainGrid, geometries: Geometry[], options: Surf
     }
     return index;
   }
-  const tileSize = 16, tiles = new Map<string, MultiPolygon>();
+  type ClipTriangle = { points: LngLat[]; bounds: number[] };
+  const tileSize = 16, tiles = new Map<string, ClipTriangle[]>(), bins = new Map<string, ClipTriangle[]>();
   const coordinate = (x: number, y: number): LngLat => [w + x * dx, s + y * dy];
+  function triangleRecord(points: LngLat[]): ClipTriangle {
+    return { points, bounds: [Math.min(...points.map(p => p[0])), Math.min(...points.map(p => p[1])), Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))] };
+  }
+  // Triangulate source holes once, then bin source triangles spatially. Boundary
+  // tiles use only convex clipping, avoiding repeated general polygon booleans.
+  for (const polygon of source) {
+    const clean = polygon.map((ring) => ring.slice(0, -1).map(([lng, lat]): LngLat => [(lng - w) / dx, (lat - s) / dy]));
+    const flat = clean.flat(), vectors = clean.map((ring) => ring.map(([x, y]) => new Vector2(x, y)));
+    for (const face of ShapeUtils.triangulateShape(vectors[0], vectors.slice(1))) {
+      const record = triangleRecord(face.map((i) => flat[i]));
+      const [left, bottom, right, top] = record.bounds;
+      for (let ty = Math.floor(Math.max(minY, bottom) / tileSize); ty <= Math.floor(Math.min(maxY, top) / tileSize); ty++) for (let tx = Math.floor(Math.max(minX, left) / tileSize); tx <= Math.floor(Math.min(maxX, right) / tileSize); tx++) {
+        const key = `${tx},${ty}`;
+        if (!bins.has(key)) bins.set(key, []);
+        bins.get(key)!.push(record);
+      }
+    }
+  }
   function tile(x: number, y: number) {
     const tx = Math.floor(x / tileSize), ty = Math.floor(y / tileSize), key = `${tx},${ty}`;
-    let clipped = tiles.get(key);
-    if (!clipped) {
+    let triangles = tiles.get(key);
+    if (!triangles) {
       const left = tx * tileSize, bottom = ty * tileSize;
-      const ring = [coordinate(left, bottom), coordinate(left + tileSize, bottom), coordinate(left + tileSize, bottom + tileSize), coordinate(left, bottom + tileSize), coordinate(left, bottom)];
-      clipped = intersection(source, [ring]);
-      tiles.set(key, clipped);
+      const clip: LngLat[] = [[left, bottom], [left + tileSize, bottom], [left + tileSize, bottom + tileSize], [left, bottom + tileSize]];
+      triangles = [];
+      for (const triangle of bins.get(key) ?? []) {
+        const polygon = clipTriangle(triangle.points, clip);
+        for (let i = 1; i + 1 < polygon.length; i++) triangles.push(triangleRecord([polygon[0], polygon[i], polygon[i + 1]]));
+      }
+      tiles.set(key, triangles);
     }
-    return clipped;
+    return triangles;
+  }
+  // Each tile is clipped and triangulated once. Convex clipping in raster units
+  // then intersects its real source triangles with DEM triangles without tens
+  // of thousands of general polygon-boolean operations per neighborhood.
+  function clipTriangle(points: LngLat[], clip: LngLat[]) {
+    let output = points;
+    const cross = (a: LngLat, b: LngLat, p: LngLat) => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+    for (let i = 0; i < clip.length && output.length; i++) {
+      const a = clip[i], b = clip[(i + 1) % clip.length], input = output;
+      output = [];
+      for (let j = 0; j < input.length; j++) {
+        const first = input[j], second = input[(j + 1) % input.length];
+        const d1 = cross(a, b, first), d2 = cross(a, b, second);
+        if (d1 >= -1e-10) output.push(first);
+        if ((d1 >= 0) !== (d2 >= 0)) {
+          const t = d1 / (d1 - d2);
+          output.push([first[0] + (second[0] - first[0]) * t, first[1] + (second[1] - first[1]) * t]);
+        }
+      }
+    }
+    return output;
   }
   for (let y = minY; y < maxY; y++) for (let x = minX; x < maxX; x++) {
     const values = [terrain.elevationsM[y * terrain.width + x], terrain.elevationsM[y * terrain.width + x + 1], terrain.elevationsM[(y + 1) * terrain.width + x], terrain.elevationsM[(y + 1) * terrain.width + x + 1]];
@@ -122,12 +166,19 @@ function buildLayout(terrain: TerrainGrid, geometries: Geometry[], options: Surf
         if (face.every((i) => inside[gridIndices[i]])) indices.push(...face.map((i) => vertex(points[i], values[i]!)));
         continue;
       }
-      const ring = [...face.map((i) => points[i]), points[face[0]]];
-      for (const polygon of intersection(tile(x, y), [ring])) {
-        const clean = polygon.map((ring) => ring.slice(0, -1));
-        const flat = clean.flat();
-        const vectors = clean.map((ring) => ring.map(([lng, lat]) => new Vector2((lng - w) / dx, (lat - s) / dy)));
-        for (const triangle of ShapeUtils.triangulateShape(vectors[0], vectors.slice(1))) indices.push(...triangle.map((i) => vertex(flat[i], interpolateTriangle((flat[i][0] - w) / dx - x, (flat[i][1] - s) / dy - y, values as number[]))));
+      const rasterPoints: LngLat[] = [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]];
+      const clip = face.map((i) => rasterPoints[i]);
+      for (const sourceTriangle of tile(x, y)) {
+        const [left, bottom, right, top] = sourceTriangle.bounds;
+        if (right < x || left > x + 1 || top < y || bottom > y + 1) continue;
+        const polygon = clipTriangle(sourceTriangle.points, clip);
+        for (let i = 1; i + 1 < polygon.length; i++) {
+          const points = [polygon[0], polygon[i], polygon[i + 1]];
+          const area = (points[1][0] - points[0][0]) * (points[2][1] - points[0][1]) - (points[1][1] - points[0][1]) * (points[2][0] - points[0][0]);
+          if (Math.abs(area) < 1e-12) continue;
+          if (area < 0) [points[1], points[2]] = [points[2], points[1]];
+          indices.push(...points.map(([px, py]) => vertex(coordinate(px, py), interpolateTriangle(px - x, py - y, values as number[]))));
+        }
       }
     }
   }
