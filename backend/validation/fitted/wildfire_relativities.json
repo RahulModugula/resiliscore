@@ -1,0 +1,65 @@
+{
+ "roof_class_a": {
+  "odds_ratio": 0.34338,
+  "ci_low": 0.22016,
+  "ci_high": 0.53557
+ },
+ "enclosed_eaves": {
+  "odds_ratio": 0.73372,
+  "ci_low": 0.60412,
+  "ci_high": 0.89113
+ },
+ "screened_vents": {
+  "odds_ratio": 0.76185,
+  "ci_low": 0.63789,
+  "ci_high": 0.90989
+ },
+ "multipane_windows": {
+  "odds_ratio": 0.50959,
+  "ci_low": 0.44186,
+  "ci_high": 0.5877
+ },
+ "era_2008_plus": {
+  "odds_ratio": 0.40314,
+  "ci_low": 0.24056,
+  "ci_high": 0.67562
+ },
+ "train_fires": [
+  "Airport",
+  "Atlas",
+  "August Complex",
+  "BEU Lightning Cmplx",
+  "Beckwourth",
+  "Borel",
+  "Bridge",
+  "CZU Lightning Cmplx",
+  "Caldor",
+  "Camp",
+  "Creek",
+  "Dixie",
+  "Eaton",
+  "Fawn",
+  "Glass",
+  "Kincade",
+  "LNU Lightning Cmplx",
+  "McKinney",
+  "Mill",
+  "Mosquito",
+  "Mountain",
+  "North Complex",
+  "Oak",
+  "Park",
+  "Ranch",
+  "River",
+  "SCU Lightning Cmplx",
+  "SQF Complex",
+  "Slater",
+  "Valley",
+  "Zogg"
+ ],
+ "holdout_fire": "Palisades",
+ "holdout_auc": 0.57196,
+ "current_holdout_auc": 0.5297,
+ "fit_date": "2026-10-17",
+ "method": "Logistic regression of destroyed on DINS-coded hardening features, year-built era and fire fixed effects (Newton-Raphson, numpy), fitted on every fire except the holdout. Unknown values are kept as their own level."
+}

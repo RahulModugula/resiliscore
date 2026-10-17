@@ -1,0 +1,282 @@
+{
+ "Airport": {
+  "destroyed": 119,
+  "in_sample": true,
+  "inspected": 379,
+  "single_residences": 214,
+  "start_year": 2024
+ },
+ "Atlas": {
+  "destroyed": 449,
+  "in_sample": true,
+  "inspected": 1372,
+  "single_residences": 828,
+  "start_year": 2017
+ },
+ "August Complex": {
+  "destroyed": 46,
+  "in_sample": true,
+  "inspected": 356,
+  "single_residences": 189,
+  "start_year": 2020
+ },
+ "BEU Lightning Cmplx": {
+  "destroyed": 63,
+  "in_sample": true,
+  "inspected": 589,
+  "single_residences": 389,
+  "start_year": 2020
+ },
+ "Beckwourth": {
+  "destroyed": 106,
+  "in_sample": true,
+  "inspected": 508,
+  "single_residences": 280,
+  "start_year": 2021
+ },
+ "Blue Ridge": {
+  "destroyed": 1,
+  "in_sample": false,
+  "inspected": 326,
+  "single_residences": 311,
+  "start_year": 2020
+ },
+ "Bond": {
+  "destroyed": 11,
+  "in_sample": false,
+  "inspected": 565,
+  "single_residences": 388,
+  "start_year": 2020
+ },
+ "Borel": {
+  "destroyed": 152,
+  "in_sample": true,
+  "inspected": 505,
+  "single_residences": 305,
+  "start_year": 2024
+ },
+ "Bridge": {
+  "destroyed": 42,
+  "in_sample": true,
+  "inspected": 901,
+  "single_residences": 485,
+  "start_year": 2024
+ },
+ "CZU Lightning Cmplx": {
+  "destroyed": 925,
+  "in_sample": true,
+  "inspected": 4762,
+  "single_residences": 3243,
+  "start_year": 2020
+ },
+ "Caldor": {
+  "destroyed": 784,
+  "in_sample": true,
+  "inspected": 4442,
+  "single_residences": 3321,
+  "start_year": 2021
+ },
+ "Camp": {
+  "destroyed": 13696,
+  "in_sample": true,
+  "inspected": 23624,
+  "single_residences": 17134,
+  "start_year": 2018
+ },
+ "Creek": {
+  "destroyed": 576,
+  "in_sample": true,
+  "inspected": 3467,
+  "single_residences": 2174,
+  "start_year": 2017
+ },
+ "Dixie": {
+  "destroyed": 711,
+  "in_sample": true,
+  "inspected": 3831,
+  "single_residences": 2096,
+  "start_year": 2021
+ },
+ "Eaton": {
+  "destroyed": 6012,
+  "in_sample": true,
+  "inspected": 18388,
+  "single_residences": 11854,
+  "start_year": 2025
+ },
+ "Fairview": {
+  "destroyed": 22,
+  "in_sample": false,
+  "inspected": 366,
+  "single_residences": 189,
+  "start_year": 2022
+ },
+ "Fawn": {
+  "destroyed": 90,
+  "in_sample": true,
+  "inspected": 728,
+  "single_residences": 413,
+  "start_year": 2021
+ },
+ "Franklin": {
+  "destroyed": 9,
+  "in_sample": false,
+  "inspected": 728,
+  "single_residences": 378,
+  "start_year": 2024
+ },
+ "French": {
+  "destroyed": 22,
+  "in_sample": false,
+  "inspected": 606,
+  "single_residences": 393,
+  "start_year": 2021
+ },
+ "Glass": {
+  "destroyed": 642,
+  "in_sample": true,
+  "inspected": 4762,
+  "single_residences": 2433,
+  "start_year": 2020
+ },
+ "Kincade": {
+  "destroyed": 174,
+  "in_sample": true,
+  "inspected": 1568,
+  "single_residences": 1112,
+  "start_year": 2019
+ },
+ "LNU Lightning Cmplx": {
+  "destroyed": 786,
+  "in_sample": true,
+  "inspected": 5110,
+  "single_residences": 2707,
+  "start_year": 2020
+ },
+ "Line": {
+  "destroyed": 1,
+  "in_sample": false,
+  "inspected": 340,
+  "single_residences": 270,
+  "start_year": 2024
+ },
+ "McKinney": {
+  "destroyed": 118,
+  "in_sample": true,
+  "inspected": 357,
+  "single_residences": 209,
+  "start_year": 2022
+ },
+ "Mill": {
+  "destroyed": 91,
+  "in_sample": true,
+  "inspected": 309,
+  "single_residences": 237,
+  "start_year": 2022
+ },
+ "Mosquito": {
+  "destroyed": 44,
+  "in_sample": true,
+  "inspected": 666,
+  "single_residences": 366,
+  "start_year": 2022
+ },
+ "Mountain": {
+  "destroyed": 190,
+  "in_sample": true,
+  "inspected": 1893,
+  "single_residences": 1266,
+  "start_year": 2019
+ },
+ "North Complex": {
+  "destroyed": 1523,
+  "in_sample": true,
+  "inspected": 3204,
+  "single_residences": 1987,
+  "start_year": 2020
+ },
+ "Oak": {
+  "destroyed": 157,
+  "in_sample": true,
+  "inspected": 761,
+  "single_residences": 494,
+  "start_year": 2020
+ },
+ "Palisades": {
+  "destroyed": 5428,
+  "in_sample": true,
+  "inspected": 12081,
+  "single_residences": 9457,
+  "start_year": 2025
+ },
+ "Park": {
+  "destroyed": 427,
+  "in_sample": true,
+  "inspected": 2092,
+  "single_residences": 1133,
+  "start_year": 2024
+ },
+ "Ranch": {
+  "destroyed": 142,
+  "in_sample": true,
+  "inspected": 345,
+  "single_residences": 195,
+  "start_year": 2018
+ },
+ "River": {
+  "destroyed": 125,
+  "in_sample": true,
+  "inspected": 536,
+  "single_residences": 349,
+  "start_year": 2018
+ },
+ "SCU Lightning Cmplx": {
+  "destroyed": 137,
+  "in_sample": true,
+  "inspected": 878,
+  "single_residences": 473,
+  "start_year": 2020
+ },
+ "SQF Complex": {
+  "destroyed": 173,
+  "in_sample": true,
+  "inspected": 798,
+  "single_residences": 520,
+  "start_year": 2020
+ },
+ "Silverado": {
+  "destroyed": 2,
+  "in_sample": false,
+  "inspected": 1314,
+  "single_residences": 848,
+  "start_year": 2020
+ },
+ "Slater": {
+  "destroyed": 198,
+  "in_sample": true,
+  "inspected": 435,
+  "single_residences": 246,
+  "start_year": 2020
+ },
+ "Tamarack": {
+  "destroyed": 9,
+  "in_sample": false,
+  "inspected": 395,
+  "single_residences": 222,
+  "start_year": 2021
+ },
+ "Valley": {
+  "destroyed": 1341,
+  "in_sample": true,
+  "inspected": 2497,
+  "single_residences": 1639,
+  "start_year": 2015
+ },
+ "Zogg": {
+  "destroyed": 103,
+  "in_sample": true,
+  "inspected": 554,
+  "single_residences": 265,
+  "start_year": 2020
+ }
+}
