@@ -12,6 +12,7 @@ from dataclasses import asdict, dataclass, replace
 
 from app.actuarial import attribution, compliance, insurance, uncertainty
 from app.actuarial import compound_model as cm
+from app.actuarial import nyc as nyc_mod
 from app.actuarial.base_rates import NriRates, base_rates_for, context_for, resolve
 from app.actuarial.constants import get as c
 from app.actuarial.credibility import Credibility, credibility, posterior_lcr
@@ -20,6 +21,7 @@ from app.models.schemas import (
     ActuarialBreakdown,
     InputProvenance,
     Mitigation,
+    NycLayer,
     ParcelScoreResponse,
     PrivateVerificationLayer,
     RegulatoryCompliance,
@@ -58,19 +60,25 @@ def _firewise(r: ParcelScoreResponse) -> bool:
     return r.regulatory_compliance.ca_2644_9_factors.cat_a_firewise_usa
 
 
-def _ctx(r: ParcelScoreResponse, nri: NriRates | None = None) -> dict:
+def _ctx(r: ParcelScoreResponse, nri: NriRates | None = None, installed: frozenset[str] = frozenset()) -> dict:
     return {"state": r.parcel_identity.state, "year_built": r.parcel_identity.year_built,
-            "firewise": _firewise(r), "base_rates": context_for(r, nri)[0]}
+            "firewise": _firewise(r), "base_rates": context_for(r, nri, nyc=r.nyc is not None)[0],
+            "nyc_layer": r.nyc, "nyc_installed": installed}
 
 
 def evaluate(
-    r: ParcelScoreResponse, v: PrivateVerificationLayer, *, z: float | None = None, nri: NriRates | None = None
+    r: ParcelScoreResponse,
+    v: PrivateVerificationLayer,
+    *,
+    z: float | None = None,
+    nri: NriRates | None = None,
+    installed: frozenset[str] = frozenset(),
 ) -> Evaluation:
     """Full chain for response `r`'s parcel under verification state `v`.
 
     `z` pins the credibility weight (default: the weight `v`'s evidence earns), so a caller can isolate the
     physical effect of a change from the evidence it would add."""
-    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri))
+    terms = cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri, installed))
     raw = sum(t.n * t.s for t in terms)
     cred = credibility(v)
     if z is not None:
@@ -88,7 +96,7 @@ def premium_discount(r: ParcelScoreResponse, v: PrivateVerificationLayer, nri: N
     bare = {
         t.peril: t.n * t.s
         for t in cm.peril_terms(r.public_hazard_layer, v, **_ctx(r, nri), mitigations=cm.Mitigations())
-        if t.peril != "FLOOD"
+        if t.peril not in cm.FLOOD_FAMILY
     }
     total = sum(bare.values())
     if total <= 0:
@@ -119,6 +127,7 @@ class Action:
     apply: Callable[[PrivateVerificationLayer], dict]
     strip: Callable[[PrivateVerificationLayer], dict]
     grant_states: tuple[str, ...] = ()
+    nyc_dose: str | None = None  # NYC retrofits toggle a dose, not a verification flag
 
     def with_(self, v: PrivateVerificationLayer) -> PrivateVerificationLayer:
         return v.model_copy(update=self.apply(v))
@@ -134,7 +143,7 @@ def _ca_wui(r: ParcelScoreResponse, _v: PrivateVerificationLayer) -> bool:
 def _FORTIFIED_ROOF(v: PrivateVerificationLayer) -> bool:
     return v.cv_roof_class == "CLASS_A_FORTIFIED" or v.ibhs_fortified_tier != "NONE"
 
-_E = c("action.economics")  # action id -> (gross capex USD, resale bump %)
+_E = {**c("action.economics"), **c("nyc.action_economics")}  # action id -> (gross capex USD, resale bump %)
 
 ACTIONS: tuple[Action, ...] = (
     Action(
@@ -203,6 +212,40 @@ ACTIONS: tuple[Action, ...] = (
         lambda v: {"iot_shutoff_active": True},
         lambda v: {"iot_shutoff_active": False},
     ),
+    Action(
+        "NYC_BACKWATER_VALVE", "backwater_valve", "Backwater valve on the house sewer lateral",
+        "SEWER_BACKUP", "NYC DEP sewer backup mitigation (backwater valves)", *_E["NYC_BACKWATER_VALVE"],
+        lambda r, v: r.nyc is not None, lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="backwater_valve",
+    ),
+    Action(
+        "NYC_SUMP_PUMP_BATTERY", "sump_pump_battery", "Sump pump with battery backup",
+        "PLUVIAL", "Retrofit; no statutory credit", *_E["NYC_SUMP_PUMP_BATTERY"],
+        lambda r, v: r.nyc is not None and nyc_mod.basement_kind(r.nyc)[0] != "NONE",
+        lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="sump_pump_battery",
+    ),
+    Action(
+        "NYC_FLOOD_VENTS", "flood_vents", "Flood vents (engineered openings) in the foundation walls",
+        "FLOOD", "FEMA Technical Bulletin 1 (flood openings)", *_E["NYC_FLOOD_VENTS"],
+        lambda r, v: r.nyc is not None and "FLOOD" in cm.active_perils(r.public_hazard_layer, r.nyc),
+        lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="flood_vents",
+    ),
+    Action(
+        "NYC_DRY_FLOODPROOFING", "dry_floodproofing", "Dry floodproofing: sealed walls and shields to a 3 ft stage",
+        "PLUVIAL", "FEMA P-936 (dry floodproofing)", *_E["NYC_DRY_FLOODPROOFING"],
+        lambda r, v: r.nyc is not None, lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="dry_floodproofing",
+    ),
+    Action(
+        "NYC_ELEVATED_MECHANICALS", "elevated_mechanicals", "Elevate boiler, water heater and electrical service",
+        "PLUVIAL", "Retrofit; no statutory credit", *_E["NYC_ELEVATED_MECHANICALS"],
+        lambda r, v: r.nyc is not None and nyc_mod.basement_kind(r.nyc)[0] != "NONE",
+        lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="elevated_mechanicals",
+    ),
+    Action(
+        "NYC_CELLAR_CONVERSION_REVERSAL", "cellar_reversal", "Reverse an unlawful cellar conversion to storage",
+        "SEWER_BACKUP", "Retrofit; DOB cellar-conversion flag", *_E["NYC_CELLAR_CONVERSION_REVERSAL"],
+        lambda r, v: r.nyc is not None and bool(r.nyc.dob_cellar_conversion_flag),
+        lambda v: False, lambda v: {}, lambda v: {}, nyc_dose="cellar_reversal",
+    ),
 )
 # Accepted ids: the canonical (golden) action ids and the spec's short ids. The API and MCP pass the
 # golden ids; the S2 score of 630 comes from CA_ZONE0_1_CLEARANCE + CA_EMBER_VENTS_EAVES +
@@ -220,14 +263,31 @@ def _select(v: PrivateVerificationLayer, action_ids: list[str]) -> PrivateVerifi
 
 
 def _mitigation_row(
-    r: ParcelScoreResponse, a: Action, v: PrivateVerificationLayer, base_premium: float, nri: NriRates
+    r: ParcelScoreResponse,
+    a: Action,
+    v: PrivateVerificationLayer,
+    base_premium: float,
+    nri: NriRates,
+    installed: frozenset[str],
 ) -> Mitigation:
-    on, off = a.with_(v), a.without(v)
+    if a.nyc_dose:
+        on = off = v
+        on_inst, off_inst = installed | {a.nyc_dose}, installed - {a.nyc_dose}
+    else:
+        on, off = a.with_(v), a.without(v)
+        on_inst = off_inst = installed
     # A row is the physical effect of the action alone: both sides use the as-found credibility weight.
     # Evidence (more channels, a higher Z) is a separate effect and shows in simulate()'s headline score.
     z = credibility(v).z
-    e_on, e_off = evaluate(r, on, z=z, nri=nri), evaluate(r, off, z=z, nri=nri)
-    savings = base_premium * (premium_discount(r, on, nri) - premium_discount(r, off, nri))
+    e_on = evaluate(r, on, z=z, nri=nri, installed=on_inst)
+    e_off = evaluate(r, off, z=z, nri=nri, installed=off_inst)
+    if a.nyc_dose:
+        # No filed credit exists for these retrofits: the saving is the modeled fall in expected loss, grossed up for
+        # the expense and profit loads (the indicated-premium basis of premium_build).
+        loads = c("premium.expense_load") + c("premium.profit_load")
+        savings = (e_off.posterior_lcr - e_on.posterior_lcr) * r.parcel_identity.rcv_usd / (1.0 - loads)
+    else:
+        savings = base_premium * (premium_discount(r, on, nri) - premium_discount(r, off, nri))
     grant = min(a.gross_capex_usd, LA_AL_FORTIFIED_GRANT_USD) if r.parcel_identity.state in a.grant_states else 0.0
     net = a.gross_capex_usd - grant
     return Mitigation(
@@ -238,7 +298,7 @@ def _mitigation_row(
         annual_premium_savings_usd=round(savings, 2),
         payback_years=round(net / savings, 2) if savings > 0 else NO_PAYBACK_YEARS,
         resale_value_bump_pct=a.resale_bump_pct,
-        currently_applied=a.applied(v),
+        currently_applied=(a.nyc_dose in installed) if a.nyc_dose else a.applied(v),
     )
 
 
@@ -270,7 +330,10 @@ def _with_stand_in_row(rows: list[InputProvenance], tract: NriRates) -> list[Inp
 
 
 def simulate(
-    response: ParcelScoreResponse, action_ids: list[str], nri: NriRates | None = None
+    response: ParcelScoreResponse,
+    action_ids: list[str],
+    nri: NriRates | None = None,
+    nyc: NycLayer | None = None,
 ) -> ParcelScoreResponse:
     """Re-score `response` with `action_ids` applied (canonical ids or spec aliases).
 
@@ -279,23 +342,28 @@ def simulate(
     saying so. The tract is resolved once here; nothing is read from any other request.
     """
     t0 = time.perf_counter()
-    r = response
+    r = response if nyc is None else response.model_copy(update={"nyc": nyc})
     tract, stand_in = resolve(r, nri)
     v = _select(r.private_verification_layer, action_ids)
-    ev = evaluate(r, v, nri=tract)
+    installed = frozenset(a.nyc_dose for k in action_ids if (a := _BY_KEY.get(k)) and a.nyc_dose)
+    ev = evaluate(r, v, nri=tract, installed=installed)
     prior = tract.tract_prior_lcr
     base_premium = r.actuarial_breakdown.annual_base_premium_usd
     discount = premium_discount(r, v, tract)
     jac = compliance.numerical_jacobian(
-        r.public_hazard_layer, v, **_ctx(r, tract), tract_prior_lcr=prior, z=ev.credibility.z
+        r.public_hazard_layer, v, **_ctx(r, tract, installed), tract_prior_lcr=prior, z=ev.credibility.z
     )
-    rows = [_mitigation_row(r, a, v, base_premium, tract) for a in ACTIONS if a.applicable(r, v)]
+    rows = [_mitigation_row(r, a, v, base_premium, tract, installed) for a in ACTIONS if a.applicable(r, v)]
     scale = ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0
     rcv = r.parcel_identity.rcv_usd
-    freeboard_missing = r.public_hazard_layer.freeboard_delta_h_ft is None and "FLOOD" in {t.peril for t in ev.terms}
+    in_sfha = r.public_hazard_layer.fema_flood_zone[:1] in ("A", "V")  # outside it there is no BFE to measure against
+    freeboard_missing = (
+        in_sfha and cm.effective_freeboard(r.public_hazard_layer, r.nyc) is None and "FLOOD" in {t.peril for t in ev.terms}
+    )
+    nyc_missing = r.nyc is not None and nyc_mod.data_missing(r.nyc)
     mc = uncertainty.simulate_losses(
         ev.terms, state=r.parcel_identity.state, rcv_usd=rcv, tract_prior_lcr=prior, z=ev.credibility.z,
-        freeboard_known=not freeboard_missing,
+        freeboard_known=not freeboard_missing, nyc_data_known=not nyc_missing,
     )
     build = insurance.premium_build(
         ev.terms,
@@ -313,7 +381,7 @@ def simulate(
             v,
             r.parcel_identity.rcv_usd,
             scale=ev.posterior_lcr / ev.raw_lcr if ev.raw_lcr > 0 else 1.0,
-            **_ctx(r, tract),
+            **_ctx(r, tract, installed),
         ),
         resili_score=ev.score,
         baseline_macro_score=score(prior),
@@ -327,10 +395,12 @@ def simulate(
         "actuarial_breakdown": breakdown,
         "prescriptive_mitigations": rows,
         "uncertainty": Uncertainty(**asdict(mc)),
-        "indicative_only": r.indicative_only or freeboard_missing or stand_in,
+        "indicative_only": r.indicative_only or freeboard_missing or nyc_missing or stand_in,
         "input_provenance": _with_stand_in_row(r.input_provenance, tract) if stand_in else r.input_provenance,
         "premium_build": build,
-        "factor_contributions": attribution.contributions(r, v, base_rates=base_rates_for(tract), prior=prior),
+        "factor_contributions": attribution.contributions(
+            r, v, base_rates=base_rates_for(tract, nyc=r.nyc is not None), prior=prior, nyc_installed=installed
+        ),
         "hitl_status": compliance.hitl_status(
             rcv_usd=r.parcel_identity.rcv_usd,
             cv_confidence=v.cv_confidence,

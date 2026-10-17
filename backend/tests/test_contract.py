@@ -19,11 +19,14 @@ KEYS = [
     "SCENARIO_2_CA_WUI",
     "SCENARIO_3_ESCONDIDO_HITL",
     "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED",
+    "NYC_RED_HOOK",
+    "NYC_HOLLIS",
+    "NYC_ROCKAWAY",
 ]
 
 
 V2_OPTIONAL = {
-    "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only",
+    "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only", "nyc",
 }
 V3_OPTIONAL = {"nyc"}
 
@@ -208,8 +211,11 @@ def test_aal_matches_posterior_lcr_times_rcv(key):
 def test_geometry_kinds_present_and_rings_closed(key):
     feats = GOLDEN[key]["parcel_identity"]["geometries"]["features"]
     kinds = {f["properties"]["kind"] for f in feats}
-    assert kinds >= {"parcel_polygon", "building_footprint", "zone_0_ring_0_5ft", "zone_1_ring_5_30ft",
-                     "zone_2_ring_30_100ft", "cv_detection"}
+    required = {"parcel_polygon", "building_footprint", "zone_0_ring_0_5ft", "zone_1_ring_5_30ft",
+                "zone_2_ring_30_100ft", "cv_detection"}
+    if key.startswith("NYC_"):  # no parcel boundary or aerial CV is ingested for the NYC lots
+        required -= {"parcel_polygon", "cv_detection"}
+    assert kinds >= required
     for f in feats:
         for ring in f["geometry"]["coordinates"]:
             assert ring[0] == ring[-1]

@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
-from app.actuarial import compliance
+from app.actuarial import compliance, constants
 from app.actuarial import compound_model as cm
 from app.actuarial.optimizer import _ctx
 from app.models.schemas import ParcelScoreResponse
@@ -33,10 +33,31 @@ def test_golden_parcels_are_never_harmed_by_a_mitigation(key):
     assert compliance.monotonicity_verified(jac)
 
 
+def _set(monkeypatch, key: str, value) -> None:
+    monkeypatch.setitem(constants.REGISTRY, key, replace(constants.REGISTRY[key], value=value))
+
+
+def _flip_nyc(monkeypatch, name: str) -> None:
+    """NYC retrofits act through registry coefficients (nyc.py): flip the ones behind `name`."""
+    if name == "backwater_valve":
+        _set(monkeypatch, "nyc.freq_reduction", {"backwater_valve": -0.85})
+    elif name in ("sump_pump_battery", "elevated_mechanicals", "flood_vents"):
+        reductions = dict(constants.get("nyc.sev_reduction"))
+        reductions[name] = -reductions[name]
+        _set(monkeypatch, "nyc.sev_reduction", reductions)
+    elif name == "dry_floodproofing":
+        _set(monkeypatch, "nyc.dry_floodproof_depth_ft", -constants.get("nyc.dry_floodproof_depth_ft"))
+    else:  # cellar_reversal: a larger dose raises the finish multiplier instead of cutting it
+        _set(monkeypatch, "nyc.cellar_reversal_multiplier", 2.0)
+
+
 def _flip(monkeypatch, name: str) -> None:
     """Negate every coefficient through which mitigation `name` acts."""
     if name == "canopy_trim":
         monkeypatch.setattr(cm, "DELTA3_CANOPY", -cm.DELTA3_CANOPY)
+        return
+    if name in cm.NYC_DOSE_NAMES:
+        _flip_nyc(monkeypatch, name)
         return
     flipped = {
         peril: {

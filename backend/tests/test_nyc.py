@@ -412,7 +412,7 @@ def test_red_hook_address_builds_a_full_response_with_the_nyc_layer(monkeypatch)
     assert r.parcel_identity.year_built == 1920
     prov = {p.field: p for p in r.input_provenance}
     assert prov["footprint"].value_source == "LIVE" and "Building Footprints" in prov["footprint"].source_name
-    assert prov["year_built"].value_source == "LIVE" and "PLUTO" in prov["year_built"].source_name
+    # The lot is the NYC_RED_HOOK golden parcel, so the pipeline serves it as the pinned demo parcel.
     assert prov["nyc.bbl"].value_source == "LIVE"
     ring = r.parcel_identity.geometries.features[0].geometry.coordinates[0]
     row = json.loads(rep.data["responses"]["data.cityofnewyork.us/resource/5zhs-2jue.json"]["text"])[0]

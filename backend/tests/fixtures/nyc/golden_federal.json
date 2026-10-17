@@ -1,0 +1,491 @@
+{
+ "red_hook": {
+  "point": [
+   -74.005208,
+   40.679144
+  ],
+  "county_fips": "36047",
+  "state": "NY",
+  "layer": {
+   "fema_flood_zone": "X",
+   "bfe_ft_navd88": null,
+   "usgs_lag_ft": 12.040654109054199,
+   "est_ffe_ft": 14.040654109054199,
+   "freeboard_delta_h_ft": null,
+   "hand_rel_elev_ft": 5.0,
+   "twi_index": 8.0,
+   "noaa_atlas15_p24h_100yr_in": 8.65,
+   "atlas15_cmip6_mult": 1.1,
+   "landfire_fbfm40_code": "NB1",
+   "slope_deg": 5.0,
+   "wui_class": "NON_WUI",
+   "openfema_tract_claim_count": 4715,
+   "openfema_tract_mean_lcr": 0.0,
+   "wrc_burn_probability": null
+  },
+  "vintages": {
+   "USGS_3DEP": "EPQS_current",
+   "NOAA_PFDS": "Atlas14",
+   "OpenFEMA": "NfipClaims_NfipPolicies_v3",
+   "LANDFIRE": "LF2025_FBFM40",
+   "FEMA_NFHL": "live",
+   "FEMA_NRI": "December 2025",
+   "CENSUS_GEOCODER": "Public_AR_Current"
+  },
+  "provenance": [
+   {
+    "field": "fema_flood_zone",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "bfe_ft_navd88",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "usgs_lag_ft",
+    "value_source": "LIVE",
+    "source_name": "USGS 3DEP EPQS",
+    "vintage": "EPQS_current"
+   },
+   {
+    "field": "est_ffe_ft",
+    "value_source": "DEFAULT",
+    "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+    "vintage": null
+   },
+   {
+    "field": "freeboard_delta_h_ft",
+    "value_source": "UNAVAILABLE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "noaa_atlas15_p24h_100yr_in",
+    "value_source": "LIVE",
+    "source_name": "NOAA PFDS Atlas 14",
+    "vintage": "Atlas14"
+   },
+   {
+    "field": "atlas15_cmip6_mult",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "landfire_fbfm40_code",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "hand_rel_elev_ft",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "twi_index",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "slope_deg",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wui_class",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wrc_burn_probability",
+    "value_source": "UNAVAILABLE",
+    "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+    "vintage": "RDS-2020-0016-2"
+   },
+   {
+    "field": "openfema_tract_claim_count",
+    "value_source": "LIVE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "openfema_tract_mean_lcr",
+    "value_source": "UNAVAILABLE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "tract_prior_lcr",
+    "value_source": "LIVE",
+    "source_name": "FEMA National Risk Index",
+    "vintage": "December 2025"
+   }
+  ],
+  "tract_prior_lcr": 0.0004989146437508606,
+  "nri_tract": {
+   "tract_fips": "36047005900",
+   "version": "December 2025",
+   "rates": {
+    "IFLD": 0.00036555291342769714,
+    "CFLD": 4.846932540456516e-05,
+    "WFIR": 0.0,
+    "HAIL": 5.1741134009948085e-06,
+    "SWND": 9.673063043699014e-07,
+    "HRCN": 7.875098521323355e-05
+   },
+   "ealb_usd": {
+    "IFLD": 242312.8969,
+    "CFLD": 32128.707549999992,
+    "WFIR": 0.0,
+    "HAIL": 3429.7480912627,
+    "SWND": 641.1952529763224,
+    "HRCN": 52201.41506141216
+   },
+   "expb_usd": {
+    "IFLD": 662866801.9129,
+    "CFLD": 632683714.0563402,
+    "WFIR": 0.0,
+    "HAIL": 662866819.0,
+    "SWND": 662866819.0,
+    "HRCN": 662866819.0
+   },
+   "buildvalue_usd": 662866819.0
+  },
+  "captured": "2026-10-17"
+ },
+ "hollis": {
+  "point": [
+   -73.777233,
+   40.726722
+  ],
+  "county_fips": "36081",
+  "state": "NY",
+  "layer": {
+   "fema_flood_zone": "X",
+   "bfe_ft_navd88": null,
+   "usgs_lag_ft": 96.42393565774432,
+   "est_ffe_ft": 98.42393565774432,
+   "freeboard_delta_h_ft": null,
+   "hand_rel_elev_ft": 5.0,
+   "twi_index": 8.0,
+   "noaa_atlas15_p24h_100yr_in": 8.25,
+   "atlas15_cmip6_mult": 1.1,
+   "landfire_fbfm40_code": "NB1",
+   "slope_deg": 5.0,
+   "wui_class": "NON_WUI",
+   "openfema_tract_claim_count": 10739,
+   "openfema_tract_mean_lcr": 0.0,
+   "wrc_burn_probability": null
+  },
+  "vintages": {
+   "USGS_3DEP": "EPQS_current",
+   "NOAA_PFDS": "Atlas14",
+   "OpenFEMA": "NfipClaims_NfipPolicies_v3",
+   "LANDFIRE": "LF2025_FBFM40",
+   "FEMA_NFHL": "live",
+   "FEMA_NRI": "December 2025",
+   "CENSUS_GEOCODER": "Public_AR_Current"
+  },
+  "provenance": [
+   {
+    "field": "fema_flood_zone",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "bfe_ft_navd88",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "usgs_lag_ft",
+    "value_source": "LIVE",
+    "source_name": "USGS 3DEP EPQS",
+    "vintage": "EPQS_current"
+   },
+   {
+    "field": "est_ffe_ft",
+    "value_source": "DEFAULT",
+    "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+    "vintage": null
+   },
+   {
+    "field": "freeboard_delta_h_ft",
+    "value_source": "UNAVAILABLE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "noaa_atlas15_p24h_100yr_in",
+    "value_source": "LIVE",
+    "source_name": "NOAA PFDS Atlas 14",
+    "vintage": "Atlas14"
+   },
+   {
+    "field": "atlas15_cmip6_mult",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "landfire_fbfm40_code",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "hand_rel_elev_ft",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "twi_index",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "slope_deg",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wui_class",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wrc_burn_probability",
+    "value_source": "UNAVAILABLE",
+    "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+    "vintage": "RDS-2020-0016-2"
+   },
+   {
+    "field": "openfema_tract_claim_count",
+    "value_source": "LIVE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "openfema_tract_mean_lcr",
+    "value_source": "UNAVAILABLE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "tract_prior_lcr",
+    "value_source": "LIVE",
+    "source_name": "FEMA National Risk Index",
+    "vintage": "December 2025"
+   }
+  ],
+  "tract_prior_lcr": 0.0007835403688643791,
+  "nri_tract": {
+   "tract_fips": "36081127700",
+   "version": "December 2025",
+   "rates": {
+    "IFLD": 0.0006979403130464302,
+    "CFLD": 0.0,
+    "WFIR": 0.0,
+    "HAIL": 5.174113436684746e-06,
+    "SWND": 1.6749566248230082e-06,
+    "HRCN": 7.875098575644117e-05
+   },
+   "ealb_usd": {
+    "IFLD": 672577.4231,
+    "CFLD": 0.0,
+    "WFIR": 0.0,
+    "HAIL": 4986.088089514047,
+    "SWND": 1614.0893275107178,
+    "HRCN": 75889.20438692077
+   },
+   "expb_usd": {
+    "IFLD": 963660347.7254001,
+    "CFLD": 0.0,
+    "WFIR": 0.0,
+    "HAIL": 963660374.0,
+    "SWND": 963660374.0,
+    "HRCN": 963660374.0
+   },
+   "buildvalue_usd": 963660374.0
+  },
+  "captured": "2026-10-17"
+ },
+ "rockaway": {
+  "point": [
+   -73.802387,
+   40.590961
+  ],
+  "county_fips": "36081",
+  "state": "NY",
+  "layer": {
+   "fema_flood_zone": "X",
+   "bfe_ft_navd88": null,
+   "usgs_lag_ft": 6.6273812160132,
+   "est_ffe_ft": 8.6273812160132,
+   "freeboard_delta_h_ft": null,
+   "hand_rel_elev_ft": 5.0,
+   "twi_index": 8.0,
+   "noaa_atlas15_p24h_100yr_in": 8.13,
+   "atlas15_cmip6_mult": 1.1,
+   "landfire_fbfm40_code": "NB1",
+   "slope_deg": 5.0,
+   "wui_class": "NON_WUI",
+   "openfema_tract_claim_count": 10739,
+   "openfema_tract_mean_lcr": 0.0,
+   "wrc_burn_probability": null
+  },
+  "vintages": {
+   "USGS_3DEP": "EPQS_current",
+   "NOAA_PFDS": "Atlas14",
+   "OpenFEMA": "NfipClaims_NfipPolicies_v3",
+   "LANDFIRE": "LF2025_FBFM40",
+   "FEMA_NFHL": "live",
+   "FEMA_NRI": "December 2025",
+   "CENSUS_GEOCODER": "Public_AR_Current"
+  },
+  "provenance": [
+   {
+    "field": "fema_flood_zone",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "bfe_ft_navd88",
+    "value_source": "LIVE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "usgs_lag_ft",
+    "value_source": "LIVE",
+    "source_name": "USGS 3DEP EPQS",
+    "vintage": "EPQS_current"
+   },
+   {
+    "field": "est_ffe_ft",
+    "value_source": "DEFAULT",
+    "source_name": "LAG + assumed 2.0 ft slab-on-grade foundation offset",
+    "vintage": null
+   },
+   {
+    "field": "freeboard_delta_h_ft",
+    "value_source": "UNAVAILABLE",
+    "source_name": "FEMA NFHL S_FLD_HAZ_AR",
+    "vintage": "live"
+   },
+   {
+    "field": "noaa_atlas15_p24h_100yr_in",
+    "value_source": "LIVE",
+    "source_name": "NOAA PFDS Atlas 14",
+    "vintage": "Atlas14"
+   },
+   {
+    "field": "atlas15_cmip6_mult",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "landfire_fbfm40_code",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "hand_rel_elev_ft",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "twi_index",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "slope_deg",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wui_class",
+    "value_source": "DEFAULT",
+    "source_name": "National default (no live source)",
+    "vintage": null
+   },
+   {
+    "field": "wrc_burn_probability",
+    "value_source": "UNAVAILABLE",
+    "source_name": "USFS Wildfire Risk to Communities burn probability (no usable scale)",
+    "vintage": "RDS-2020-0016-2"
+   },
+   {
+    "field": "openfema_tract_claim_count",
+    "value_source": "LIVE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "openfema_tract_mean_lcr",
+    "value_source": "UNAVAILABLE",
+    "source_name": "OpenFEMA NfipClaims + NfipPolicies",
+    "vintage": "NfipClaims_NfipPolicies_v3"
+   },
+   {
+    "field": "tract_prior_lcr",
+    "value_source": "LIVE",
+    "source_name": "FEMA National Risk Index",
+    "vintage": "December 2025"
+   }
+  ],
+  "tract_prior_lcr": 0.000937448593542416,
+  "nri_tract": {
+   "tract_fips": "36081094202",
+   "version": "December 2025",
+   "rates": {
+    "IFLD": 0.00044852759167460064,
+    "CFLD": 0.0004034825337253104,
+    "WFIR": 0.0,
+    "HAIL": 5.174113453921157e-06,
+    "SWND": 1.6749566304027547e-06,
+    "HRCN": 7.8589398058181e-05
+   },
+   "ealb_usd": {
+    "IFLD": 300454.39650000003,
+    "CFLD": 270280.14199999993,
+    "WFIR": 0.0,
+    "HAIL": 3465.974366072529,
+    "SWND": 1122.0002802334432,
+    "HRCN": 52644.54317450229
+   },
+   "expb_usd": {
+    "IFLD": 663389153.4739,
+    "CFLD": 416313241.8871355,
+    "WFIR": 0.0,
+    "HAIL": 669868258.0,
+    "SWND": 669868258.0,
+    "HRCN": 668493786.3803204
+   },
+   "buildvalue_usd": 669868258.0
+  },
+  "captured": "2026-10-17"
+ }
+}

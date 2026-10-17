@@ -13,3 +13,6 @@ out/
 .env.*
 !.env.example
 .DS_Store
+
+# validation: the full pulls are reproduced by the fetch scripts, only samples are committed
+backend/validation/data/*_full.csv

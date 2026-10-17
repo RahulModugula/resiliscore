@@ -50,8 +50,8 @@ def net_expected_loss(terms: list[cm.PerilTerm], *, scale: float, rcv_usd: float
 
 def modeled_credit_pct(bare: list[cm.PerilTerm], current: list[cm.PerilTerm]) -> float:
     """Percent fall in non-flood expected loss, unmitigated to as-verified."""
-    before = sum(t.n * t.s for t in bare if t.peril != "FLOOD")
-    after = sum(t.n * t.s for t in current if t.peril != "FLOOD")
+    before = sum(t.n * t.s for t in bare if t.peril not in cm.FLOOD_FAMILY)
+    after = sum(t.n * t.s for t in current if t.peril not in cm.FLOOD_FAMILY)
     return round(100 * (1 - after / before), 2) if before > 0 else 0.0
 
 
