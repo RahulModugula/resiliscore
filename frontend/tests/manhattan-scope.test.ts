@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { geometryBounds, pointInGeometry } from "../src/lib/manhattan/geo";
+import { geometryBounds, pointInGeometry, unprojectMeters } from "../src/lib/manhattan/geo";
+import { terrainSurface } from "../src/lib/manhattan/terrainSurface";
 import { sceneScope } from "../src/lib/manhattan/sceneScope";
 import type { Building, Geometry, Infrastructure, LngLat, ManhattanOverview, Neighborhood, NeighborhoodDetail, Park, PolygonGeometry, TerrainGrid } from "../src/lib/manhattan/types";
 
@@ -98,4 +99,19 @@ test("detached islands split a crossing source line without a connector through 
   assert.ok(lines.every(line => line.depthM === 4 && line.type === "Force Main"));
   assert.ok(lines[0].coordinates.every(([lng]) => lng <= point(1, 0)[0] + 1e-10));
   assert.ok(lines[1].coordinates.every(([lng]) => lng >= point(3, 0)[0] - 1e-10));
+});
+
+
+test("the actual park surface clips crossing source parks to the selected NTA", () => {
+  const scope = sceneScope(neighborhoods, overview, null, "A");
+  const mesh = terrainSurface(scope.terrain!, scope.parks.map(park => park.geometry), { include: scope.clip });
+  const positions = mesh.getAttribute("position"), indices = mesh.getIndex()!;
+  assert.ok(indices.count > 0);
+  for (let face = 0; face < indices.count; face += 3) {
+    const vertices = [indices.getX(face), indices.getX(face + 1), indices.getX(face + 2)];
+    const east = vertices.reduce((sum, index) => sum + positions.getX(index), 0) / 3;
+    const north = -vertices.reduce((sum, index) => sum + positions.getZ(index), 0) / 3;
+    assert.equal(pointInGeometry(unprojectMeters([east, north]), selected.geometry), true);
+  }
+  mesh.dispose();
 });

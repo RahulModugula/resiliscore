@@ -4,7 +4,8 @@ import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 
 import { Canvas, useThree, type ThreeEvent } from "@react-three/fiber";
 import { Bvh, CameraControls, Html } from "@react-three/drei";
 import { BufferGeometry, DoubleSide, Float32BufferAttribute } from "three";
-import { buildingAtFace, buildingGeometry, buildingGroundElevation, cameraFrame, combineBounds, outlineGeometry, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
+import { buildingAtFace, buildingGeometry, buildingGroundElevation, cameraFrame, outlineGeometry, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
+import { sceneScope, type SceneScope } from "@/lib/manhattan/sceneScope";
 import { terrainSurface } from "@/lib/manhattan/terrainSurface";
 import { pointInGeometry, unprojectMeters } from "@/lib/manhattan/geo";
 import type { Bounds, Building, Infrastructure, ManhattanOverview, Neighborhood, NeighborhoodDetail, TerrainGrid } from "@/lib/manhattan/types";
@@ -113,24 +114,21 @@ function BuildingMesh({ buildings, activeNeighborhoodId, onSelect, onNeighborhoo
   </group>;
 }
 
-function Landscape({ neighborhoods, overview, detail, showUnderground, showTerrain, verticalScale = 1, onNeighborhoodSelect, onHover }: Pick<ManhattanSceneProps, "neighborhoods" | "overview" | "detail" | "showUnderground" | "showTerrain" | "verticalScale" | "onNeighborhoodSelect"> & { onHover: (id: string | null) => void }) {
-  const focused = neighborhoods.find((neighborhood) => neighborhood.id === detail?.neighborhoodId);
-  const land = useMemo(() => overview?.terrain ? terrainGeometry(overview.terrain, neighborhoods.filter((neighborhood) => neighborhood.id !== detail?.neighborhoodId), { verticalScale, showTerrain }) : null, [overview, detail, neighborhoods, verticalScale, showTerrain]);
-  const detailLand = useMemo(() => detail?.terrain ? terrainGeometry(detail.terrain, neighborhoods.filter((neighborhood) => neighborhood.id === detail.neighborhoodId), { verticalScale, showTerrain }) : null, [detail, neighborhoods, verticalScale, showTerrain]);
-  const parks = useMemo(() => overview?.terrain ? terrainSurface(overview.terrain, overview.parks.map((park) => park.geometry), { verticalScale, showTerrain, color: "#4d8066", lift: 0.06, exclude: focused ? [focused.geometry] : [] }) : null, [overview, focused, verticalScale, showTerrain]);
-  const detailParks = useMemo(() => detail?.terrain && focused ? terrainSurface(detail.terrain, detail.parks.map((park) => park.geometry), { verticalScale, showTerrain, color: "#4d8066", lift: 0.06, include: focused.geometry }) : null, [detail, focused, verticalScale, showTerrain]);
-  useEffect(() => () => { parks?.dispose(); detailParks?.dispose(); land?.dispose(); detailLand?.dispose(); }, [parks, detailParks, land, detailLand]);
+function Landscape({ scope, showUnderground, showTerrain, verticalScale = 1, onNeighborhoodSelect, onHover }: Pick<ManhattanSceneProps, "showUnderground" | "showTerrain" | "verticalScale" | "onNeighborhoodSelect"> & { scope: SceneScope; onHover: (id: string | null) => void }) {
+  const land = useMemo(() => scope.terrain ? terrainGeometry(scope.terrain, scope.neighborhoods, { verticalScale, showTerrain }) : null, [scope.terrain, scope.neighborhoods, verticalScale, showTerrain]);
+  const parks = useMemo(() => scope.terrain ? terrainSurface(scope.terrain, scope.parks.map(park => park.geometry), { verticalScale, showTerrain, color: "#4d8066", lift: 0.06, include: scope.clip }) : null, [scope.terrain, scope.parks, scope.clip, verticalScale, showTerrain]);
+  useEffect(() => () => { parks?.dispose(); land?.dispose(); }, [parks, land]);
   const neighborhoodAt = (event: ThreeEvent<PointerEvent | MouseEvent>) => {
     const point = unprojectMeters([event.point.x, -event.point.z]);
-    return neighborhoods.find((neighborhood) => pointInGeometry(point, neighborhood.geometry));
+    return scope.neighborhoods.find(neighborhood => pointInGeometry(point, neighborhood.geometry));
   };
   return <group>
-    {[land, detailLand, parks, detailParks].map((geometry, index) => geometry && <mesh key={index} geometry={geometry} onClick={(event) => {
+    {[land, parks].map((geometry, index) => geometry && <mesh key={index} geometry={geometry} onClick={(event) => {
       event.stopPropagation();
       const neighborhood = neighborhoodAt(event);
       if (event.delta <= 6 && neighborhood) onNeighborhoodSelect(neighborhood.id);
     }} onPointerMove={(event) => { event.stopPropagation(); onHover(neighborhoodAt(event)?.id ?? null); }} onPointerOut={() => onHover(null)}>
-      <meshStandardMaterial vertexColors roughness={1} side={DoubleSide} transparent={showUnderground} opacity={showUnderground ? 0.15 : 1} depthWrite={!showUnderground} polygonOffset polygonOffsetFactor={index >= 2 ? -1 : 0} />
+      <meshStandardMaterial vertexColors roughness={1} side={DoubleSide} transparent={showUnderground} opacity={showUnderground ? 0.15 : 1} depthWrite={!showUnderground} polygonOffset polygonOffsetFactor={index === 1 ? -1 : 0} />
     </mesh>)}
   </group>;
 }
@@ -188,20 +186,15 @@ function City(props: ManhattanSceneProps) {
     return () => { gl.domElement.style.cursor = ""; };
   }, [gl, hoverNeighborhoodId, hoverBuilding]);
   const reducedMotion = useReducedMotion();
-  const selected = neighborhoods.find((neighborhood) => neighborhood.id === selectedNeighborhoodId);
-  const bounds = selected?.bounds ?? combineBounds(neighborhoods);
-  const activeDetail = detail?.neighborhoodId === selectedNeighborhoodId ? detail : null;
-  const buildings = useMemo(() => activeDetail
-    ? [...(overview?.buildings ?? []).filter((building) => building.neighborhoodId !== activeDetail.neighborhoodId), ...activeDetail.buildings]
-    : overview?.buildings ?? [], [overview, activeDetail]);
+  const scope = useMemo(() => sceneScope(neighborhoods, overview, detail, selectedNeighborhoodId), [neighborhoods, overview, detail, selectedNeighborhoodId]);
+  const { selected, bounds, detail: activeDetail, buildings, terrain } = scope;
   const verticalScale = Number.isFinite(props.verticalScale) && props.verticalScale! > 0 ? props.verticalScale! : 1;
-  const terrain = (activeDetail ?? overview)?.terrain;
   const terrainAt = useMemo(() => (point: [number, number]) => {
     if (activeDetail && selected && point[0] >= selected.bounds[0] && point[0] <= selected.bounds[2] && point[1] >= selected.bounds[1] && point[1] <= selected.bounds[3] && pointInGeometry(point, selected.geometry)) return activeDetail.terrain;
     return overview?.terrain;
   }, [activeDetail, selected, overview]);
   const maxElevation = useMemo(() => Math.max((terrain?.elevationsM.reduce<number>((max, value) => Math.max(max, value ?? 0), 0) ?? 0) * verticalScale, buildings.reduce((max, building) => selectedNeighborhoodId && building.neighborhoodId !== selectedNeighborhoodId ? max : Math.max(max, (buildingGroundElevation(building, terrainAt(building.center)) ?? 0) * verticalScale + (building.heightM ?? 0)), 0)), [buildings, selectedNeighborhoodId, terrain, terrainAt, verticalScale]);
-  const hovered = neighborhoods.find((neighborhood) => neighborhood.id === (hoverBuilding?.neighborhoodId ?? hoverNeighborhoodId));
+  const hovered = scope.neighborhoods.find((neighborhood) => neighborhood.id === (hoverBuilding?.neighborhoodId ?? hoverNeighborhoodId));
   const propertyHover = hoverBuilding && hoverBuilding.neighborhoodId === activeDetail?.neighborhoodId ? hoverBuilding : null;
   const label = propertyHover ? propertyHover.address ?? "Address unavailable" : hovered?.name;
   const labelPoint = propertyHover ? worldPoint(propertyHover.center, (buildingGroundElevation(propertyHover, terrainAt(propertyHover.center)) ?? 0) * verticalScale + (propertyHover.heightM ?? 0) + 20) : hovered ? worldPoint(hovered.center, (terrainElevation(hovered.center, terrainAt(hovered.center)) ?? 0) * verticalScale + 20) : null;
@@ -211,11 +204,11 @@ function City(props: ManhattanSceneProps) {
     <directionalLight position={[-6000, props.showTerrain ? 4500 : 10000, 4000]} intensity={props.showTerrain ? 2.6 : 2.3} color="#fff4d9" />
     <hemisphereLight args={["#d4e4ed", "#47584b", props.showTerrain ? 0.4 : 1.2]} />
     <CameraRig bounds={bounds} reducedMotion={reducedMotion} maxElevation={maxElevation} />
-    <Bvh key={`${activeDetail?.neighborhoodId ?? "overview"}-${overview?.buildings.length ?? 0}-${verticalScale}-${props.showTerrain ? 1 : 0}`} firstHitOnly indirect>
-      <Landscape neighborhoods={neighborhoods} overview={overview} detail={activeDetail} showUnderground={props.showUnderground} showTerrain={props.showTerrain} verticalScale={verticalScale} onNeighborhoodSelect={onNeighborhoodSelect} onHover={setHoverNeighborhoodId} />
-      {neighborhoods.map((neighborhood) => <NeighborhoodMesh key={neighborhood.id} neighborhood={neighborhood} terrain={neighborhood.id === activeDetail?.neighborhoodId ? activeDetail.terrain : overview?.terrain} selected={neighborhood.id === selectedNeighborhoodId || neighborhood.id === hovered?.id} muted={!!selectedNeighborhoodId} underground={!!props.showUnderground} verticalScale={verticalScale} />)}
+    <Bvh key={`${selected?.id ?? "island"}-${activeDetail ? "detail" : "overview"}-${buildings.length}-${verticalScale}-${props.showTerrain ? 1 : 0}`} firstHitOnly indirect>
+      <Landscape scope={scope} showUnderground={props.showUnderground} showTerrain={props.showTerrain} verticalScale={verticalScale} onNeighborhoodSelect={onNeighborhoodSelect} onHover={setHoverNeighborhoodId} />
+      {scope.neighborhoods.map((neighborhood) => <NeighborhoodMesh key={neighborhood.id} neighborhood={neighborhood} terrain={terrain} selected={neighborhood.id === selectedNeighborhoodId || neighborhood.id === hovered?.id} muted={!!selectedNeighborhoodId} underground={!!props.showUnderground} verticalScale={verticalScale} />)}
       <BuildingMesh buildings={buildings} activeNeighborhoodId={activeDetail?.neighborhoodId ?? null} onSelect={onBuildingSelect} onNeighborhoodSelect={onNeighborhoodSelect} selectedBuildingId={selectedBuildingId} underground={!!props.showUnderground} showTerrain={!!props.showTerrain} verticalScale={verticalScale} terrainAt={terrainAt} onHover={setHoverBuilding} />
-      {props.showUnderground && <Underground infrastructure={(activeDetail ?? overview)?.infrastructure} terrain={terrain} verticalScale={verticalScale} />}
+      {props.showUnderground && <Underground infrastructure={scope.infrastructure} terrain={terrain} verticalScale={verticalScale} />}
     </Bvh>
     {label && labelPoint && <Html position={labelPoint} center style={{ pointerEvents: "none", whiteSpace: "nowrap" }} zIndexRange={[20, 0]}>
       <span style={{ display: "block", background: "#101f25", border: "1px solid #59756e", color: "#eaf1f3", padding: "6px 9px", borderRadius: 4, fontSize: 12, boxShadow: "0 4px 12px #0005" }}>{label}</span>
@@ -226,8 +219,10 @@ function City(props: ManhattanSceneProps) {
 
 /** Root supplies the accessible neighborhood/property list and loading state beside this canvas. */
 export default function ManhattanScene(props: ManhattanSceneProps) {
+  const focused = props.neighborhoods.find(neighborhood => neighborhood.id === props.selectedNeighborhoodId);
+  const label = focused ? `Interactive 3D ${focused.name} neighborhood map.` : "Interactive 3D Manhattan map.";
   return <SceneBoundary onError={props.onError}>
-    <Canvas aria-label="Interactive 3D Manhattan map. Drag to pan or orbit; scroll or pinch to zoom. Use the neighborhood and property lists for keyboard selection." role="img" frameloop="demand" dpr={[1, 1.5]} camera={{ position: [10000, 18000, 18000], fov: 38, near: 2, far: 150000 }} gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }} fallback={<MapFallback />} style={{ touchAction: "none", background: "#0b1b23" }}>
+    <Canvas aria-label={`${label} Drag to pan or orbit; scroll or pinch to zoom. Use the neighborhood and property lists for keyboard selection.`} role="img" frameloop="demand" dpr={[1, 1.5]} camera={{ position: [10000, 18000, 18000], fov: 38, near: 2, far: 150000 }} gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }} fallback={<MapFallback />} style={{ touchAction: "none", background: "#0b1b23" }}>
       <City {...props} />
     </Canvas>
   </SceneBoundary>;
