@@ -101,7 +101,7 @@ test.describe("Manhattan directory works without WebGL or a backend", () => {
     await expect(page.getByRole("button", { name: "Retry addresses" })).toHaveCount(0);
     await expect(page.getByRole("heading", { name: district, exact: true })).toBeVisible();
     await page.getByRole("searchbox", { name: "Find a property by address, BIN, or BBL" }).fill("207 FRONT STREET");
-    await expect(page.getByRole("button", { name: "Assess 207 FRONT STREET", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Assess 207 FRONT STREET", exact: true }).first()).toBeVisible();
     await expect(page).toHaveURL(/neighborhood=MN0101/);
   });
 
