@@ -6,11 +6,13 @@ Run from backend/:  uv run python -m scripts.benchmark --n 500 --warmup 50 --dir
 
 import argparse
 import asyncio
+import json
 import logging
 import math
 import time
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 import httpx
 
@@ -28,6 +30,7 @@ SCENARIOS = [
     "SCENARIO_3_ESCONDIDO_HITL",
     "SCENARIO_3_ESCONDIDO_HITL__UNPERMITTED",
 ]
+DEFAULT_JSON_OUT = Path(__file__).resolve().parents[1] / "validation" / "results" / "benchmarks.json"
 S2_APN = "58430120180000"
 S2_ACTIONS = ["CA_ZONE0_1_CLEARANCE", "CA_EMBER_VENTS_EAVES", "CA_IBHS_WPH_CLASS_A_ROOF"]
 EVIDENCE_BODY = {"apn_uid": S2_APN, "channel": "LIDAR", "payload_meta": {}}
@@ -230,9 +233,14 @@ def main(argv: list[str] | None = None) -> list[Row]:
     parser.add_argument("--direct-n", type=int, default=1000, help="direct simulate() calls")
     parser.add_argument("--mc-n", type=int, default=100, help="Monte Carlo calls (10k draws each)")
     parser.add_argument("--concurrency", type=int, nargs="+", default=[1, 16], help="worker counts")
+    parser.add_argument(
+        "--json-out", type=Path, default=DEFAULT_JSON_OUT, help="where to write the rows as JSON"
+    )
     args = parser.parse_args(argv)
     rows = asyncio.run(run_all(args.n, args.warmup, args.direct_n, args.concurrency, args.mc_n))
     print(to_markdown(rows))
+    args.json_out.parent.mkdir(parents=True, exist_ok=True)
+    args.json_out.write_text(json.dumps([asdict(r) for r in rows], indent=2) + "\n")
     return rows
 
 
