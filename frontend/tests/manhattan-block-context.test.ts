@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { loadAddressIndex, loadBuildingContext, resolveBuildingAddress, taxBlockId, contextBounds, selectBlockBuildings, selectContextStreets, cropTerrain, type AddressIndex, type ContextStreet } from "../src/lib/manhattan/blockContext";
-import { streetGeometry } from "../src/lib/manhattan/blockGeometry";
+import { streetGeometry, streetLabelPosition } from "../src/lib/manhattan/blockGeometry";
 import { terrainElevation } from "../src/lib/manhattan/sceneGeometry";
 import { unprojectMeters } from "../src/lib/manhattan/geo";
 import type { Building, TerrainGrid } from "../src/lib/manhattan/types";
@@ -101,4 +101,15 @@ test("exceptionally large tax blocks use a clearly bounded local part",()=>{
   assert.equal(result.wholeBlock,false);
   assert.ok(result.bounds[2]-result.bounds[0]<.01);
   assert.ok(result.bounds[3]-result.bounds[1]<.01);
+});
+
+
+test("long adjacent streets are labeled within the visible measured block",()=>{
+  const terrain:TerrainGrid={bounds:[...unprojectMeters([0,0]),...unprojectMeters([100,100])],width:2,height:2,elevationsM:[0,10,20,30],source:"Measured samples"};
+  const street:ContextStreet={id:"long",name:"Long street",widthM:8,coordinates:[unprojectMeters([-1000,50]),unprojectMeters([200,50])]};
+  const label=streetLabelPosition(street,terrain,terrain.bounds);
+  assert.ok(label);
+  assert.ok(label.point[0]>=terrain.bounds[0] && label.point[0]<=terrain.bounds[2]);
+  assert.ok(label.point[1]>=terrain.bounds[1] && label.point[1]<=terrain.bounds[3]);
+  assert.ok(Math.abs(label.elevation-15)<.01);
 });

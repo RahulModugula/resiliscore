@@ -16,6 +16,17 @@ export function clipStreet(a: LngLat, b: LngLat, bounds: Bounds): [LngLat, LngLa
   }
   return [[a[0]+low*dx,a[1]+low*dy],[a[0]+high*dx,a[1]+high*dy]];
 }
+/** Anchor a name on a visible, DEM-supported segment, even when the source midpoint is far away. */
+export function streetLabelPosition(street: ContextStreet, terrain: TerrainGrid, bounds: Bounds): { point:LngLat; elevation:number } | null {
+  for(let i=1;i<street.coordinates.length;i++) {
+    const clipped=clipStreet(street.coordinates[i-1],street.coordinates[i],bounds);
+    if(!clipped) continue;
+    const point:LngLat=[(clipped[0][0]+clipped[1][0])/2,(clipped[0][1]+clipped[1][1])/2];
+    const elevation=terrainElevation(point,terrain);
+    if(elevation!==null) return {point,elevation};
+  }
+  return null;
+}
 /** Real centerlines draped at <=5m intervals. Null DEM samples never become zero-height roads. */
 export function streetGeometry(streets: ContextStreet[], terrain: TerrainGrid, bounds: Bounds) {
   const positions:number[]=[];

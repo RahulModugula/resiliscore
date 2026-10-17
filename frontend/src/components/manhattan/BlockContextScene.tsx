@@ -5,7 +5,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { CameraControls, Html } from "@react-three/drei";
 import { DoubleSide } from "three";
 import { buildingGeometry, cameraFrame, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
-import { clipStreet, colorTerrain, streetGeometry } from "@/lib/manhattan/blockGeometry";
+import { colorTerrain, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
 import type { BlockContext } from "@/lib/manhattan/blockContext";
 import type { Neighborhood } from "@/lib/manhattan/types";
 import styles from "./BlockContextView.module.css";
@@ -41,14 +41,13 @@ function Block({context}:{context:BlockContext}) {
   useEffect(()=>()=>{Object.values(geometries).forEach(g=>g.dispose());},[geometries]);
   const streetLabels=useMemo(()=>{
     const names=new Set<string>();
-    return context.streets.filter(street=>{
-      if(names.has(street.name)) return false;
-      names.add(street.name);return true;
-    }).slice(0,8).map(street=>{
-      const segment=street.coordinates.slice(1).map((p,i)=>clipStreet(street.coordinates[i],p,context.bounds)).find(segment=>segment!==null);
-      const point=segment ? [(segment[0][0]+segment[1][0])/2,(segment[0][1]+segment[1][1])/2] as [number,number] : street.coordinates[0];
-      return {id:street.id,name:street.name,point,elevation:terrainElevation(point,context.terrain)};
-    }).filter(label=>label.elevation!==null);
+    return context.streets.flatMap(street=>{
+      if(names.has(street.name)) return [];
+      const position=streetLabelPosition(street,context.terrain,context.bounds);
+      if(!position) return [];
+      names.add(street.name);
+      return [{id:street.id,name:street.name,...position}];
+    }).slice(0,8);
   },[context]);
   return <group>
     <mesh geometry={geometries.land}><meshStandardMaterial vertexColors side={DoubleSide} roughness={1}/></mesh>
