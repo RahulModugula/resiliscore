@@ -1,6 +1,3 @@
-# local agent config — never pushed
-CLAUDE.md
-.claude/
 # python
 __pycache__/
 *.pyc
