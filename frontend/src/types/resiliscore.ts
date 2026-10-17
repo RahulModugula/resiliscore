@@ -156,6 +156,55 @@ export interface RegulatoryCompliance {
   dataset_vintages: Record<string, string>;
 }
 
+export type ValueSource = "LIVE" | "DEFAULT" | "UNAVAILABLE" | "REFERENCE_PARCEL";
+
+export interface InputProvenance {
+  field: string;
+  value_source: ValueSource;
+  source_name: string;
+  vintage: string | null;
+}
+
+export interface FactorContribution {
+  factor: string;
+  input_value: number | string | boolean | null;
+  score_points: number;
+  source: string;
+}
+
+export interface Uncertainty {
+  aal_p05_usd: number;
+  aal_p50_usd: number;
+  aal_p95_usd: number;
+  score_p05: number;
+  score_p95: number;
+  loss_1_in_100_usd: number;
+  loss_1_in_250_usd: number;
+  method: string;
+}
+
+export interface PremiumBuild {
+  expected_loss_usd: number;
+  deductible_usd: number;
+  net_expected_loss_usd: number;
+  expense_load_pct: number;
+  profit_load_pct: number;
+  indicated_premium_usd: number;
+  modeled_mitigation_credit_pct: number;
+  filed_mitigation_credit_pct: number;
+}
+
+export interface EvidenceLogEntry {
+  evidence_id: string;
+  channel: string;
+  submitted_at: string; // ISO 8601 date-time
+  weight_added: number;
+  z_before: number;
+  z_after: number;
+  score_before: number;
+  score_after: number;
+}
+
 export interface ParcelScoreResponse {
   request_id: string; // UUID
   processing_time_ms: number;
@@ -166,6 +215,13 @@ export interface ParcelScoreResponse {
   prescriptive_mitigations: Mitigation[];
   hitl_status: HitlStatus;
   regulatory_compliance: RegulatoryCompliance;
+  // Contract v2: optional, additive. Absent or null on responses that predate v2.
+  input_provenance?: InputProvenance[];
+  factor_contributions?: FactorContribution[];
+  uncertainty?: Uncertainty | null;
+  premium_build?: PremiumBuild | null;
+  evidence_log?: EvidenceLogEntry[];
+  indicative_only?: boolean;
 }
 
 export type GoldenScenarioKey =

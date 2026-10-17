@@ -96,9 +96,14 @@ def _field_names(model: type[BaseModel], seen: set[type]) -> list[str]:
     return names
 
 
+# Mitigation credits are filed rating-plan discounts, not consumer credit data.
+ECDIS_ALLOWED_FIELDS = frozenset({"modeled_mitigation_credit_pct", "filed_mitigation_credit_pct"})
+
+
 def ecdis_fields_present(model: type[BaseModel] = ParcelScoreResponse) -> list[str]:
     """Field names (any depth) containing a socio-economic ECDIS token; empty means CL7-clean."""
-    return sorted({n for n in _field_names(model, set()) if ECDIS_TOKENS & set(n.lower().split("_"))})
+    names = _field_names(model, set())
+    return sorted({n for n in names if n not in ECDIS_ALLOWED_FIELDS and ECDIS_TOKENS & set(n.lower().split("_"))})
 
 
 def hitl_status(
