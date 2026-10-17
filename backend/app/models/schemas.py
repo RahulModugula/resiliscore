@@ -1,5 +1,6 @@
 """Pydantic v2 models mirroring contracts/parcel_score_schema.json. Change both together."""
 
+from datetime import datetime
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -169,6 +170,56 @@ class RegulatoryCompliance(_Strict):
     dataset_vintages: dict[str, str]
 
 
+ValueSource = Literal["LIVE", "DEFAULT", "UNAVAILABLE", "REFERENCE_PARCEL"]
+
+
+class InputProvenance(_Strict):
+    field: str
+    value_source: ValueSource
+    source_name: str
+    vintage: str | None
+
+
+class FactorContribution(_Strict):
+    factor: str
+    input_value: float | str | bool | None
+    score_points: float
+    source: str
+
+
+class Uncertainty(_Strict):
+    aal_p05_usd: float
+    aal_p50_usd: float
+    aal_p95_usd: float
+    score_p05: float
+    score_p95: float
+    loss_1_in_100_usd: float
+    loss_1_in_250_usd: float
+    method: str
+
+
+class PremiumBuild(_Strict):
+    expected_loss_usd: float
+    deductible_usd: float
+    net_expected_loss_usd: float
+    expense_load_pct: float
+    profit_load_pct: float
+    indicated_premium_usd: float
+    modeled_mitigation_credit_pct: float
+    filed_mitigation_credit_pct: float
+
+
+class EvidenceLogEntry(_Strict):
+    evidence_id: str
+    channel: str
+    submitted_at: datetime
+    weight_added: float
+    z_before: float
+    z_after: float
+    score_before: int
+    score_after: int
+
+
 class ParcelScoreResponse(_Strict):
     request_id: str = Field(pattern=UUID_PATTERN)
     processing_time_ms: float
@@ -179,3 +230,10 @@ class ParcelScoreResponse(_Strict):
     prescriptive_mitigations: list[Mitigation]
     hitl_status: HitlStatus
     regulatory_compliance: RegulatoryCompliance
+    # Contract v2: optional, additive.
+    input_provenance: list[InputProvenance] = Field(default_factory=list)
+    factor_contributions: list[FactorContribution] = Field(default_factory=list)
+    uncertainty: Uncertainty | None = None
+    premium_build: PremiumBuild | None = None
+    evidence_log: list[EvidenceLogEntry] = Field(default_factory=list)
+    indicative_only: bool = False

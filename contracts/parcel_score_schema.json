@@ -34,6 +34,53 @@
     },
     "regulatory_compliance": {
       "$ref": "#/$defs/RegulatoryCompliance"
+    },
+    "input_provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InputProvenance"
+      },
+      "default": []
+    },
+    "factor_contributions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FactorContribution"
+      },
+      "default": []
+    },
+    "uncertainty": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Uncertainty"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "premium_build": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PremiumBuild"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence_log": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EvidenceLogEntry"
+      },
+      "default": []
+    },
+    "indicative_only": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
@@ -622,6 +669,188 @@
         "ny_dfs_cl7_ecdis_free",
         "ca_2644_9_factors",
         "dataset_vintages"
+      ],
+      "additionalProperties": false
+    },
+    "InputProvenance": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "value_source": {
+          "enum": [
+            "LIVE",
+            "DEFAULT",
+            "UNAVAILABLE",
+            "REFERENCE_PARCEL"
+          ]
+        },
+        "source_name": {
+          "type": "string"
+        },
+        "vintage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "field",
+        "value_source",
+        "source_name",
+        "vintage"
+      ],
+      "additionalProperties": false
+    },
+    "FactorContribution": {
+      "type": "object",
+      "properties": {
+        "factor": {
+          "type": "string"
+        },
+        "input_value": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "null"
+          ]
+        },
+        "score_points": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor",
+        "input_value",
+        "score_points",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "Uncertainty": {
+      "type": "object",
+      "properties": {
+        "aal_p05_usd": {
+          "type": "number"
+        },
+        "aal_p50_usd": {
+          "type": "number"
+        },
+        "aal_p95_usd": {
+          "type": "number"
+        },
+        "score_p05": {
+          "type": "number"
+        },
+        "score_p95": {
+          "type": "number"
+        },
+        "loss_1_in_100_usd": {
+          "type": "number"
+        },
+        "loss_1_in_250_usd": {
+          "type": "number"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "aal_p05_usd",
+        "aal_p50_usd",
+        "aal_p95_usd",
+        "score_p05",
+        "score_p95",
+        "loss_1_in_100_usd",
+        "loss_1_in_250_usd",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "PremiumBuild": {
+      "type": "object",
+      "properties": {
+        "expected_loss_usd": {
+          "type": "number"
+        },
+        "deductible_usd": {
+          "type": "number"
+        },
+        "net_expected_loss_usd": {
+          "type": "number"
+        },
+        "expense_load_pct": {
+          "type": "number"
+        },
+        "profit_load_pct": {
+          "type": "number"
+        },
+        "indicated_premium_usd": {
+          "type": "number"
+        },
+        "modeled_mitigation_credit_pct": {
+          "type": "number"
+        },
+        "filed_mitigation_credit_pct": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "expected_loss_usd",
+        "deductible_usd",
+        "net_expected_loss_usd",
+        "expense_load_pct",
+        "profit_load_pct",
+        "indicated_premium_usd",
+        "modeled_mitigation_credit_pct",
+        "filed_mitigation_credit_pct"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceLogEntry": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "submitted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "weight_added": {
+          "type": "number"
+        },
+        "z_before": {
+          "type": "number"
+        },
+        "z_after": {
+          "type": "number"
+        },
+        "score_before": {
+          "type": "integer"
+        },
+        "score_after": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "channel",
+        "submitted_at",
+        "weight_added",
+        "z_before",
+        "z_after",
+        "score_before",
+        "score_after"
       ],
       "additionalProperties": false
     }

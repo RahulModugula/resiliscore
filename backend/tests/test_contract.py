@@ -21,14 +21,21 @@ KEYS = [
 ]
 
 
+V2_OPTIONAL = {
+    "input_provenance", "factor_contributions", "uncertainty", "premium_build", "evidence_log", "indicative_only",
+}
+
+
 def test_schema_is_valid_and_strict():
     Draft202012Validator.check_schema(SCHEMA)
+    assert sorted(SCHEMA["required"]) == sorted(set(SCHEMA["properties"]) - V2_OPTIONAL)
 
     def walk(node):
         if isinstance(node, dict):
             if node.get("type") == "object" and "properties" in node:
                 assert node["additionalProperties"] is False
-                assert sorted(node["required"]) == sorted(node["properties"])
+                if node is not SCHEMA:
+                    assert sorted(node["required"]) == sorted(node["properties"])
             for v in node.values():
                 walk(v)
         elif isinstance(node, list):
@@ -84,6 +91,8 @@ def _compare(model, node, path):
     assert set(model.model_fields) == set(props), f"{path}: field mismatch"
     for name, field in model.model_fields.items():
         sub = _deref(props[name])
+        if "anyOf" in sub:  # Optional[Model]: compare the non-null branch
+            sub = next(_deref(b) for b in sub["anyOf"] if b.get("type") != "null")
         inner = list(_inner_models(field.annotation))
         if sub.get("type") == "array":
             sub = _deref(sub["items"])
@@ -221,3 +230,49 @@ def test_internal_arithmetic_consistency(key):
         assert m["net_capex_usd"] == pytest.approx(m["gross_capex_usd"] - m["grant_subsidy_usd"])
         if m["annual_premium_savings_usd"] > 0:
             assert m["payback_years"] == pytest.approx(m["net_capex_usd"] / m["annual_premium_savings_usd"], abs=0.01)
+
+
+def _v2_payload():
+    doc = json.loads(json.dumps(GOLDEN[KEYS[0]]))
+    doc["input_provenance"] = [
+        {"field": "bfe_ft_navd88", "value_source": "LIVE", "source_name": "FEMA NFHL", "vintage": None}
+    ]
+    doc["factor_contributions"] = [
+        {"factor": "freeboard_delta_h_ft", "input_value": 1.5, "score_points": 12.0, "source": "model"}
+    ]
+    doc["uncertainty"] = {
+        "aal_p05_usd": 1.0, "aal_p50_usd": 2.0, "aal_p95_usd": 3.0, "score_p05": 700.0, "score_p95": 800.0,
+        "loss_1_in_100_usd": 4.0, "loss_1_in_250_usd": 5.0, "method": "monte_carlo",
+    }
+    doc["premium_build"] = {
+        k: 1.0 for k in (
+            "expected_loss_usd", "deductible_usd", "net_expected_loss_usd", "expense_load_pct", "profit_load_pct",
+            "indicated_premium_usd", "modeled_mitigation_credit_pct", "filed_mitigation_credit_pct",
+        )
+    }
+    doc["evidence_log"] = [
+        {"evidence_id": "e1", "channel": "lidar", "submitted_at": "2026-10-17T12:00:00Z", "weight_added": 0.6,
+         "z_before": 0.5, "z_after": 0.6, "score_before": 700, "score_after": 710}
+    ]
+    doc["indicative_only"] = True
+    return doc
+
+
+def test_v2_fields_validate_in_schema_and_model():
+    doc = _v2_payload()
+    Draft202012Validator(SCHEMA).validate(doc)
+    model = ParcelScoreResponse.model_validate(doc)
+    assert model.indicative_only and model.uncertainty.method == "monte_carlo"
+
+
+def test_v2_defaults_when_absent():
+    model = ParcelScoreResponse.model_validate(GOLDEN[KEYS[0]])
+    assert model.input_provenance == [] and model.uncertainty is None and model.indicative_only is False
+
+
+def test_v2_negative_unknown_value_source_rejected():
+    doc = _v2_payload()
+    doc["input_provenance"][0]["value_source"] = "GUESSED"
+    with pytest.raises(ValidationError):
+        ParcelScoreResponse.model_validate(doc)
+    assert list(Draft202012Validator(SCHEMA).iter_errors(doc))
