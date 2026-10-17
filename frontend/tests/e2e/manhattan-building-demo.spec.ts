@@ -2,6 +2,37 @@ import { readFile } from "node:fs/promises";
 import { expect,test } from "@playwright/test";
 
 for (const viewport of [{name:"desktop",width:1440,height:1000},{name:"mobile",width:390,height:844}]) {
+test(`${viewport.name}: map exposes the building demo and opens its controls directly`, async ({page}) => {
+  await page.setViewportSize({width:viewport.width,height:viewport.height});
+  const apiRequests: string[] = [];
+  await page.route("**/v1/**", route => { apiRequests.push(route.request().url()); return route.abort("connectionrefused"); });
+  await page.goto("/");
+  const entry = page.getByRole("button", {name:"Try building demo", exact:true});
+  await expect(entry).toBeInViewport();
+  await entry.click();
+  await expect(page).toHaveURL(/workflow=demo/);
+  await expect(page.getByRole("heading", {name:"Underwriting demo",exact:true})).toBeVisible();
+  await page.getByRole("button", {name:/Financial District/}).click();
+  await expect(page).toHaveURL(/neighborhood=MN0101.*workflow=demo/);
+  await page.getByRole("searchbox",{name:"Find a property by address, BIN, or BBL"}).fill("207 FRONT STREET");
+  await page.getByRole("button",{name:"Demo 207 FRONT STREET",exact:true}).first().click();
+  await expect(page).toHaveURL(/assessment\?property=.*workflow=demo/);
+  await expect(page.getByRole("region",{name:"Selected building underwriting demo"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Building underwriting demo",exact:true})).toBeInViewport();
+  expect(apiRequests).toEqual([]);
+  await page.getByRole("link",{name:"Back to Manhattan map",exact:true}).click();
+  await expect(page).toHaveURL(/neighborhood=MN0101.*workflow=demo/);
+  await expect(page.getByRole("heading",{name:"Underwriting demo",exact:true})).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading",{name:"Underwriting demo",exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Exit building demo",exact:true}).click();
+  await page.getByRole("searchbox",{name:"Find a property by address, BIN, or BBL"}).fill("207 FRONT STREET");
+  await expect(page.getByRole("button",{name:"Assess 207 FRONT STREET",exact:true}).first()).toBeVisible();
+  await expect(page.getByRole("button",{name:"Try building demo",exact:true})).toBeVisible();
+  expect(new URL(page.url()).searchParams.has("workflow")).toBe(false);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
 test(`${viewport.name}: real map building supports offline mitigation, review and a building-specific demo receipt`, async ({page}) => {
   test.setTimeout(60_000);
   await page.setViewportSize({width:viewport.width,height:viewport.height});
