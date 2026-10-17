@@ -39,7 +39,7 @@ export default function PropertyUnderwritingDemo({ parcel, buildingId }: { parce
       <tbody>
         <tr><th scope="row">SaveMyHome / 850</th><td>{baseline.actuarial_breakdown.resili_score}</td><td data-testid="building-demo-score">{a.resili_score} <small>{delta >= 0 ? "+" : ""}{delta}</small></td></tr>
         <tr><th scope="row">Annual loss</th><td>{money(baseline.actuarial_breakdown.expected_annual_loss_usd)}</td><td data-testid="building-demo-loss">{money(a.expected_annual_loss_usd)}</td></tr>
-        <tr><th scope="row">Modeled premium</th><td>{money(baseline.premium_build?.indicated_premium_usd ?? 0)}</td><td>{money(projected.premium_build?.indicated_premium_usd ?? 0)}</td></tr>
+        <tr><th scope="row">Modeled premium</th><td>{baseline.premium_build ? money(baseline.premium_build.indicated_premium_usd) : "Unknown"}</td><td>{projected.premium_build ? money(projected.premium_build.indicated_premium_usd) : "Unknown"}</td></tr>
       </tbody>
     </table>
     <p className="footnote">Modeled premium includes the engine&apos;s assumed expense and profit loads. No filed New York quote or statutory credit is established. A score may stay flat or fall when assumed evidence changes.</p>
