@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { SelectedPropertySummary, SelectedPropertyEvidence, SelectedPropertyMitigations } from "@/components/SelectedPropertyAssessment";
-import { ArrowRight, CheckCheck, Clock3, Download, FileCheck2, MapPin, ShieldAlert, Wrench, Moon, Sun } from "lucide-react";
+import { ArrowRight, ChartNoAxesCombined, CheckCheck, Clock3, Download, FileCheck2, MapPin, ShieldAlert, Wrench, Moon, Sun } from "lucide-react";
 import { HeaderScenarioBar } from "@/components/HeaderScenarioBar";
 import { BlockContextView } from "@/components/manhattan/BlockContextView";
 import { ParcelMapCanvas } from "@/components/ParcelMapCanvas";
@@ -12,6 +12,7 @@ import { ScoreGaugeCard } from "@/components/ScoreGaugeCard";
 import { MitigationDrawer } from "@/components/MitigationDrawer";
 import { BindingReceipt } from "@/components/BindingReceipt";
 import { HitlWorkbenchModal } from "@/components/HitlWorkbenchModal";
+import { ModelValidationTab } from "@/components/ModelValidationTab";
 import { RegulatoryAuditTab } from "@/components/RegulatoryAuditTab";
 import { getScenario } from "@/data/goldenScenarios";
 import { simulateMitigations, applyStructureLoading } from "@/lib/simulation";
@@ -20,7 +21,7 @@ import { downloadText } from "@/lib/download";
 import { money } from "@/lib/format";
 import type { GoldenScenarioKey, ParcelScoreResponse } from "@/types/resiliscore";
 
-const tabs = ["Underwriting copilot", "Mitigation & grant ROI", "Regulatory audit"];
+const tabs = ["Underwriting copilot", "Mitigation & grant ROI", "Regulatory audit", "Model Validation"];
 type Resolution = "none" | "verified" | "loaded";
 
 export interface SelectedProperty {
@@ -112,23 +113,25 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
     <main className="main-content" id="workspace">
       <div className="workspace-tabs" role="tablist" aria-label="Workspace views">{tabs.map((name, i) => <button key={name} role="tab" aria-selected={tab === i} aria-controls={`workspace-panel-${i}`} id={`workspace-tab-${i}`} tabIndex={tab === i ? 0 : -1} className={tab === i ? "active" : ""} onClick={() => setTab(i)} onKeyDown={e => {
         if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
-          e.preventDefault(); const index = e.key === "Home" ? 0 : e.key === "End" ? 2 : (tab + (e.key === "ArrowRight" ? 1 : 2)) % 3;
+          e.preventDefault(); const index = e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : (tab + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length;
           setTab(index); document.getElementById(`workspace-tab-${index}`)?.focus();
         }
-      }}>{i === 0 ? <MapPin size={16} /> : i === 1 ? <Wrench size={16} /> : <FileCheck2 size={16} />}{name}</button>)}<span className="workspace-tab-meta"><Clock3 size={13} />{offlineScreening ? "Offline engine screening" : `${(parcel.processing_time_ms / 1000).toFixed(2)}s ${isSelectedProperty ? "assessment pipeline" : "fixture pipeline"}`}</span></div>
+      }}>{i === 0 ? <MapPin size={16} /> : i === 1 ? <Wrench size={16} /> : i === 2 ? <FileCheck2 size={16} /> : <ChartNoAxesCombined size={16} />}{name}</button>)}{tab !== 3 && <span className="workspace-tab-meta"><Clock3 size={13} />{offlineScreening ? "Offline engine screening" : `${(parcel.processing_time_ms / 1000).toFixed(2)}s ${isSelectedProperty ? "assessment pipeline" : "fixture pipeline"}`}</span>}</div>
+      {tab !== 3 && <>
       {isSelectedProperty && <div className="status-notice warning" role="status">{assessmentNotice ?? "Selected property assessment. No policy is issued by this workspace."}</div>}
       {live && <div className={`status-notice ${network.status === "fallback" ? "warning" : ""}`} role="status">{network.key === key ? network.message : "Loading live evidence…"}</div>}
       <div className="property-heading"><div><h2>{isSelectedProperty ? propertyTitle : p.address.split(",")[0]}</h2><p><MapPin size={14} />{p.address.split(",").slice(1).join(",").trim()}<span className="badge">{isSelectedProperty ? offlineScreening ? "Offline model screening" : parcel.indicative_only ? "Indicative live assessment" : "Live assessment" : isRemote ? "Live API" : "Golden demo parcel"}</span></p></div><div className="property-details"><span>{isSelectedProperty ? "Building" : "APN"} <strong>{selectedProperty?.id ?? p.apn_uid}</strong></span><span>Built <strong>{p.year_built}{isSelectedProperty && parcel.input_provenance?.some(row => row.field === "year_built" && row.value_source === "DEFAULT") ? " (default)" : ""}</strong></span><span>Replacement value <strong>{offlineScreening ? `${money(p.rcv_usd)} default` : money(p.rcv_usd)}</strong></span><button className="icon-button" aria-label="Download parcel JSON" onClick={() => downloadText(`parcel-${p.apn_uid}.json`, JSON.stringify(parcel, null, 2))}><Download size={17} /></button></div></div>
       {isEscondido && <label className="change-toggle"><input type="checkbox" checked={alert} onChange={e => toggleAlert(e.target.checked)} /><span><strong>Simulate satellite change-detection alert</strong><small>+240 sq ft unpermitted Zone 1 structure</small></span><span className="badge warning">HITL guardrail</span></label>}
       {escalated && !isSelectedProperty && <div className="hitl-banner" role="alert"><ShieldAlert size={25} /><div><strong>{parcel.hitl_status.trigger_code.replaceAll("_", " ")}</strong><p>{parcel.hitl_status.trigger_reason}</p><p>Straight-through processing paused. Escalated to the demo UnderwritingCenter.</p></div><button className="secondary-button" onClick={() => setModal("hitl")}>Open review workbench<ArrowRight size={16} /></button></div>}
       {resolution !== "none" && !escalated && <div className="status-notice success" role="status"><CheckCheck size={17} />{resolution === "verified" ? `Demo mobile evidence accepted. Open aluminum pergola verified. Auto-bind restored at ${a.resili_score}.` : "Demo structure loading applied: +35 bps LCR and $60,000 RCV at an assumed $250/sq ft. Conditional review required."}</div>}
+      </>}
       <div role="tabpanel" id={`workspace-panel-${tab}`} aria-labelledby={`workspace-tab-${tab}`} className="tab-content">
-        {tab === 2 ? isSelectedProperty ? <SelectedPropertyEvidence parcel={parcel} offline={offlineScreening} /> : <RegulatoryAuditTab parcel={parcel} simulated={selected.length > 0 || resolution !== "none"} /> : <>
+        {tab === 3 ? <ModelValidationTab live={live} /> : tab === 2 ? isSelectedProperty ? <SelectedPropertyEvidence parcel={parcel} offline={offlineScreening} /> : <RegulatoryAuditTab parcel={parcel} simulated={selected.length > 0 || resolution !== "none"} /> : <>
           <div className="workspace-grid"><div className="spatial-column">{selectedProperty ? <BlockContextView property={selectedProperty} onAddressResolved={resolveAddress} /> : <ParcelMapCanvas key={scenario} parcel={parcel} showIllustrativeContext={!isSelectedProperty} />}{isSelectedProperty ? <SelectedPropertyMitigations parcel={parcel} offline={offlineScreening} contextOnly={tab === 0} /> : tab === 0 ? <FreeboardCrossSection hazard={parcel.public_hazard_layer} /> : <MitigationDrawer baseline={baseline} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} />}</div>{isSelectedProperty ? <SelectedPropertySummary parcel={parcel} offline={offlineScreening} /> : <ScoreGaugeCard parcel={parcel} simulated={selected.length > 0 || resolution === "loaded"} onAction={() => { if (bindable) setModal("receipt"); else setTab(1); }} />}</div>
           {tab === 0 && !isSelectedProperty && <MitigationDrawer baseline={baseline} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} compact />}
         </>}
       </div>
-      <footer className="app-footer"><span><ShieldAlert size={14} />{isSelectedProperty ? "Selected NYC building · Evidence status shown explicitly · No policy issued" : "Demonstration workspace · Synthetic parcel evidence · No policy issued"}</span><span>300–850 resilience scale · Contract v2</span></footer>
+      <footer className="app-footer">{tab === 3 ? <span><ShieldAlert size={14} />Model validation · Results retain their source caveats and adoption decisions</span> : <><span><ShieldAlert size={14} />{isSelectedProperty ? "Selected NYC building · Evidence status shown explicitly · No policy issued" : "Demonstration workspace · Synthetic parcel evidence · No policy issued"}</span><span>300–850 resilience scale · Contract v2</span></>}</footer>
     </main>
     {modal === "receipt" && bindable && <BindingReceipt parcel={parcel} selected={selected} onClose={() => setModal(null)} />}
     {modal === "hitl" && <HitlWorkbenchModal parcel={parcel} onClose={() => setModal(null)} onVerify={() => { setResolution("verified"); setModal(null); }} onLoading={() => { setResolution("loaded"); setModal(null); }} />}

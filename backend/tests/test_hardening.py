@@ -4,11 +4,13 @@ import json
 import logging
 import socket
 import uuid
+from unittest.mock import AsyncMock
 
 import pytest
 from fastapi.testclient import TestClient
 from starlette.datastructures import Headers
 
+from app.ingestion.geocode import GeocodeError
 from app.main import app, cors_origins
 from app.observability import REQUEST_ID_HEADER, JsonFormatter, _incoming_request_id
 
@@ -143,6 +145,7 @@ def test_out_of_range_coordinates_are_422(client, field, value):
 
 
 @pytest.mark.parametrize(("lat", "lng"), [(90, -180), (-90, 180)])
-def test_boundary_coordinates_pass_validation(client, lat, lng):
+def test_boundary_coordinates_pass_validation(client, monkeypatch, lat, lng):
+    monkeypatch.setattr("app.pipeline.build_parcel_for_address", AsyncMock(side_effect=GeocodeError("No address match")))
     resp = client.post(SCORE, json={"address": "1 Nowhere Ln, Atlantis, XX", "lat": lat, "lng": lng})
     assert resp.status_code == 404

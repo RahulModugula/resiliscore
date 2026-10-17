@@ -1,0 +1,19 @@
+{
+  "method": "Synthetic fixture for chart, null, and tooltip coverage only. Not model evidence.",
+  "data_source": "Synthetic browser test fixture",
+  "data_vintage": "Test data",
+  "fetched_on": "2026-10-17",
+  "verdict": "Test verdict preserved verbatim.",
+  "adoption_note": "Test fit not adopted; retain the baseline.",
+  "adopted": false,
+  "ranking": null,
+  "severity_by_depth": [
+    { "depth_bucket": "0–1", "depth_mid_ft": 0.5, "n": 20, "observed_mean_dr": 0.2, "observed_ci_low": 0.1, "observed_ci_high": 0.3, "hazus_pred_dr": 0.15, "fitted_pred_dr": 0.18 },
+    { "depth_bucket": "1–2", "depth_mid_ft": 1.5, "n": 10, "observed_mean_dr": 0.4, "observed_ci_low": 0.3, "observed_ci_high": 0.5, "hazus_pred_dr": 0.3, "fitted_pred_dr": null },
+    { "depth_bucket": "2–3", "depth_mid_ft": 2.5, "n": 5, "observed_mean_dr": 0.6, "observed_ci_low": 0.5, "observed_ci_high": 0.7, "hazus_pred_dr": 0.5, "fitted_pred_dr": 0.55 }
+  ],
+  "events": [
+    { "event": "Test storm", "year": 2021, "states": ["LA"], "n_claims": 20, "observed_mean_dr": 0.3, "hazus_mae": 0.1, "fitted_mae": null, "bias": -0.1, "tract_spearman": null, "n_tracts": null, "note": "Synthetic event caveat, preserved in the tooltip." },
+    { "event": "Test zero storm", "year": 2022, "states": ["FL"], "n_claims": 0, "observed_mean_dr": 0, "hazus_mae": 0, "fitted_mae": 0, "bias": 0, "tract_spearman": null, "n_tracts": null, "note": null }
+  ]
+}

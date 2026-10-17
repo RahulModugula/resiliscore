@@ -3,12 +3,14 @@
 import json
 import uuid
 from pathlib import Path
+from unittest.mock import AsyncMock
 
 import pytest
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
 
 from app.fixtures import by_scenario
+from app.ingestion.geocode import GeocodeError
 from app.main import app
 from app.models.schemas import ParcelScoreResponse
 
@@ -53,7 +55,8 @@ def test_address_match_is_case_insensitive(client):
     assert resp.json()["parcel_identity"]["apn_uid"] == WUI_APN
 
 
-def test_unknown_address_is_404(client):
+def test_unknown_address_is_404(client, monkeypatch):
+    monkeypatch.setattr("app.pipeline.build_parcel_for_address", AsyncMock(side_effect=GeocodeError("No address match")))
     resp = client.post("/v1/parcel/score", json={"address": "1 Nowhere Ln, Atlantis, XX"})
     assert resp.status_code == 404
 
@@ -129,7 +132,8 @@ def test_unlisted_address_with_a_point_runs_the_pipeline(client):
     assert {"building_footprint", "zone_0_ring_0_5ft", "zone_1_ring_5_30ft", "zone_2_ring_30_100ft"} <= kinds
 
 
-def test_unlisted_address_without_a_point_is_404(client):
+def test_unlisted_address_without_a_point_is_404(client, monkeypatch):
+    monkeypatch.setattr("app.pipeline.build_parcel_for_address", AsyncMock(side_effect=GeocodeError("No address match")))
     assert client.post("/v1/parcel/score", json={"address": "999 Other St"}).status_code == 404
 
 
