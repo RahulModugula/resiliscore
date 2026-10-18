@@ -1,8 +1,80 @@
-import { BufferGeometry, Color, Float32BufferAttribute } from "three";
+import { BufferGeometry, Color, Float32BufferAttribute, ShapeUtils, Vector2 } from "three";
+import polygonClipping, { type MultiPolygon, type Polygon } from "polygon-clipping";
 import { projectLngLat, unprojectMeters } from "./geo";
 import { terrainElevation, worldPoint } from "./sceneGeometry";
-import type { Bounds, LngLat, TerrainGrid } from "./types";
+import type { Bounds, Building, LngLat, TerrainGrid } from "./types";
 import type { ContextStreet } from "./blockContext";
+import type { TransportDeck } from "./transportStructures";
+
+type Point3 = [number,number,number];
+const planPolygon=(points:Point3[]):Polygon=>[[...points.map(([x,,z]):[number,number]=>[x,z]),[points[0][0],points[0][2]]]];
+const deckTriangleCache=new WeakMap<TransportDeck,Point3[][]>();
+function deckTriangles(deck:TransportDeck,lift=0) {
+  let triangles=deckTriangleCache.get(deck);
+  if(!triangles) {
+    const rings=deck.rings.map(ring=>ring.slice(0,-1).map(([lng,lat,height])=>worldPoint([lng,lat],height)));
+    const points=rings.flat(),vectors=rings.map(ring=>ring.map(([x,,z])=>new Vector2(x,z)));
+    triangles=ShapeUtils.triangulateShape(vectors[0],vectors.slice(1)).map(face=>face.map(k=>points[k]));
+    deckTriangleCache.set(deck,triangles);
+  }
+  return lift ? triangles.map(triangle=>triangle.map(([x,y,z]):Point3=>[x,y+lift,z])) : triangles;
+}
+function deckElevation(point:LngLat,deck:TransportDeck) {
+  const [x,,z]=worldPoint(point);
+  for(const [a,b,c] of deckTriangles(deck)) {
+    const denominator=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2]);
+    if(Math.abs(denominator)<1e-12) continue;
+    const u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/denominator;
+    const v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/denominator;
+    if(u>=-1e-9 && v>=-1e-9 && u+v<=1+1e-9) return u*a[1]+v*b[1]+(1-u-v)*c[1];
+  }
+  return null;
+}
+/** A cartographic outline only. Conflicting terrain must not turn a footprint into a sloping solid. */
+export function flatFootprintGeometry(items:{building:Building;elevationM:number}[]) {
+  const positions:number[]=[];
+  for(const {building,elevationM} of items) for(const ring of building.footprint) {
+    const closed=ring.length>1 && ring[0][0]===ring.at(-1)![0] && ring[0][1]===ring.at(-1)![1];
+    const points=closed ? ring.slice(0,-1) : ring;
+    for(let i=0;i<points.length;i++) positions.push(...worldPoint(points[i],elevationM+.2),...worldPoint(points[(i+1)%points.length],elevationM+.2));
+  }
+  const geometry=new BufferGeometry();geometry.setAttribute("position",new Float32BufferAttribute(positions,3));return geometry;
+}
+/** Retain the source triangle's plane when clipping its plan footprint. */
+function appendClipped(positions:number[],source:Point3[],polygons:MultiPolygon) {
+  const [a,b,c]=source;
+  const denominator=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2]);
+  if(Math.abs(denominator)<1e-12) return;
+  for(const polygon of polygons) {
+    const rings=polygon.map(ring=>ring.slice(0,-1).map(([x,z])=>new Vector2(x,z)));
+    const points=rings.flat();
+    for(const face of ShapeUtils.triangulateShape(rings[0],rings.slice(1))) {
+      const [p,q,r]=face.map(i=>points[i]);
+      if(Math.abs((q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x))<1e-8) continue;
+      for(const i of face) {
+        const {x,y:z}=points[i];
+        const u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/denominator;
+        const v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/denominator;
+        positions.push(x,u*a[1]+v*b[1]+(1-u-v)*c[1],z);
+      }
+    }
+  }
+}
+/** Split in plan first: a DEM sample beneath a bridge must not pull down the approach seam. */
+function appendRoadApproach(positions:number[],polygons:MultiPolygon,terrain:TerrainGrid,decks:TransportDeck[]) {
+  for(const polygon of polygons) {
+    const rings=polygon.map(ring=>ring.slice(0,-1).map(([x,z])=>new Vector2(x,z))),points=rings.flat();
+    const heights=points.map(({x,y:z})=>{
+      const point=unprojectMeters([x,-z]);
+      return decks.map(deck=>deckElevation(point,deck)).find(height=>height!==null)??terrainElevation(point,terrain);
+    });
+    for(const face of ShapeUtils.triangulateShape(rings[0],rings.slice(1))) {
+      const [a,b,c]=face.map(i=>points[i]);
+      if(Math.abs((b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x))<1e-8 || face.some(i=>heights[i]===null)) continue;
+      for(const i of face) positions.push(points[i].x,heights[i]!+.3,points[i].y);
+    }
+  }
+}
 
 /** Clip a geographic segment to the context rectangle before sampling. */
 export function clipStreet(a: LngLat, b: LngLat, bounds: Bounds): [LngLat, LngLat] | null {
@@ -17,20 +89,24 @@ export function clipStreet(a: LngLat, b: LngLat, bounds: Bounds): [LngLat, LngLa
   return [[a[0]+low*dx,a[1]+low*dy],[a[0]+high*dx,a[1]+high*dy]];
 }
 /** Anchor a name on a visible, DEM-supported segment, even when the source midpoint is far away. */
-export function streetLabelPosition(street: ContextStreet, terrain: TerrainGrid, bounds: Bounds): { point:LngLat; elevation:number } | null {
+export function streetLabelPosition(street: ContextStreet, terrain: TerrainGrid, bounds: Bounds, decks:TransportDeck[] = []): { point:LngLat; elevation:number } | null {
   for(let i=1;i<street.coordinates.length;i++) {
     const clipped=clipStreet(street.coordinates[i-1],street.coordinates[i],bounds);
     if(!clipped) continue;
     const point:LngLat=[(clipped[0][0]+clipped[1][0])/2,(clipped[0][1]+clipped[1][1])/2];
-    const elevation=terrainElevation(point,terrain);
+    const deckHeight=decks.filter(deck=>deck.streetIds.includes(street.id)).map(deck=>deckElevation(point,deck)).find(height=>height!==null);
+    const elevation=deckHeight??terrainElevation(point,terrain);
     if(elevation!==null) return {point,elevation};
   }
   return null;
 }
-/** Real centerlines draped at <=5m intervals. Null DEM samples never become zero-height roads. */
-export function streetGeometry(streets: ContextStreet[], terrain: TerrainGrid, bounds: Bounds) {
+/** Ground ribbons stop at associated deck outlines. Deck Z never comes from the bare-earth raster. */
+export function streetGeometry(streets: ContextStreet[], terrain: TerrainGrid, bounds: Bounds, decks:TransportDeck[] = []) {
   const positions:number[]=[];
+  const deckPlans=decks.map(deck=>deck.rings.map(ring=>ring.map(([lng,lat])=>{const [x,,z]=worldPoint([lng,lat]);return [x,z] as [number,number];})));
   for(const street of streets) for(let i=1;i<street.coordinates.length;i++) {
+    const associated=decks.filter(deck=>deck.streetIds.includes(street.id));
+    const excluded=decks.flatMap((deck,k)=>deck.streetIds.includes(street.id) ? [deckPlans[k]] : []);
     const clipped=clipStreet(street.coordinates[i-1],street.coordinates[i],bounds);
     if(!clipped) continue;
     const [a,b]=clipped.map(p=>projectLngLat(p));
@@ -45,10 +121,23 @@ export function streetGeometry(streets: ContextStreet[], terrain: TerrainGrid, b
       for(const [t,side] of [[j/count,-1],[j/count,1],[(j+1)/count,-1],[(j+1)/count,1]]) {
         corners.push(unprojectMeters([a[0]+dx*t+normal[0]*side,a[1]+dy*t+normal[1]*side]));
       }
-      const heights=corners.map(p=>terrainElevation(p,terrain));
-      if(heights.some(h=>h===null)) continue;
-      const points=corners.map((p,k)=>worldPoint(p,heights[k]!+.3));
-      for(const k of [0,2,1,1,2,3]) positions.push(...points[k]);
+      if(excluded.length) {
+        const source=[0,2,3,1].map(k=>worldPoint(corners[k]));
+        appendRoadApproach(positions,polygonClipping.difference(planPolygon(source),...excluded),terrain,associated);
+      } else {
+        const heights=corners.map(p=>terrainElevation(p,terrain));
+        if(heights.some(h=>h===null)) continue;
+        const points=corners.map((p,k)=>worldPoint(p,heights[k]!+.3));
+        for(const k of [0,2,1,1,2,3]) positions.push(...points[k]);
+      }
+    }
+  }
+  const [west,,southZ]=worldPoint([bounds[0],bounds[1]]),[east,,northZ]=worldPoint([bounds[2],bounds[3]]);
+  // world Z points south; bounds must be converted independently of elevation.
+  const rectangle:Polygon=[[[west,northZ],[east,northZ],[east,southZ],[west,southZ],[west,northZ]]];
+  for(const deck of decks) {
+    for(const source of deckTriangles(deck,.3)) {
+      appendClipped(positions,source,polygonClipping.intersection(planPolygon(source),rectangle));
     }
   }
   const geometry=new BufferGeometry();

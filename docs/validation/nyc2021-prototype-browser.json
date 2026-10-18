@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-18",
+  "scope": "Production-build functional validation; local asset timings are not display FPS or GPU timing benchmarks",
+  "suite": {
+    "startTime": "2026-10-18T18:04:32.439Z",
+    "duration": 113429.971,
+    "expected": 56,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "runs": [
+    {
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "browser": "156.0.8078.4",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "navigationToStatusReadyMs": 2902.9995830000043,
+      "cachedSwitchIncludingIdleSettleMs": [
+        1617.6294999999955,
+        1549.1919170000037,
+        1601.3345839999965
+      ],
+      "idleExtraDraws": 0,
+      "rasterRequests": 1,
+      "resources": [
+        {
+          "url": "http://127.0.0.1:3112/manhattan/prototypes/nyc2021-murray-hill.json",
+          "durationMs": 33.60000002384186,
+          "bytes": 1360
+        },
+        {
+          "url": "http://127.0.0.1:3112/manhattan/prototypes/nyc2021-murray-hill.tif",
+          "durationMs": 16.600000023841858,
+          "bytes": 317812
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "browser": "156.0.8078.4",
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "navigationToStatusReadyMs": 2594.5544999999984,
+      "cachedSwitchIncludingIdleSettleMs": [
+        1628.4209160000028,
+        1639.909083000006,
+        1575.7685829999973
+      ],
+      "idleExtraDraws": 0,
+      "rasterRequests": 1,
+      "resources": [
+        {
+          "url": "http://127.0.0.1:3112/manhattan/prototypes/nyc2021-murray-hill.json",
+          "durationMs": 35.39999997615814,
+          "bytes": 1360
+        },
+        {
+          "url": "http://127.0.0.1:3112/manhattan/prototypes/nyc2021-murray-hill.tif",
+          "durationMs": 8.699999988079071,
+          "bytes": 317812
+        }
+      ]
+    }
+  ]
+}

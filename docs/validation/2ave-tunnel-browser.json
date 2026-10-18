@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-18",
+  "stats": {
+    "startTime": "2026-10-18T18:54:39.735Z",
+    "duration": 112228.83399999999,
+    "expected": 58,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "desktop: exact tunnel crossing retains a separate bridge deck and unresolved building outline",
+      "status": "passed",
+      "durationMs": 11294
+    },
+    {
+      "title": "mobile: exact tunnel crossing retains a separate bridge deck and unresolved building outline",
+      "status": "passed",
+      "durationMs": 11196
+    }
+  ]
+}

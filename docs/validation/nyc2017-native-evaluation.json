@@ -1,0 +1,309 @@
+{
+  "date": "2026-10-18",
+  "selectedBuildingId": "1112075",
+  "scope": "One Murray Hill block; historical source evaluation, not current ground certification",
+  "assessment": "Preferred historical terrain candidate; conditional adoption, not a validated present-day ground replacement",
+  "limits": [
+    "The 2017 DEM and 2017 classified points share an acquisition. Their agreement is an internal consistency check, not independent accuracy.",
+    "Ground-class returns can represent real lower surfaces or classification errors. No current survey or imagery establishes today's surface at the disputed probes.",
+    "DEM metadata specifies GEOID12B; the NOAA point-cloud distribution specifies GEOID18. Both are NAVD88, but no geoid-realization correction was applied. Centimetre residuals are not an absolute accuracy claim.",
+    "Nearest-neighbour reprojection, finite pixel spacing, registration and real vertical boundaries affect the largest residuals.",
+    "Ground-support percentages describe all matched cells, including building interiors. A nearby return alone does not prove a cell's height is correct.",
+    "No smoothing, depression filling, source switching, or application rendering changes were applied."
+  ],
+  "nativeUrl": "https://noaa-nos-coastal-lidar-pds.s3.amazonaws.com/dem/NYC_topobathy_BE_DEM_2017_9307/be_NYC_025.tif",
+  "nativeCRS": "EPSG:6539",
+  "nativePixelSpacingM": 0.3048006096012192,
+  "nativeCropShape": [
+    1348,
+    1580
+  ],
+  "nativeCropRangeM": [
+    -4.718313297100226,
+    11.7683517227386
+  ],
+  "verticalConversion": "NAVD88 US survey feet multiplied by exactly 1200/3937",
+  "matchedGridShape": [
+    373,
+    452
+  ],
+  "matchedSamples": 168596,
+  "matchedExtent": [
+    -73.977725148987,
+    40.742040851385696,
+    -73.97236857156243,
+    40.74537730569468
+  ],
+  "nativeMinusUSGS": {
+    "count": 168596,
+    "percentiles_0_1_5_50_95_99_100": [
+      -10.844312657915095,
+      -5.370137168563559,
+      -0.9221378934543875,
+      0.0032346986834093094,
+      0.3407552188987619,
+      1.1394873347035919,
+      6.08340047469804
+    ],
+    "absolutePercentiles_50_90_95_99": [
+      0.07278986106767871,
+      0.5431527011976467,
+      1.2113451642344564,
+      5.400907982797645
+    ],
+    "absoluteOver1m": 9978,
+    "absoluteOver3m": 4454
+  },
+  "nativeMinusNYS2017Service": {
+    "count": 168596,
+    "percentiles_0_1_5_50_95_99_100": [
+      -8.083304038954957,
+      -0.32917271092787725,
+      -0.10971644650203283,
+      1.1915115344152127e-05,
+      0.11278089521377543,
+      0.26824010708382323,
+      10.799076183150497
+    ],
+    "absolutePercentiles_50_90_95_99": [
+      0.030461244847165503,
+      0.10973651529660433,
+      0.17067353698787646,
+      0.4511189492789804
+    ],
+    "absoluteOver1m": 520,
+    "absoluteOver3m": 78
+  },
+  "groundPointsQueried": 1324279,
+  "minimumGroundQueryHaloM": 57.657323760096915,
+  "groundSupportWithinM_percent": {
+    "0.5": 58.03459156800873,
+    "1": 63.308738048352275,
+    "2": 69.34150276400389,
+    "5": 81.64725141758998,
+    "10": 93.2940283280742
+  },
+  "groundDistancePercentiles_0_50_90_95_99_100M": [
+    0.00045984933793486127,
+    0.2739821412602692,
+    8.135568144327715,
+    11.389114316852474,
+    17.426540942124433,
+    26.466867884113533
+  ],
+  "sameAcquisitionNearestGroundConsistency_withinHalfMetre": {
+    "native2017": {
+      "count": 97844,
+      "percentiles_0_1_5_50_95_99_100": [
+        -7.8462417110975755,
+        -0.07423164893848723,
+        -0.028620215518162836,
+        0.0019704043793886683,
+        0.031885352680449126,
+        0.08124930023943483,
+        7.2686072167362585
+      ],
+      "absolutePercentiles_50_90_95_99": [
+        0.008544413516673455,
+        0.030258046413447467,
+        0.04434732402891525,
+        0.12592773270760724
+      ],
+      "absoluteOver1m": 58,
+      "absoluteOver3m": 6
+    },
+    "usgs2013_14": {
+      "count": 97844,
+      "percentiles_0_1_5_50_95_99_100": [
+        -6.114906476001892,
+        -0.544914773159192,
+        -0.15676154250233587,
+        -0.004897864322828127,
+        0.21321926480204495,
+        4.775094283695058,
+        10.84321692734629
+      ],
+      "absolutePercentiles_50_90_95_99": [
+        0.053225643929543764,
+        0.1750999336431846,
+        0.37322976189524326,
+        5.125088937587582
+      ],
+      "absoluteOver1m": 2692,
+      "absoluteOver3m": 1607
+    },
+    "nys2017Service": {
+      "count": 97844,
+      "percentiles_0_1_5_50_95_99_100": [
+        -10.764886672202046,
+        -0.2307194484521517,
+        -0.09131107300847174,
+        0.0009936836329131893,
+        0.09996463205321839,
+        0.32270273420318174,
+        8.867465889748644
+      ],
+      "absolutePercentiles_50_90_95_99": [
+        0.028671772937940432,
+        0.09554446889860913,
+        0.1450548773001038,
+        0.4510983240291815
+      ],
+      "absoluteOver1m": 331,
+      "absoluteOver3m": 52
+    }
+  },
+  "probes": {
+    "older_usgs_pit": {
+      "lonLat": [
+        -73.97249300533004,
+        40.74487191784359
+      ],
+      "native2017M": 2.4871729278370664,
+      "usgsM": -3.1699817180633545,
+      "nys2017ServiceM": 2.8346400260925293,
+      "nearbyGround": {
+        "1": {
+          "count": 16,
+          "rangeM": [
+            2.4549197797586118,
+            2.78491977975861
+          ],
+          "sourceIds": {
+            "1070": 5,
+            "1158": 2,
+            "1159": 9
+          }
+        },
+        "2": {
+          "count": 48,
+          "rangeM": [
+            2.4549197797586118,
+            2.9249197797586106
+          ],
+          "sourceIds": {
+            "1070": 13,
+            "1158": 5,
+            "1159": 30
+          }
+        },
+        "5": {
+          "count": 244,
+          "rangeM": [
+            2.214919779758617,
+            2.9249197797586106
+          ],
+          "sourceIds": {
+            "1070": 63,
+            "1158": 30,
+            "1159": 151
+          }
+        }
+      },
+      "nearestGroundDistanceM": 0.15238487583090965,
+      "nearestGroundHeightM": 2.464919779758617
+    },
+    "2017_depression": {
+      "lonLat": [
+        -73.97495797901215,
+        40.7425999087431
+      ],
+      "native2017M": -4.614681334007443,
+      "usgsM": 6.190007209777832,
+      "nys2017ServiceM": -4.654296398162842,
+      "nearbyGround": {
+        "1": {
+          "count": 45,
+          "rangeM": [
+            -4.6632097175684635,
+            -4.553209717568464
+          ],
+          "sourceIds": {
+            "1070": 10,
+            "1071": 4,
+            "1159": 14,
+            "1160": 11,
+            "1223": 6
+          }
+        },
+        "2": {
+          "count": 163,
+          "rangeM": [
+            -4.6632097175684635,
+            -4.513209717568458
+          ],
+          "sourceIds": {
+            "1070": 36,
+            "1071": 22,
+            "1159": 42,
+            "1160": 37,
+            "1223": 26
+          }
+        },
+        "5": {
+          "count": 437,
+          "rangeM": [
+            -4.693209717568465,
+            6.206790282431534
+          ],
+          "sourceIds": {
+            "1070": 118,
+            "1071": 56,
+            "1159": 115,
+            "1160": 88,
+            "1161": 1,
+            "1223": 59
+          }
+        }
+      },
+      "nearestGroundDistanceM": 0.15865537649707476,
+      "nearestGroundHeightM": -4.583209717568465
+    },
+    "selected_building": {
+      "lonLat": [
+        -73.9754964,
+        40.7439658
+      ],
+      "native2017M": 4.608585182288772,
+      "usgsM": 4.620012283325195,
+      "nys2017ServiceM": 4.6146721839904785,
+      "nearbyGround": {
+        "1": {
+          "count": 0,
+          "rangeM": null,
+          "sourceIds": {}
+        },
+        "2": {
+          "count": 0,
+          "rangeM": null,
+          "sourceIds": {}
+        },
+        "5": {
+          "count": 0,
+          "rangeM": null,
+          "sourceIds": {}
+        }
+      },
+      "nearestGroundDistanceM": 8.386071709790741,
+      "nearestGroundHeightM": 4.854919779758617
+    }
+  },
+  "selectedBuildingPerimeter": {
+    "samples": 574,
+    "rangeM": [
+      2.2860045720091438,
+      5.4406909976539675
+    ],
+    "sourceHeightM": 44.65
+  },
+  "inputSha256": {
+    "20170504_990207.copc-nys_pit-returns.npz": "cbe985c5570d47977d83f0cc93f61b01a8e643301952e7131192e5f6861e88a5",
+    "20170504_990210.copc-selected-returns.npz": "a32f17c887d4b100f240c29ee394c2c4c813171698bc2ba73be6c2a2a668511f",
+    "20170504_990210.copc-usgs_pit-returns.npz": "ed3e5d95b891ec94ca9d909ae8c2327b604b0ac58273ab5e88654c10a150f464",
+    "ground-manifest.json": "62af1da8a3e56a62aba8184e3050c5ef167affeb3f61b47004c6732f219f3a6e",
+    "ground-support.npz": "2aaa7970fa65c14c906bde8e96377efaf88fbf4eae2611eb5cd63d1b53f2962d",
+    "native2017-feet.tif": "b1dccea31cdec67640df2ec408222785362b272cb56adcb80cbdd1850423db94",
+    "nys2017.tif": "68e913674ce8f5c61d87278520ac208d76b2079cdd1f33112719ea422881f79a",
+    "usgs.tif": "6e53b81ff86db3698beb2d10a1379f67dde3e454a6f8c2a4137adb51a7831abe"
+  }
+}

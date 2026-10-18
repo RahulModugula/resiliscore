@@ -1,0 +1,195 @@
+{
+  "manifest": {
+    "version": 1,
+    "dataset": "NYC_2021_PROTOTYPE",
+    "buildingId": "1112075",
+    "rasterUrl": "/manhattan/prototypes/nyc2021-murray-hill.tif",
+    "sha256": "38e045f718b6151128822179136c5679fbf88c362f6bec578e6e6f9056aa51d4",
+    "width": 452,
+    "height": 373,
+    "bounds": [
+      -73.9777192235695,
+      40.74204532384456,
+      -73.97237449697994,
+      40.74537283323582
+    ],
+    "horizontalCrs": "EPSG:4326",
+    "verticalDatum": "NAVD88",
+    "geoid": "GEOID18",
+    "elevationUnit": "metre",
+    "nominalSpacingM": 1,
+    "collectionDates": [
+      "2021-05-12",
+      "2021-05-21"
+    ],
+    "source": "NYC 2021 classified LiDAR; prototype TIN from ground and model-key points; metres NAVD88/GEOID18",
+    "interpolation": {
+      "method": "linear-TIN",
+      "classes": [
+        2,
+        8
+      ],
+      "excludeWithheld": true,
+      "maxTriangleEdgeM": 10.0,
+      "maxCircumradiusM": 5.0,
+      "maxNearestPointM": 3.0,
+      "outsideSupport": "NoData",
+      "coincidentXY": "observed upper median height"
+    },
+    "coverage": {
+      "supportedCells": 104102,
+      "totalCells": 168596,
+      "supportedPercent": 61.74642340269045
+    },
+    "limits": [
+      "Experimental historical terrain, not surveyed current ground or first-floor elevation.",
+      "Short gaps are interpolated. Unsupported ground remains unknown.",
+      "Support thresholds are prototype parameters, not an accuracy specification."
+    ]
+  },
+  "retainedGroundPoints": 2065330,
+  "rasterBytes": 317812,
+  "probes": {
+    "older_usgs_pit": {
+      "lonLat": [
+        -73.97249300533004,
+        40.74487191784359
+      ],
+      "prototypeTINHeightM": 2.808062811111414,
+      "nearestGroundDistanceM": 0.1126791630600773
+    },
+    "2017_depression": {
+      "lonLat": [
+        -73.97495797901215,
+        40.7425999087431
+      ],
+      "prototypeTINHeightM": 6.184919720794822,
+      "nearestGroundDistanceM": 2.460075810588379
+    },
+    "selected_building": {
+      "lonLat": [
+        -73.9754964,
+        40.7439658
+      ],
+      "prototypeTINHeightM": null,
+      "nearestGroundDistanceM": 11.556932186084879
+    }
+  },
+  "sourceFiles": [
+    {
+      "tile": "990210.las",
+      "url": "ftp://ftp.gis.ny.gov/elevation/LIDAR/NYC_2021/990210.las",
+      "sizeBytes": 475295539,
+      "mdtm": "213 20210909195348",
+      "sha256": "2047e5e7bca4b24f1b8761a7922c35ad26b08cb153a39c75f8e50c766c96268e",
+      "headerSha256": "2efe07c210d7a856ff37567ccb2199811a08cc515281917f742ba89c398154ff",
+      "pointCount": 15812467,
+      "classCounts": {
+        "1": 4045067,
+        "2": 3846601,
+        "3": 117837,
+        "4": 346583,
+        "5": 1831591,
+        "6": 4941037,
+        "7": 32857,
+        "8": 322612,
+        "9": 64400,
+        "18": 263882
+      },
+      "retainedGroundAndKeyPoints": 1411996,
+      "scales": [
+        0.00025,
+        0.00025,
+        0.00025
+      ],
+      "offsets": [
+        991250.0002,
+        211250.0,
+        0.0
+      ],
+      "boundsMaxMinXYZFeet": [
+        992499.99995,
+        990000.00095,
+        212499.999,
+        210000.0,
+        7746.033,
+        -75.334
+      ],
+      "gpsRangeInRetainedPoints": [
+        305138714.53564304,
+        305581323.9063221
+      ],
+      "globalEncoding": 17,
+      "creationDayYear": [
+        140,
+        2021
+      ],
+      "retainedGroundGPSDatesUTC": [
+        "2021-05-15T18:31:36.535643+00:00",
+        "2021-05-20T21:28:25.906322+00:00"
+      ],
+      "pointDataEnd": 474374385,
+      "trailingBytes": 921154,
+      "evlrStart": 474374385,
+      "evlrCount": 263
+    },
+    {
+      "tile": "990207.las",
+      "url": "ftp://ftp.gis.ny.gov/elevation/LIDAR/NYC_2021/990207.las",
+      "sizeBytes": 354433981,
+      "mdtm": "213 20210909213500",
+      "sha256": "9df8f361a9774eeaff19a3cc53c55b44d20bd28b08e29846780ec656e80e5056",
+      "headerSha256": "b2944dd37ace83e16925ce8886cc6157c9c2eacb77ba456d78f7bae408600c97",
+      "pointCount": 11791065,
+      "classCounts": {
+        "1": 2769048,
+        "2": 3062082,
+        "3": 105475,
+        "4": 272906,
+        "5": 1374891,
+        "6": 3444624,
+        "7": 29794,
+        "8": 248522,
+        "9": 297623,
+        "18": 186100
+      },
+      "retainedGroundAndKeyPoints": 653334,
+      "scales": [
+        0.00025,
+        0.00025,
+        0.00025
+      ],
+      "offsets": [
+        991250.0002,
+        208750.0,
+        0.0
+      ],
+      "boundsMaxMinXYZFeet": [
+        992499.90695,
+        990000.00095,
+        209999.999,
+        207500.0,
+        7735.809,
+        -67.569
+      ],
+      "gpsRangeInRetainedPoints": [
+        305138718.9558742,
+        305565382.7788644
+      ],
+      "globalEncoding": 17,
+      "creationDayYear": [
+        135,
+        2021
+      ],
+      "retainedGroundGPSDatesUTC": [
+        "2021-05-15T18:31:40.955874+00:00",
+        "2021-05-20T17:02:44.778864+00:00"
+      ],
+      "pointDataEnd": 353732325,
+      "trailingBytes": 701656,
+      "evlrStart": 353732325,
+      "evlrCount": 243
+    }
+  ],
+  "scratchBytesBeforeCleanup": 39557205
+}

@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "dataset": "NYC_2021_PROTOTYPE",
+  "buildingId": "1112075",
+  "rasterUrl": "/manhattan/prototypes/nyc2021-murray-hill.tif",
+  "sha256": "38e045f718b6151128822179136c5679fbf88c362f6bec578e6e6f9056aa51d4",
+  "width": 452,
+  "height": 373,
+  "bounds": [
+    -73.9777192235695,
+    40.74204532384456,
+    -73.97237449697994,
+    40.74537283323582
+  ],
+  "horizontalCrs": "EPSG:4326",
+  "verticalDatum": "NAVD88",
+  "geoid": "GEOID18",
+  "elevationUnit": "metre",
+  "nominalSpacingM": 1,
+  "collectionDates": [
+    "2021-05-12",
+    "2021-05-21"
+  ],
+  "source": "NYC 2021 classified LiDAR; prototype TIN from ground and model-key points; metres NAVD88/GEOID18",
+  "interpolation": {
+    "method": "linear-TIN",
+    "classes": [
+      2,
+      8
+    ],
+    "excludeWithheld": true,
+    "maxTriangleEdgeM": 10.0,
+    "maxCircumradiusM": 5.0,
+    "maxNearestPointM": 3.0,
+    "outsideSupport": "NoData",
+    "coincidentXY": "observed upper median height"
+  },
+  "coverage": {
+    "supportedCells": 104102,
+    "totalCells": 168596,
+    "supportedPercent": 61.74642340269045
+  },
+  "limits": [
+    "Experimental historical terrain, not surveyed current ground or first-floor elevation.",
+    "Short gaps are interpolated. Unsupported ground remains unknown.",
+    "Support thresholds are prototype parameters, not an accuracy specification."
+  ]
+}
