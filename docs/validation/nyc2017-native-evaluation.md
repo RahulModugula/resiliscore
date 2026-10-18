@@ -4,6 +4,8 @@ Evaluated 2026-10-18 around Murray Hill building `1112075`, labeled `2 AVENUE` i
 
 **Decision: the native 2017 bare-earth DEM is the preferred historical replacement candidate for this block, with conditions. It is not verified present-day ground, and switching to it will not remove every depression.** Application terrain and rendering are unchanged by this evaluation.
 
+Later investigation found a separate [2021 classified LiDAR source](nyc2021-evaluation.md). The recommendation above compares the 2017 products with the older USGS terrain; it does not establish 2017 as the newest available acquisition. The 2021 investigation is the next source decision.
+
 The [comparison figure](nyc2017-native-evaluation.png) shows matched terrain maps, source differences, distance to ground returns, and profiles through two disputed locations. [Results and input checksums](nyc2017-native-evaluation.json) and a [compact evidence archive](nyc2017-native-evidence.zip) accompany it.
 
 ## What was evaluated

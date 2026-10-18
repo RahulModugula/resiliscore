@@ -1,0 +1,585 @@
+{
+  "date": "2026-10-18",
+  "selectedBuildingId": "1112075",
+  "scope": "Murray Hill historical-source comparison; no application source change",
+  "matchedSamples": 168596,
+  "queryHaloM": 56.98896839132067,
+  "retainedGroundAndKeyPoints": 2065330,
+  "sourceFilesTotalBytes": 829729520,
+  "source": {
+    "boundsLngLat": [
+      -73.9784,
+      40.7415,
+      -73.9717,
+      40.7459
+    ],
+    "boundsStatePlaneFeet": [
+      [
+        990235.1422642602,
+        209425.8026523066
+      ],
+      [
+        992092.1625689198,
+        211029.39168954192
+      ]
+    ],
+    "tiles": [
+      {
+        "tile": "990210.las",
+        "url": "ftp://ftp.gis.ny.gov/elevation/LIDAR/NYC_2021/990210.las",
+        "sizeBytes": 475295539,
+        "mdtm": "213 20210909195348",
+        "sha256": "2047e5e7bca4b24f1b8761a7922c35ad26b08cb153a39c75f8e50c766c96268e",
+        "headerSha256": "2efe07c210d7a856ff37567ccb2199811a08cc515281917f742ba89c398154ff",
+        "pointCount": 15812467,
+        "classCounts": {
+          "1": 4045067,
+          "2": 3846601,
+          "3": 117837,
+          "4": 346583,
+          "5": 1831591,
+          "6": 4941037,
+          "7": 32857,
+          "8": 322612,
+          "9": 64400,
+          "18": 263882
+        },
+        "retainedGroundAndKeyPoints": 1411996,
+        "scales": [
+          0.00025,
+          0.00025,
+          0.00025
+        ],
+        "offsets": [
+          991250.0002,
+          211250.0,
+          0.0
+        ],
+        "boundsMaxMinXYZFeet": [
+          992499.99995,
+          990000.00095,
+          212499.999,
+          210000.0,
+          7746.033,
+          -75.334
+        ],
+        "gpsRangeInRetainedPoints": [
+          305138714.53564304,
+          305581323.9063221
+        ],
+        "globalEncoding": 17,
+        "creationDayYear": [
+          140,
+          2021
+        ],
+        "retainedGroundGPSDatesUTC": [
+          "2021-05-15T18:31:36.535643+00:00",
+          "2021-05-20T21:28:25.906322+00:00"
+        ],
+        "pointDataEnd": 474374385,
+        "trailingBytes": 921154,
+        "evlrStart": 474374385,
+        "evlrCount": 263
+      },
+      {
+        "tile": "990207.las",
+        "url": "ftp://ftp.gis.ny.gov/elevation/LIDAR/NYC_2021/990207.las",
+        "sizeBytes": 354433981,
+        "mdtm": "213 20210909213500",
+        "sha256": "9df8f361a9774eeaff19a3cc53c55b44d20bd28b08e29846780ec656e80e5056",
+        "headerSha256": "b2944dd37ace83e16925ce8886cc6157c9c2eacb77ba456d78f7bae408600c97",
+        "pointCount": 11791065,
+        "classCounts": {
+          "1": 2769048,
+          "2": 3062082,
+          "3": 105475,
+          "4": 272906,
+          "5": 1374891,
+          "6": 3444624,
+          "7": 29794,
+          "8": 248522,
+          "9": 297623,
+          "18": 186100
+        },
+        "retainedGroundAndKeyPoints": 653334,
+        "scales": [
+          0.00025,
+          0.00025,
+          0.00025
+        ],
+        "offsets": [
+          991250.0002,
+          208750.0,
+          0.0
+        ],
+        "boundsMaxMinXYZFeet": [
+          992499.90695,
+          990000.00095,
+          209999.999,
+          207500.0,
+          7735.809,
+          -67.569
+        ],
+        "gpsRangeInRetainedPoints": [
+          305138718.9558742,
+          305565382.7788644
+        ],
+        "globalEncoding": 17,
+        "creationDayYear": [
+          135,
+          2021
+        ],
+        "retainedGroundGPSDatesUTC": [
+          "2021-05-15T18:31:40.955874+00:00",
+          "2021-05-20T17:02:44.778864+00:00"
+        ],
+        "pointDataEnd": 353732325,
+        "trailingBytes": 701656,
+        "evlrStart": 353732325,
+        "evlrCount": 243
+      }
+    ]
+  },
+  "support": {
+    "groundOnly": {
+      "withinM_percent": {
+        "0.5": 55.70654108045267,
+        "1": 60.57972905644262,
+        "2": 65.89064983748132,
+        "5": 77.08961066691974,
+        "10": 90.1984625969774
+      },
+      "maxDistanceM": 32.01337821516982,
+      "changeFrom2017PointCloud_bothWithinHalfMetre": {
+        "count": 86183,
+        "percentiles_0_1_5_50_95_99_100": [
+          -5.455915461749978,
+          -0.5085700718591971,
+          -0.06677652347209966,
+          0.011873674896376585,
+          0.09914854637804198,
+          0.4130776247120217,
+          10.801330113809254
+        ],
+        "absolutePercentiles_50_90_95_99": [
+          0.028019006118960466,
+          0.08654034291563484,
+          0.16055901119897076,
+          0.7453648532106519
+        ],
+        "absoluteOver1m": 636,
+        "absoluteOver3m": 378
+      },
+      "changeFrom2017DEM_2021WithinHalfMetre": {
+        "count": 93919,
+        "percentiles_0_1_5_50_95_99_100": [
+          -5.454711569896772,
+          -0.5728056558924394,
+          -0.07223760611156375,
+          0.012192303437341678,
+          0.24018293268825291,
+          2.456308771134861,
+          10.788417704734579
+        ],
+        "absolutePercentiles_50_90_95_99": [
+          0.028346317166265678,
+          0.13258832563807701,
+          0.46543060411255066,
+          3.1338565063941353
+        ],
+        "absoluteOver1m": 2934,
+        "absoluteOver3m": 1010
+      }
+    },
+    "groundAndKey": {
+      "withinM_percent": {
+        "0.5": 57.23564022871243,
+        "1": 61.66694346247835,
+        "2": 66.72993428076586,
+        "5": 77.6863033523927,
+        "10": 90.47901492324849
+      },
+      "maxDistanceM": 31.63006259818434,
+      "changeFrom2017PointCloud_bothWithinHalfMetre": {
+        "count": 88090,
+        "percentiles_0_1_5_50_95_99_100": [
+          -5.4707211513613565,
+          -0.5353590990372561,
+          -0.07341749375403898,
+          0.011634173883335652,
+          0.10426694209546779,
+          0.4349476547268472,
+          10.801330113809254
+        ],
+        "absolutePercentiles_50_90_95_99": [
+          0.02867580850064222,
+          0.09177040258302244,
+          0.1760394846405501,
+          0.7891734743453879
+        ],
+        "absoluteOver1m": 702,
+        "absoluteOver3m": 399
+      },
+      "changeFrom2017DEM_2021WithinHalfMetre": {
+        "count": 96497,
+        "percentiles_0_1_5_50_95_99_100": [
+          -5.4751332339944945,
+          -0.6187695164291696,
+          -0.08107680867461386,
+          0.01219208252015136,
+          0.2600563172952507,
+          2.4545959921621936,
+          10.788417704734579
+        ],
+        "absolutePercentiles_50_90_95_99": [
+          0.02926071899507221,
+          0.14599952688064538,
+          0.48188960332388364,
+          3.1395313672643823
+        ],
+        "absoluteOver1m": 3061,
+        "absoluteOver3m": 1041
+      }
+    }
+  },
+  "probes": {
+    "older_usgs_pit": {
+      "lonLat": [
+        -73.97249300533004,
+        40.74487191784359
+      ],
+      "native2017M": 2.4871729278370664,
+      "classes": {
+        "groundOnly": {
+          "radiiM": {
+            "1": {
+              "count": 38,
+              "heightPercentiles_0_50_100M": [
+                2.8081280162560325,
+                2.861163322326645,
+                2.903225806451613
+              ],
+              "pointSourceIds": {
+                "114": 9,
+                "113": 11,
+                "49": 11,
+                "48": 7
+              }
+            },
+            "2": {
+              "count": 133,
+              "heightPercentiles_0_50_100M": [
+                2.784048768097536,
+                2.8590297180594364,
+                2.93248666497333
+              ],
+              "pointSourceIds": {
+                "114": 32,
+                "49": 42,
+                "113": 34,
+                "48": 25
+              }
+            },
+            "5": {
+              "count": 760,
+              "heightPercentiles_0_50_100M": [
+                2.4466344932689865,
+                2.831292862585725,
+                2.9596139192278383
+              ],
+              "pointSourceIds": {
+                "113": 208,
+                "49": 212,
+                "114": 193,
+                "48": 147
+              }
+            }
+          },
+          "nearestDistanceM": 0.15104670305313844,
+          "nearestHeightM": 2.833731267462535
+        },
+        "groundAndKey": {
+          "radiiM": {
+            "1": {
+              "count": 43,
+              "heightPercentiles_0_50_100M": [
+                2.787706375412751,
+                2.860553721107442,
+                2.903225806451613
+              ],
+              "pointSourceIds": {
+                "114": 11,
+                "113": 12,
+                "49": 13,
+                "48": 7
+              }
+            },
+            "2": {
+              "count": 143,
+              "heightPercentiles_0_50_100M": [
+                2.784048768097536,
+                2.857810515621031,
+                2.93248666497333
+              ],
+              "pointSourceIds": {
+                "114": 35,
+                "49": 46,
+                "113": 36,
+                "48": 26
+              }
+            },
+            "5": {
+              "count": 835,
+              "heightPercentiles_0_50_100M": [
+                2.41249682499365,
+                2.834340868681737,
+                2.981254762509525
+              ],
+              "pointSourceIds": {
+                "113": 222,
+                "49": 228,
+                "114": 222,
+                "48": 163
+              }
+            }
+          },
+          "nearestDistanceM": 0.1126791630600773,
+          "nearestHeightM": 2.787706375412751
+        },
+        "lowNoise": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            }
+          },
+          "nearestDistanceM": 6.822800363035745,
+          "nearestHeightM": 1.8345948691897382
+        }
+      }
+    },
+    "2017_depression": {
+      "lonLat": [
+        -73.97495797901215,
+        40.7425999087431
+      ],
+      "native2017M": -4.614681334007443,
+      "classes": {
+        "groundOnly": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 373,
+              "heightPercentiles_0_50_100M": [
+                6.113690627381255,
+                6.184709169418339,
+                6.276149352298704
+              ],
+              "pointSourceIds": {
+                "49": 102,
+                "48": 81,
+                "114": 111,
+                "113": 79
+              }
+            }
+          },
+          "nearestDistanceM": 2.460075810588379,
+          "nearestHeightM": 6.139293878587757
+        },
+        "groundAndKey": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 397,
+              "heightPercentiles_0_50_100M": [
+                6.113690627381255,
+                6.184404368808737,
+                6.276149352298704
+              ],
+              "pointSourceIds": {
+                "49": 108,
+                "48": 84,
+                "113": 87,
+                "114": 118
+              }
+            }
+          },
+          "nearestDistanceM": 2.460075810588379,
+          "nearestHeightM": 6.139293878587757
+        },
+        "lowNoise": {
+          "radiiM": {
+            "1": {
+              "count": 29,
+              "heightPercentiles_0_50_100M": [
+                -4.683566167132334,
+                -4.634493268986538,
+                -3.4853949707899416
+              ],
+              "pointSourceIds": {
+                "114": 13,
+                "48": 4,
+                "49": 12
+              }
+            },
+            "2": {
+              "count": 118,
+              "heightPercentiles_0_50_100M": [
+                -4.683566167132334,
+                -4.6091948183896365,
+                -3.236982473964948
+              ],
+              "pointSourceIds": {
+                "114": 52,
+                "49": 42,
+                "48": 24
+              }
+            },
+            "5": {
+              "count": 578,
+              "heightPercentiles_0_50_100M": [
+                -4.683566167132334,
+                -4.452374904749809,
+                2.8504953009906018
+              ],
+              "pointSourceIds": {
+                "113": 11,
+                "114": 243,
+                "49": 204,
+                "48": 120
+              }
+            }
+          },
+          "nearestDistanceM": 0.2121763980441637,
+          "nearestHeightM": -4.634493268986538
+        }
+      }
+    },
+    "selected_building": {
+      "lonLat": [
+        -73.9754964,
+        40.7439658
+      ],
+      "native2017M": 4.608585182288772,
+      "classes": {
+        "groundOnly": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            }
+          },
+          "nearestDistanceM": 11.556932186084879,
+          "nearestHeightM": 5.028600457200914
+        },
+        "groundAndKey": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            }
+          },
+          "nearestDistanceM": 11.556932186084879,
+          "nearestHeightM": 5.028600457200914
+        },
+        "lowNoise": {
+          "radiiM": {
+            "1": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "2": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            },
+            "5": {
+              "count": 0,
+              "heightPercentiles_0_50_100M": null,
+              "pointSourceIds": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "sourceDocumentation": {
+    "path": "nyc2021-provenance.json",
+    "sha256": "4e90b08960bc582eeb09cd4723bf1bcb32ccc005d1e7c5a0d13398f0e585a693"
+  },
+  "comparisonArchivesSha256": {
+    "nyc2017-native-evidence.zip": "d5273314c56a25cde314f18c76e6bc0722a5d0fa8ec8efedbf336642467200dc",
+    "elevation-audit-1112075.zip": "74216caa55d9f7d9b2755c684e6861624831c82185f6a5723771b758338d1037"
+  },
+  "limits": [
+    "A classification difference does not establish physical ground change or independent survey accuracy.",
+    "The 2021 support grid contains nearest observed point heights, not a released or validated DEM. No unsupported interpolation is displayed as ground.",
+    "Class 8 is retained as a separate sensitivity case because the survey report validates classes 2 and 8 together.",
+    "The 2017 and 2021 point distributions use NAVD88/GEOID18; the native 2017 DEM uses GEOID12B. No geoid-realization correction was applied to the DEM comparison.",
+    "The sampled 2021 data dates from May 2021 and is not a present-day survey. Building-centre ground remains unobserved.",
+    "Public FTP access does not establish a redistribution license. No unambiguous 2021 raw-data license was found."
+  ],
+  "inputSha256": {
+    "990207.las.2017_depression.npz": "0cf3676fb2a10529ff604684fca41c9632582a65867d0e4524a38bca9cf13dc8",
+    "990207.las.header.bin": "b2944dd37ace83e16925ce8886cc6157c9c2eacb77ba456d78f7bae408600c97",
+    "990207.las.wkt": "dd68dd1d900e97e0fb4d58201c9779a769c9a29bc144aad3abbaf1ce59ab548b",
+    "990210.las.header.bin": "2efe07c210d7a856ff37567ccb2199811a08cc515281917f742ba89c398154ff",
+    "990210.las.older_usgs_pit.npz": "3b23e8f741e1490387fd21f3dc1eba483538a4edccd7bc92d0e288e420d9ddf0",
+    "990210.las.selected_building.npz": "690090c28d2033bc83c999f8465c5408fcebe7f5a32f839f325d985b489a1f59",
+    "990210.las.wkt": "dd68dd1d900e97e0fb4d58201c9779a769c9a29bc144aad3abbaf1ce59ab548b",
+    "ground-support2021.npz": "702e239e3940f3f1ef3a905f1bb59d053f855a819c58c3d298abac5614a9397a",
+    "stream-manifest.json": "e3d2b221ab534435037af725b1f594d8c060eceb199171433ade2085355a7a71"
+  }
+}
