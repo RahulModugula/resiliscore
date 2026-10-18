@@ -32,6 +32,16 @@ export function buildingGroundRange(building: Building, terrain: TerrainGrid) {
   return { minM: known ? minM : null, maxM: known ? maxM : null, known, total };
 }
 
+/** Conflicting observations cannot support a valid solid extrusion. Retain the sourced height in data. */
+export function blockBuildingPlacement(building: Building, terrain: TerrainGrid) {
+  const range = buildingGroundRange(building, terrain);
+  const groundM = range.minM ?? building.groundElevationM;
+  const roofM = groundM !== null && building.heightM !== null ? groundM + building.heightM + .2 : null;
+  const conflict = roofM !== null && range.maxM !== null && range.maxM > roofM;
+  const sampled = sampleBuildingPerimeter(building, terrain.raster?.nominalSpacingM ?? 2);
+  return { geometryBuilding: conflict ? { ...sampled, heightM: null } : sampled, range, groundM, roofM, conflict };
+}
+
 export function terrainRange(terrain: TerrainGrid) {
   let minM = Infinity, maxM = -Infinity;
   for (const height of terrain.elevationsM) if (height !== null) { minM = Math.min(minM, height); maxM = Math.max(maxM, height); }

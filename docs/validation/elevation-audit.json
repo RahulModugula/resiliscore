@@ -1,0 +1,219 @@
+{
+  "date": "2026-10-18",
+  "scope": "Independent ground-elevation accuracy audit for Murray Hill building 1112075, labeled 2 AVENUE; additional Manhattan spot checks.",
+  "conclusion": "Raster decoding and rendering are internally consistent. The underlying historical terrain is not verified current ground; local source disagreement and a separate extrusion conflict are confirmed.",
+  "independentReview": {
+    "performed": true,
+    "readOnly": true,
+    "role": "Audit source data, provenance, sampling, datum, and renderer assumptions independently from the implementation agent."
+  },
+  "sourceDates": {
+    "selectedBuildingCentre": {
+      "usgsObjectId": 88859,
+      "project": "NY_CMPG_2013",
+      "collectionStart": "2013-08-06",
+      "collectionEnd": "2014-04-21",
+      "sourceValueM": 4.64001,
+      "catalogRequest": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/query?f=json&where=OBJECTID%3D88859&outFields=OBJECTID%2CName%2Ctitle%2CStartDate%2CEndDate%2CVerticalDatum&returnGeometry=false"
+    },
+    "caution": "Retrieval/export date is not collection date. A newer comparison product is not surveyed present-day ground truth."
+  },
+  "matchedBlockComparison": {
+    "retrievedAt": "2026-10-18T14:37:27.951566+00:00",
+    "bounds": [
+      -73.9777192104311,
+      40.742045335867296,
+      -73.97237451011833,
+      40.74537282121308
+    ],
+    "requestedSize": [
+      452,
+      373
+    ],
+    "displaySpacingM": 1,
+    "sourceWarning": "NYS2017 is an independent historical comparison, not surveyed ground truth. Product processing can differ.",
+    "usgs": {
+      "requestUrl": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?f=json&bbox=-73.977725148987%2C40.742040851385696%2C-73.97236857156243%2C40.74537730569468&bboxSR=4326&imageSR=4326&size=452%2C373&format=tiff&pixelType=F32&renderingRule=%7B%22rasterFunction%22%3A+%22None%22%7D&interpolation=RSP_NearestNeighbor&adjustAspectRatio=false&mosaicRule=%7B%22mosaicMethod%22%3A+%22esriMosaicLockRaster%22%2C+%22lockRasterIds%22%3A+%5B34803%2C+48017%2C+91112%2C+98316%2C+36417%2C+20981%2C+21809%2C+30939%2C+31132%2C+38316%2C+40892%2C+66988%2C+88859%2C+89904%2C+104980%5D%2C+%22mosaicOperation%22%3A+%22MT_FIRST%22%7D",
+      "response": {
+        "href": "https://elevation.nationalmap.gov/arcgis/rest/directories/elevation_output/3DEPElevation_ImageServer/_ags_f8695ace_b6ac_428a_9647_79d68209339c.tif",
+        "width": 452,
+        "height": 373,
+        "extent": {
+          "xmin": -73.977725148987,
+          "ymin": 40.742040851385696,
+          "xmax": -73.97236857156243,
+          "ymax": 40.74537730569468,
+          "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+          }
+        },
+        "scale": 0
+      },
+      "sha256": "6e53b81ff86db3698beb2d10a1379f67dde3e454a6f8c2a4137adb51a7831abe",
+      "rasterPath": "usgs.tif",
+      "min": {
+        "point": [
+          -73.97241004948496,
+          40.744818248337275
+        ],
+        "value": -3.379903554916382
+      },
+      "max": {
+        "point": [
+          -73.9767830076037,
+          40.74204532384456
+        ],
+        "value": 11.290034294128418
+      },
+      "percentiles": [
+        -3.379903554916382,
+        1.8200206756591797,
+        2.330009698867798,
+        5.309999465942383,
+        8.830008506774902,
+        10.360008239746094,
+        11.290034294128418
+      ],
+      "adjacentDifferencesOver1m": 1313,
+      "adjacentDifferencesOver2m": 427
+    },
+    "nys2017": {
+      "requestUrl": "https://elevation.its.ny.gov/arcgis/rest/services/NYC_TopoBathymetric_2017_1_meter/ImageServer/exportImage?f=json&bbox=-73.977725148987%2C40.742040851385696%2C-73.97236857156243%2C40.74537730569468&bboxSR=4326&imageSR=4326&size=452%2C373&format=tiff&pixelType=F32&renderingRule=%7B%22rasterFunction%22%3A+%22None%22%7D&interpolation=RSP_NearestNeighbor&adjustAspectRatio=false",
+      "response": {
+        "href": "http://elevation.its.ny.gov/arcgis/rest/directories/arcgisoutput/NYC_TopoBathymetric_2017_1_meter_ImageServer/_ags_0bfaa915_b45c_4cab_aadc_621da89cb22e.tif",
+        "width": 452,
+        "height": 373,
+        "extent": {
+          "xmin": -73.977725148987,
+          "ymin": 40.742040851385696,
+          "xmax": -73.97236857156243,
+          "ymax": 40.74537730569468,
+          "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+          }
+        },
+        "scale": 0
+      },
+      "sha256": "68e913674ce8f5c61d87278520ac208d76b2079cdd1f33112719ea422881f79a",
+      "rasterPath": "nys2017.tif",
+      "min": {
+        "point": [
+          -73.97517129404233,
+          40.74231367137611
+        ],
+        "value": -4.709159851074219
+      },
+      "max": {
+        "point": [
+          -73.97677115676869,
+          40.74204532384456
+        ],
+        "value": 11.393424034118652
+      },
+      "percentiles": [
+        -4.709159851074219,
+        1.8531839847564697,
+        2.2951440811157227,
+        5.093207836151123,
+        8.854439735412598,
+        10.411968231201172,
+        11.393424034118652
+      ],
+      "adjacentDifferencesOver1m": 819,
+      "adjacentDifferencesOver2m": 266
+    },
+    "difference_NYS_minus_USGS": {
+      "percentileOrder": [
+        0,
+        1,
+        5,
+        50,
+        95,
+        99,
+        100
+      ],
+      "percentiles": [
+        -10.844303607940674,
+        -5.3834204316139225,
+        -0.9025577902793884,
+        0.0025207996368408203,
+        0.3325132727622986,
+        1.1561652541160383,
+        6.004621744155884
+      ],
+      "absOver1m": 10041,
+      "absOver3m": 4459,
+      "validSamples": 168596,
+      "largestPositive": {
+        "point": [
+          -73.97249300533004,
+          40.74487191784359
+        ],
+        "USGS": -3.1699817180633545,
+        "NYS2017": 2.8346400260925293
+      },
+      "largestNegative": {
+        "point": [
+          -73.97495797901215,
+          40.7425999087431
+        ],
+        "USGS": 6.190007209777832,
+        "NYS2017": -4.654296398162842
+      }
+    }
+  },
+  "otherSpotChecks": [
+    {
+      "point": [
+        -74.0012359,
+        40.7559848
+      ],
+      "USGS_M": -26.0898,
+      "NYS2017_M": -0.0792
+    },
+    {
+      "point": [
+        -74.0126379,
+        40.7125476
+      ],
+      "USGS_M": -17.11,
+      "NYS2017_M": -4.4806
+    }
+  ],
+  "rendererCheck": {
+    "fixture": "frontend/tests/fixtures/elevation/usgs-block-441.tif",
+    "verticesChecked": 121257,
+    "allFinite": true,
+    "maximumHeightDifferenceFromRawRasterM": 0.0011022578708528297,
+    "interpretation": "No global vertical scale, row reversal or decoder error was found in this check."
+  },
+  "placementConflict": {
+    "buildingId": "308707",
+    "minimumPerimeterM": -0.21496901786387557,
+    "maximumPerimeterM": 22.733202664948273,
+    "storedHeightM": 21.21,
+    "previousRoofM": 21.195030212402344,
+    "previousMaximumWallBaseM": 22.73320198059082,
+    "independentCachedOverviewScan": {
+      "conflictingBuildings": 64,
+      "totalBuildings": 44935,
+      "caveat": "Uses cached 10m terrain, not all native 1m exports. Count is an audit observation, not a universal classification."
+    },
+    "correction": "Withhold a solid extrusion when supported ground exceeds the roof. Retain footprint, source height and assessment; flag the selected conflict."
+  },
+  "sources": [
+    "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "https://elevation.its.ny.gov/arcgis/rest/services/NYC_TopoBathymetric_2017_1_meter/ImageServer/info/iteminfo",
+    "https://storymaps.arcgis.com/stories/f6758ce6248645e2859de5448019185e",
+    "https://www.fisheries.noaa.gov/inport/item/64732/"
+  ],
+  "limits": [
+    "Source differences can reflect processing, historical excavation, real retaining walls, tunnel approaches or classification/interpolation artifacts. These comparisons do not establish which individual disputed sample is true.",
+    "Blanket smoothing, depression filling, and silently replacing sources would not validate the terrain. Raw DEM samples are retained.",
+    "Current classified LiDAR or surveyed spot heights are needed to validate disputed locations against present-day ground."
+  ],
+  "evidenceArchive": "elevation-audit-1112075.zip",
+  "comparisonFigure": "elevation-audit-1112075.png"
+}

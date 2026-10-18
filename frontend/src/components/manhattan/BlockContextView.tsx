@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { loadBuildingContext, type BlockContext } from "@/lib/manhattan/blockContext";
-import { buildingGroundRange, terrainRange } from "@/lib/manhattan/blockElevation";
+import { blockBuildingPlacement, terrainRange } from "@/lib/manhattan/blockElevation";
 import { loadDetailedElevation } from "@/lib/manhattan/detailedElevation";
 import styles from "./BlockContextView.module.css";
 
@@ -38,7 +38,8 @@ export function BlockContextView({property,onAddressResolved}:{property:{id:stri
   if(error) return <section className={styles.panel} aria-label="Building block context"><div className={styles.status}><h2>Building block context unavailable</h2><p role="status">{error}. Your risk assessment remains available.</p><button className="secondary-button" onClick={()=>setRetry(r=>r+1)}>Retry block context</button></div></section>;
   if(!context) return <section className={styles.panel} aria-label="Building block context"><p className={styles.status} role="status">Loading the selected building, neighboring streets and measured elevation…</p></section>;
   const {minM:min,maxM:max}=terrainRange(context.terrain);
-  const ground=buildingGroundRange(context.selected,context.terrain);
+  const placement=blockBuildingPlacement(context.selected,context.terrain);
+  const ground=placement.range;
   const elevation=ground.minM;
   const fine=detailed?.id===id && detailed.status==="ready";
   const streetNames=[...new Set(context.streets.map(s=>s.name))].sort();
@@ -46,16 +47,18 @@ export function BlockContextView({property,onAddressResolved}:{property:{id:stri
   return <section className={styles.panel} aria-label="Building block context">
     <div className={styles.heading}><h2>{context.selected.address??"Address unavailable"}</h2><span>{context.taxBlock ? context.wholeBlock ? `Tax block ${Number(context.taxBlock.slice(1))} and adjoining streets` : `Local part of tax block ${Number(context.taxBlock.slice(1))}` : "Approximate one-block vicinity"}</span></div>
     <div className={styles.elevationStatus} role="status" data-testid="block-elevation-status"><span>{fine ? `${context.terrain.raster!.nominalSpacingM.toFixed(1)} m ground grid · USGS 3DEP` : "10 m cached ground grid · USGS 3DEP"}{detailed?.status==="loading" ? " · Loading finer terrain…" : !fine ? " · Finer terrain unavailable; cached elevations retained." : ""}</span>{detailed?.status==="fallback" && <button className="text-button" onClick={()=>setDetailRetry(value=>value+1)}>Retry finer terrain</button>}</div>
+    <p className={styles.qualityNote}>Historical terrain can retain pits, spikes and construction changes. Grid spacing is not vertical accuracy.</p>
+    {placement.conflict && <p className={styles.qualityNote} role="status">Ground samples exceed this building’s recorded height. Its footprint is shown; the 3D height needs review.</p>}
     <Scene context={context}/>
     <dl className={styles.measurements}>
       <div><dt>Selected ground elevation</dt><dd>{groundText}</dd></div>
       <div><dt>Building height above ground</dt><dd>{context.selected.heightM===null ? "Unknown" : `${context.selected.heightM.toFixed(1)} m`}</dd></div>
       <div><dt>Block ground elevation</dt><dd>{min!==null && max!==null ? <span className={styles.legend}><span>{min.toFixed(1)} m</span><span className={styles.ramp} aria-hidden="true"/><span>{max.toFixed(1)} m</span></span> : "Unknown"}</dd></div>
     </dl>
-    <p className={styles.nearby}>Ground at the building base: {ground.minM===null ? "Unknown" : `${ground.minM.toFixed(1)}–${ground.maxM!.toFixed(1)} m NAVD88 along the sampled footprint`}.{ground.known<ground.total ? " Some perimeter samples are unavailable; this is a partial range." : ""} Building height is retained above the lowest supported ground. First-floor elevation remains unknown.</p>
+    <p className={styles.nearby}>Ground at the building base: {ground.minM===null ? "Unknown" : `${ground.minM.toFixed(1)}–${ground.maxM!.toFixed(1)} m NAVD88 along the sampled footprint`}.{ground.known<ground.total ? " Some perimeter samples are unavailable; this is a partial range." : ""} {placement.conflict ? "The supplied height is retained in the assessment; conflicting terrain prevents a 3D extrusion." : "Building height is retained above the lowest supported ground."} First-floor elevation remains unknown.</p>
     <p className={styles.nearby}>Nearby streets: {streetNames.slice(0,4).join(" · ")||"No mapped at-grade streets"}{streetNames.length>4 ? ` · +${streetNames.length-4} in source details` : ""}</p>
     <details className={styles.details}><summary>{context.buildings.length} mapped buildings · {streetNames.length} neighboring streets · Source details</summary>
-      <p>The selected building is cyan. Ground and buildings are shown at true scale. Ground elevation is metres relative to NAVD88. The selected ground value is the lowest supported perimeter sample, not the footprint centre or a first-floor measurement. Building heights remain above the lowest supported ground; long walls follow sampled terrain. The DEM represents bare earth and does not measure roof shape or current construction. Missing elevation samples leave gaps. Map elevation is context, not certified freeboard or a risk-model input.</p>
+      <p>The selected building is cyan. Ground and buildings are shown at true scale. Ground elevation is metres relative to NAVD88. The selected ground value is the lowest supported perimeter sample, not the footprint centre or a first-floor measurement. Building heights remain above the lowest supported ground; long walls follow sampled terrain. Buildings with conflicting ground and height observations are shown as footprints. The DEM represents bare earth and does not measure roof shape or current construction. Missing elevation samples leave gaps. Map elevation is context, not certified freeboard or a risk-model input.</p>
       <p>Streets: {streetNames.join(" · ")||"No street centerlines in this extent"}.</p>
       <ul aria-label="Surrounding building addresses">{context.buildings.map(building=><li key={building.id}>{building.id===context.selected.id ? "Selected: " : ""}{building.address??"Address unavailable"} · {building.bin ? `BIN ${building.bin}` : `Source ID ${building.id}`}</li>)}</ul>
       <p><a href="https://data.cityofnewyork.us/d/64uk-42ks" target="_blank" rel="noreferrer">NYC DCP PLUTO tax-lot addresses</a> join by exact BBL. Buildings on one lot may share its primary address. <a href="https://data.cityofnewyork.us/d/inkn-q76z" target="_blank" rel="noreferrer">NYC OTI street centerlines</a> use source widths when supplied and thin centerlines otherwise; ribbons do not establish curb boundaries. Only constructed at-grade segments are shown; bridges and tunnels are omitted.</p>

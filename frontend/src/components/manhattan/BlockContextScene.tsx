@@ -4,8 +4,8 @@ import { Component, useEffect, useMemo, useRef, useState, type ReactNode, type R
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { CameraControls } from "@react-three/drei";
 import { DoubleSide, EdgesGeometry, Vector3 } from "three";
-import { buildingGeometry, cameraFrame, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
-import { buildingGroundRange, sampleBuildingPerimeter, terrainRange } from "@/lib/manhattan/blockElevation";
+import { buildingGeometry, cameraFrame, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
+import { blockBuildingPlacement, buildingGroundRange, terrainRange } from "@/lib/manhattan/blockElevation";
 import { colorTerrain, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
 import type { BlockContext } from "@/lib/manhattan/blockContext";
 import type { Neighborhood } from "@/lib/manhattan/types";
@@ -37,8 +37,9 @@ function Block({context}:{context:BlockContext}) {
     const rectangle:Neighborhood={id:"context",name:"Block",type:"0",center:[(w+e)/2,(s+n)/2],bounds:[w,s,e,n],geometry:{type:"Polygon",coordinates:[[[w,s],[e,s],[e,n],[w,n],[w,s]]]}};
     const {minM,maxM}=terrainRange(context.terrain);
     const land=colorTerrain(terrainGeometry(context.terrain,[rectangle]),minM??0,maxM??0);
-    const options={terrain:context.terrain,verticalScale:1,groundAt:(b:BlockContext["selected"])=>buildingGroundRange(b,context.terrain).minM??b.groundElevationM};
-    const prepared=context.buildings.map(building=>sampleBuildingPerimeter(building,context.terrain.raster?.nominalSpacingM??2));
+    const placements=new Map(context.buildings.map(building=>[building.id,blockBuildingPlacement(building,context.terrain)]));
+    const options={terrain:context.terrain,verticalScale:1,groundAt:(b:BlockContext["selected"])=>placements.get(b.id)!.groundM};
+    const prepared=[...placements.values()].map(placement=>placement.geometryBuilding);
     const buildings=buildingGeometry(prepared.filter(b=>b.id!==context.selected.id),options).geometry;
     const selected=buildingGeometry(prepared.filter(b=>b.id===context.selected.id),options).geometry;
     return {land,buildings,selected,selectedEdges:new EdgesGeometry(selected),streets:streetGeometry(context.streets,context.terrain,context.bounds)};
@@ -67,10 +68,13 @@ function contextStreetLabels(context:BlockContext) {
 
 /** DOM labels share the workspace React root, including when terrain replaces geometry. */
 function ProjectedLabels({context,marker,streetMarkers,labels}:{context:BlockContext;marker:RefObject<HTMLSpanElement|null>;streetMarkers:RefObject<Map<string,HTMLSpanElement>>;labels:ReturnType<typeof contextStreetLabels>}) {
-  const anchors=useMemo(()=>[
-    {id:null,point:new Vector3(...worldPoint(context.selected.center,(buildingGroundRange(context.selected,context.terrain).minM??context.selected.groundElevationM??0)+(context.selected.heightM??0)+2))},
+  const anchors=useMemo(()=>{
+    const placement=blockBuildingPlacement(context.selected,context.terrain);
+    const labelHeight=placement.conflict || placement.roofM===null ? terrainElevation(context.selected.center,context.terrain)??placement.groundM??0 : placement.roofM;
+    return [
+    {id:null,point:new Vector3(...worldPoint(context.selected.center,labelHeight+2))},
     ...labels.map(label=>({id:label.id,point:new Vector3(...worldPoint(label.point,label.elevation+3))})),
-  ],[context,labels]);
+  ];},[context,labels]);
   const projected=useRef(new Vector3());
   useFrame(({camera,size})=>{
     for(const anchor of anchors) {

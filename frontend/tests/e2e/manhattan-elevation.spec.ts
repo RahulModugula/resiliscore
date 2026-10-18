@@ -40,6 +40,14 @@ test(`${viewport.name}: native USGS terrain upgrades the real building view and 
   await page.mouse.down();
   await page.mouse.move(visibleBox.x+box.width*.7,visibleBox.y+box.height*.55,{steps:20});
   await page.mouse.up();
+  const marker=block.getByTestId("selected-building-marker");
+  let previous=await marker.boundingBox(), stable=0;
+  await expect.poll(async()=>{
+    const current=await marker.boundingBox();
+    stable=current && previous && Math.hypot(current.x-previous.x,current.y-previous.y)<.5 ? stable+1 : 0;
+    previous=current;
+    return stable;
+  },{message:"orbit damping settles before comparing refinement",intervals:[100,200,300]}).toBeGreaterThanOrEqual(3);
   await page.screenshot({path:test.info().outputPath("cached-terrain.png"),fullPage:true});
   const before=await block.getByTestId("selected-building-marker").boundingBox();
   release();
@@ -56,3 +64,19 @@ test(`${viewport.name}: native USGS terrain upgrades the real building view and 
   expect(errors).toEqual([]);
 });
 }
+
+test("a real footprint with conflicting ground is flagged without changing recorded height",async({page})=>{
+  const overview:NeighborhoodDetail=JSON.parse(await readFile("public/manhattan/overview.json","utf8"));
+  const building=overview.buildings.find(b=>b.id==="308707")!;
+  const result=await assessManhattanProperty(building,{preferLive:false});
+  await page.addInitScript(({id,result})=>sessionStorage.setItem(`resiliscore:manhattan:assessment:v1:${id}`,JSON.stringify({savedAt:Date.now(),result})),{id:building.id,result});
+  await page.route("https://elevation.nationalmap.gov/**",route=>route.abort("internetdisconnected"));
+  const errors:string[]=[];page.on("pageerror",error=>errors.push(error.message));
+  await page.goto(`/assessment?property=${building.id}`);
+  const block=page.getByRole("region",{name:"Building block context"});
+  await expect(block.getByRole("status").filter({hasText:"Ground samples exceed this building"})).toBeVisible();
+  await expect(block.getByText("21.2 m",{exact:true})).toBeVisible();
+  await expect(block.getByText(/Historical terrain can retain pits/)).toBeVisible();
+  await expect(block.getByTestId("selected-building-marker")).toHaveAttribute("data-property-id",building.id);
+  expect(errors).toEqual([]);
+});

@@ -3,7 +3,8 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { writeArrayBuffer } from "geotiff";
-import { buildingGroundRange, sampleBuildingPerimeter, terrainRange } from "../src/lib/manhattan/blockElevation";
+import { blockBuildingPlacement, buildingGroundRange, sampleBuildingPerimeter, terrainRange } from "../src/lib/manhattan/blockElevation";
+import { loadBuildingContext } from "../src/lib/manhattan/blockContext";
 import { decodeElevation, elevationRequest, loadDetailedElevation } from "../src/lib/manhattan/detailedElevation";
 import { buildingGeometry, terrainElevation } from "../src/lib/manhattan/sceneGeometry";
 import { unprojectMeters } from "../src/lib/manhattan/geo";
@@ -34,6 +35,25 @@ test("walls resolve a hill between original corners and unknown perimeter ground
   assert.equal(buildingGroundRange(building,{...grid,elevationsM:[null,null,null,null]}).minM,null);
   assert.equal(terrainRange({...grid,elevationsM:[null,null,null,null]}).maxM,null);
   geometry.dispose();
+});
+
+test("conflicting ground and building heights produce a draped footprint instead of inverted walls",async()=>{
+  const original=globalThis.fetch;
+  globalThis.fetch=async path=>new Response(await readFile(new URL(`../public${path}`,import.meta.url)));
+  try {
+    const overview=JSON.parse(await readFile(new URL("../public/manhattan/overview.json",import.meta.url),"utf8"));
+    const building:Building=overview.buildings.find((b:Building)=>b.id==="308707");
+    const context=await loadBuildingContext(building);
+    const placement=blockBuildingPlacement(context.selected,context.terrain);
+    assert.ok(placement.range.maxM!>placement.roofM!,"recorded building must reproduce the wall/roof conflict");
+    assert.equal(placement.conflict,true);
+    assert.equal(placement.geometryBuilding.heightM,null);
+    assert.equal(context.selected.heightM,21.21,"the sourced height must remain unchanged");
+    const geometry=buildingGeometry([placement.geometryBuilding],{terrain:context.terrain,groundAt:()=>placement.groundM}).geometry;
+    const perimeterCount=placement.geometryBuilding.footprint.reduce((sum,ring)=>sum+ring.length-1,0);
+    assert.equal(geometry.getAttribute("position").count,perimeterCount,"conflicting geometry must contain no wall bases");
+    geometry.dispose();
+  } finally {globalThis.fetch=original;}
 });
 
 test("GeoTIFF affine transform, row orientation, zero and NoData survive decoding",async()=>{
