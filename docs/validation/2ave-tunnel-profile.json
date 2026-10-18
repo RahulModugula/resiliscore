@@ -1,0 +1,190 @@
+{
+  "buildingId": "412518",
+  "bin": "1085643",
+  "source": "USGS pinned 1m block export",
+  "sourceBounds": [
+    -73.9751062824915,
+    40.74564258773929,
+    -73.973205871287,
+    40.74699162745069
+  ],
+  "streetProfiles": [
+    {
+      "id": "4042:0",
+      "name": "E  36 ST",
+      "widthM": 9.14,
+      "maxCross": 0.27765689539984706,
+      "maxCenterStep": 0.09301533361742642,
+      "lowest": 6.306712436489185
+    },
+    {
+      "id": "4045:0",
+      "name": "E  36 ST",
+      "widthM": 12.19,
+      "maxCross": 0.17722591011866395,
+      "maxCenterStep": 0.2062872988048614,
+      "lowest": 4.13927642915951
+    },
+    {
+      "id": "79430:0",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 9.14,
+      "maxCross": 5.8599934516577274,
+      "maxCenterStep": 4.256383554841422,
+      "lowest": -2.300350539481731
+    },
+    {
+      "id": "79430:1",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 9.14,
+      "maxCross": 0.1925387728388075,
+      "maxCenterStep": 0.227261780609886,
+      "lowest": 2.2968287889311125
+    },
+    {
+      "id": "4044:0",
+      "name": "E  36 ST",
+      "widthM": 6.1,
+      "maxCross": 0.2993088715885541,
+      "maxCenterStep": 0.2912477929714328,
+      "lowest": 4.561781698876671
+    },
+    {
+      "id": "79435:0",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 3.05,
+      "maxCross": 0.15572131383274534,
+      "maxCenterStep": 0.27127561035747494,
+      "lowest": 3.7481067722451535
+    },
+    {
+      "id": "2115:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 0.1347188962026813,
+      "maxCenterStep": 0.001749787693264615,
+      "lowest": 7.952282214508124
+    },
+    {
+      "id": "79436:0",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 7.92,
+      "maxCross": 0.35623346089021,
+      "maxCenterStep": 0.24722928914105236,
+      "lowest": 3.7481067722451535
+    },
+    {
+      "id": "23420:0",
+      "name": "E  37 ST",
+      "widthM": 9.14,
+      "maxCross": 0.0801415886381136,
+      "maxCenterStep": 0.024948767392503512,
+      "lowest": 7.929083234808885
+    },
+    {
+      "id": "79434:0",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 7.32,
+      "maxCross": 0.05101001094023605,
+      "maxCenterStep": 0.287509874790818,
+      "lowest": 2.1402568237974005
+    },
+    {
+      "id": "23419:0",
+      "name": "E  37 ST",
+      "widthM": 12.19,
+      "maxCross": 0.20933661005006687,
+      "maxCenterStep": 0.317447901990092,
+      "lowest": 5.057798799148117
+    },
+    {
+      "id": "79427:0",
+      "name": "QUEENS MIDTOWN TUNL  APPROACH",
+      "widthM": 9.14,
+      "maxCross": 0.20904336768746212,
+      "maxCenterStep": 0.1087588713111245,
+      "lowest": 4.87505711770853
+    },
+    {
+      "id": "79432:0",
+      "name": "QUEENS MIDTOWN TUNL  APPROACH",
+      "widthM": 9.75,
+      "maxCross": 1.0589699430284103,
+      "maxCenterStep": 0.09149242046630679,
+      "lowest": 4.3335605041816585
+    },
+    {
+      "id": "158403:0",
+      "name": "QUEENS MIDTOWN TUNL  APPROACH",
+      "widthM": 5.49,
+      "maxCross": 0.3048850457278838,
+      "maxCenterStep": 0.14341909990191137,
+      "lowest": 3.7481067722451535
+    },
+    {
+      "id": "158383:0",
+      "name": "E  37 ST",
+      "widthM": 12.19,
+      "maxCross": 0.09130878883023907,
+      "maxCenterStep": 0.07879419388370135,
+      "lowest": 4.979004605264415
+    },
+    {
+      "id": "2208:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 0.9648815860021788,
+      "maxCenterStep": 6.4048974740299,
+      "lowest": 1.2067177171312125
+    },
+    {
+      "id": "2209:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 0.09248878798592308,
+      "maxCenterStep": 0.33996572197399644,
+      "lowest": 6.448371604442824
+    },
+    {
+      "id": "79426:0",
+      "name": "QUEENS MIDTOWN TUNL  ENTRANCE",
+      "widthM": 9.14,
+      "maxCross": 0.3447937108223007,
+      "maxCenterStep": 4.700437225111531,
+      "lowest": -2.3295670290360344
+    },
+    {
+      "id": "2207:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 0.9585003338121593,
+      "maxCenterStep": 0.02522434021803699,
+      "lowest": 1.1712168098978715
+    },
+    {
+      "id": "2114:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 1.0308533636668136,
+      "maxCenterStep": 0.01586168021776002,
+      "lowest": 1.142230824936063
+    },
+    {
+      "id": "2113:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 1.3806118008013106,
+      "maxCenterStep": 3.8412221647414615,
+      "lowest": 1.142230824936063
+    },
+    {
+      "id": "2210:0",
+      "name": "2 AVE",
+      "widthM": 21.34,
+      "maxCross": 0.23092328867741063,
+      "maxCenterStep": 0.1945726980831166,
+      "lowest": 6.066179756073757
+    }
+  ],
+  "interpretation": "Ground-only sampling cannot place a roadway above an underlying excavation. Profile jumps identify the rendering failure, not independently surveyed road slopes."
+}

@@ -8,6 +8,7 @@ import { loadBuildingContext } from "../src/lib/manhattan/blockContext";
 import { decodeElevation, elevationRequest, loadDetailedElevation } from "../src/lib/manhattan/detailedElevation";
 import { buildingGeometry, terrainElevation } from "../src/lib/manhattan/sceneGeometry";
 import { unprojectMeters } from "../src/lib/manhattan/geo";
+import { flatFootprintGeometry } from "../src/lib/manhattan/blockGeometry";
 import type { Bounds, Building, TerrainGrid } from "../src/lib/manhattan/types";
 
 const grid: TerrainGrid = { bounds: [...unprojectMeters([0,0]),...unprojectMeters([100,100])], width:2,height:2,elevationsM:[0,10,20,30],source:"Measured slope" };
@@ -37,7 +38,7 @@ test("walls resolve a hill between original corners and unknown perimeter ground
   geometry.dispose();
 });
 
-test("conflicting ground and building heights produce a draped footprint instead of inverted walls",async()=>{
+test("conflicting ground and building heights retain a flat outline without invented walls or a folded footprint",async()=>{
   const original=globalThis.fetch;
   globalThis.fetch=async path=>new Response(await readFile(new URL(`../public${path}`,import.meta.url)));
   try {
@@ -49,9 +50,12 @@ test("conflicting ground and building heights produce a draped footprint instead
     assert.equal(placement.conflict,true);
     assert.equal(placement.geometryBuilding.heightM,null);
     assert.equal(context.selected.heightM,21.21,"the sourced height must remain unchanged");
-    const geometry=buildingGeometry([placement.geometryBuilding],{terrain:context.terrain,groundAt:()=>placement.groundM}).geometry;
-    const perimeterCount=placement.geometryBuilding.footprint.reduce((sum,ring)=>sum+ring.length-1,0);
-    assert.equal(geometry.getAttribute("position").count,perimeterCount,"conflicting geometry must contain no wall bases");
+    const reference=building.groundElevationM??placement.range.maxM!;
+    const geometry=flatFootprintGeometry([{building,elevationM:reference}]);
+    const positions=geometry.getAttribute("position");
+    assert.ok(positions.count>0);
+    assert.equal(geometry.getIndex(),null,"the unresolved footprint must have no filled faces");
+    assert.ok(Array.from({length:positions.count},(_,i)=>positions.getY(i)).every(h=>Math.abs(h-reference-.2)<1e-5));
     geometry.dispose();
   } finally {globalThis.fetch=original;}
 });

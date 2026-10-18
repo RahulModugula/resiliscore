@@ -1,6 +1,7 @@
 import { loadManhattan, loadMapAsset, loadNeighborhood } from "./data";
 import { projectLngLat, unprojectMeters } from "./geo";
 import type { Bounds, Building, LngLat, TerrainGrid } from "./types";
+import { loadTransportDecks, type TransportDeck } from "./transportStructures";
 
 export type AddressIndex = Record<string, string>;
 export interface ContextStreet { id: string; name: string; coordinates: LngLat[]; widthM: number | null }
@@ -12,6 +13,7 @@ export interface BlockContext {
   bounds: Bounds;
   taxBlock: string | null;
   wholeBlock: boolean;
+  transportDecks?: TransportDeck[];
 }
 
 /** BBL is borough(1), block(5), lot(4). Never match an address by proximity. */
@@ -93,5 +95,6 @@ export async function loadBuildingContext(property: {id: string; neighborhoodId:
     return extent;
   },[...bounds]);
   const terrain=cropTerrain(measured,terrainBounds);
-  return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock,wholeBlock };
+  const transportDecks=await loadTransportDecks(bounds,signal);
+  return { selected:resolved,buildings,streets:selectContextStreets(streets,bounds),terrain,bounds,taxBlock,wholeBlock,transportDecks };
 }

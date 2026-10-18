@@ -1,0 +1,26 @@
+{
+  "bounds": [
+    -73.97510624583374,
+    40.7456426173222,
+    -73.97320590794476,
+    40.74699159786778
+  ],
+  "requestUrl": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage?f=json&bbox=-73.97511218438964%2C40.74563812072038%2C-73.97319996938886%2C40.7469960944696&bboxSR=4326&imageSR=4326&size=162%2C152&format=tiff&pixelType=F32&renderingRule=%7B%22rasterFunction%22%3A%22None%22%7D&mosaicRule=%7B%22mosaicMethod%22%3A%22esriMosaicLockRaster%22%2C%22lockRasterIds%22%3A%5B34803%2C48017%2C91112%2C98316%2C36417%2C20981%2C21809%2C30939%2C31132%2C38316%2C40892%2C66988%2C88859%2C89904%2C104980%5D%2C%22mosaicOperation%22%3A%22MT_FIRST%22%7D&interpolation=RSP_NearestNeighbor&adjustAspectRatio=false",
+  "response": {
+    "href": "https://elevation.nationalmap.gov/arcgis/rest/directories/elevation_output/3DEPElevation_ImageServer/_ags_0a2d65fd_3475_4115_8145_3e18a22e7f5f.tif",
+    "width": 162,
+    "height": 152,
+    "extent": {
+      "xmin": -73.97511218438964,
+      "ymin": 40.74563812072038,
+      "xmax": -73.97319996938886,
+      "ymax": 40.7469960944696,
+      "spatialReference": {
+        "wkid": 4326,
+        "latestWkid": 4326
+      }
+    },
+    "scale": 0
+  },
+  "sha256": "4457680e7dd5fbea5eb523b6e65661f2ad0966247f15c1a89a5bde67e4e8287d"
+}

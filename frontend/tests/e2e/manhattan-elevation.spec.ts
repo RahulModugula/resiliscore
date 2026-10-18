@@ -80,3 +80,52 @@ test("a real footprint with conflicting ground is flagged without changing recor
   await expect(block.getByTestId("selected-building-marker")).toHaveAttribute("data-property-id",building.id);
   expect(errors).toEqual([]);
 });
+
+for(const viewport of [{name:"desktop",width:1440,height:1000},{name:"mobile",width:390,height:844}]) {
+test(`${viewport.name}: exact tunnel crossing retains a separate bridge deck and unresolved building outline`,async({page})=>{
+  test.setTimeout(60000);
+  await page.setViewportSize(viewport);
+  const errors:string[]=[];page.on("pageerror",error=>errors.push(error.message));
+  const detail:NeighborhoodDetail=JSON.parse(await readFile("public/manhattan/neighborhoods/MN0603.json","utf8"));
+  const building=detail.buildings.find(b=>b.id==="412518")!;
+  const result=await assessManhattanProperty(building,{preferLive:false});
+  await page.addInitScript(result=>sessionStorage.setItem("resiliscore:manhattan:assessment:v1:412518",JSON.stringify({savedAt:Date.now(),result})),result);
+  const response=JSON.parse(await readFile("tests/fixtures/elevation/usgs-block-412518.json","utf8")).response;
+  const bundle=JSON.parse(await readFile("public/manhattan/context/transport-decks.json","utf8"));
+  let deckVisible=false;
+  await page.route("**/manhattan/context/transport-decks.json",route=>route.fulfill({json:{...bundle,decks:deckVisible ? bundle.decks : []}}));
+  await page.route("https://elevation.nationalmap.gov/**",route=>route.request().url().includes("/exportImage?") ? route.fulfill({json:response}) : route.fulfill({path:"tests/fixtures/elevation/usgs-block-412518.tif",contentType:"image/tiff"}));
+  const block=page.getByRole("region",{name:"Building block context"});
+  const marker=block.getByTestId("selected-building-marker");
+  for(const corrected of [false,true]) {
+    deckVisible=corrected;
+    await page.goto("/assessment?property=412518");
+    await expect(block.getByTestId("block-elevation-status")).toContainText("1.0 m ground grid · USGS 3DEP");
+    await expect(marker).toBeVisible();
+    await expect(marker).toHaveAttribute("data-property-id","412518");
+    await expect(block.getByText("5.8 m",{exact:true})).toBeVisible();
+    await expect(block.getByText("Unresolved across ground levels",{exact:true})).toBeVisible();
+    await expect(block.getByText(/Ground at the building base:/)).toContainText("recorded 6.1 m source base");
+    await expect(block.getByRole("button",{name:"Try 2021 terrain"})).toHaveCount(0);
+    if(corrected) await expect(block.getByText(/Bridge decks use separate NYC planimetric heights/)).toBeVisible();
+    await page.waitForTimeout(800);
+    await block.locator("canvas").screenshot({path:test.info().outputPath(corrected ? "sourced-bridge.png" : "bare-earth-road-drape.png")});
+  }
+  const canvas=block.locator("canvas");
+  await canvas.scrollIntoViewIfNeeded();
+  const box=(await canvas.boundingBox())!;
+  await page.mouse.move(box.x+box.width*.4,box.y+box.height*.5);
+  await page.mouse.down();await page.mouse.move(box.x+box.width*.7,box.y+box.height*.5,{steps:15});await page.mouse.up();
+  await page.mouse.wheel(0,-80);
+  await page.waitForTimeout(1000);
+  await canvas.screenshot({path:test.info().outputPath("sourced-bridge-orbit.png")});
+  await block.getByRole("button",{name:"Reset block view"}).click();
+  await page.getByRole("button",{name:"Use light theme"}).click();
+  await page.getByRole("tab",{name:"Model Validation",exact:true}).click();
+  await page.getByRole("tab",{name:"Underwriting copilot",exact:true}).click();
+  await expect(block.getByText(/Bridge decks use separate NYC planimetric heights/)).toBeVisible();
+  await expect(marker).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect(errors).toEqual([]);
+});
+}

@@ -6,7 +6,7 @@ import { CameraControls } from "@react-three/drei";
 import { DoubleSide, EdgesGeometry, Vector3 } from "three";
 import { buildingGeometry, cameraFrame, terrainElevation, terrainGeometry, worldPoint } from "@/lib/manhattan/sceneGeometry";
 import { blockBuildingPlacement, buildingGroundRange, terrainRange } from "@/lib/manhattan/blockElevation";
-import { colorTerrain, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
+import { colorTerrain, flatFootprintGeometry, streetGeometry, streetLabelPosition } from "@/lib/manhattan/blockGeometry";
 import type { BlockContext } from "@/lib/manhattan/blockContext";
 import type { Neighborhood } from "@/lib/manhattan/types";
 import styles from "./BlockContextView.module.css";
@@ -39,10 +39,13 @@ function Block({context}:{context:BlockContext}) {
     const land=colorTerrain(terrainGeometry(context.terrain,[rectangle]),minM??0,maxM??0);
     const placements=new Map(context.buildings.map(building=>[building.id,blockBuildingPlacement(building,context.terrain)]));
     const options={terrain:context.terrain,verticalScale:1,groundAt:(b:BlockContext["selected"])=>placements.get(b.id)!.groundM};
-    const prepared=[...placements.values()].map(placement=>placement.geometryBuilding);
+    const prepared=[...placements.values()].filter(placement=>!placement.conflict).map(placement=>placement.geometryBuilding);
     const buildings=buildingGeometry(prepared.filter(b=>b.id!==context.selected.id),options).geometry;
     const selected=buildingGeometry(prepared.filter(b=>b.id===context.selected.id),options).geometry;
-    return {land,buildings,selected,selectedEdges:new EdgesGeometry(selected),streets:streetGeometry(context.streets,context.terrain,context.bounds)};
+    const outlines=context.buildings.filter(b=>placements.get(b.id)!.conflict).map(building=>({building,elevationM:building.groundElevationM??placements.get(building.id)!.range.maxM??0}));
+    return {land,buildings,selected,unresolved:flatFootprintGeometry(outlines.filter(row=>row.building.id!==context.selected.id)),
+      selectedEdges:placements.get(context.selected.id)!.conflict ? flatFootprintGeometry(outlines.filter(row=>row.building.id===context.selected.id)) : new EdgesGeometry(selected),
+      streets:streetGeometry(context.streets,context.terrain,context.bounds,context.transportDecks)};
   },[context]);
   useEffect(()=>()=>{Object.values(geometries).forEach(g=>g.dispose());},[geometries]);
   return <group>
@@ -50,6 +53,7 @@ function Block({context}:{context:BlockContext}) {
     <mesh geometry={geometries.streets}><meshStandardMaterial color="#34474e" roughness={1} side={DoubleSide}/></mesh>
     <mesh geometry={geometries.buildings}><meshStandardMaterial vertexColors roughness={1} side={DoubleSide}/></mesh>
     <mesh geometry={geometries.selected}><meshStandardMaterial color="#57d3df" roughness={.8} side={DoubleSide}/></mesh>
+    <lineSegments geometry={geometries.unresolved}><lineBasicMaterial color="#c8cebf"/></lineSegments>
     <lineSegments geometry={geometries.selectedEdges} renderOrder={5} raycast={()=>null}><lineBasicMaterial color="#57d3df" depthTest={false}/></lineSegments>
 
 
@@ -59,7 +63,7 @@ function contextStreetLabels(context:BlockContext) {
     const names=new Set<string>();
     return context.streets.flatMap(street=>{
       if(names.has(street.name)) return [];
-      const position=streetLabelPosition(street,context.terrain,context.bounds);
+      const position=streetLabelPosition(street,context.terrain,context.bounds,context.transportDecks);
       if(!position) return [];
       names.add(street.name);
       return [{id:street.id,name:street.name,...position}];
@@ -70,7 +74,7 @@ function contextStreetLabels(context:BlockContext) {
 function ProjectedLabels({context,marker,streetMarkers,labels}:{context:BlockContext;marker:RefObject<HTMLSpanElement|null>;streetMarkers:RefObject<Map<string,HTMLSpanElement>>;labels:ReturnType<typeof contextStreetLabels>}) {
   const anchors=useMemo(()=>{
     const placement=blockBuildingPlacement(context.selected,context.terrain);
-    const labelHeight=placement.conflict || placement.roofM===null ? terrainElevation(context.selected.center,context.terrain)??placement.groundM??0 : placement.roofM;
+    const labelHeight=placement.conflict ? context.selected.groundElevationM??placement.range.maxM??0 : placement.roofM===null ? terrainElevation(context.selected.center,context.terrain)??placement.groundM??0 : placement.roofM;
     return [
     {id:null,point:new Vector3(...worldPoint(context.selected.center,labelHeight+2))},
     ...labels.map(label=>({id:label.id,point:new Vector3(...worldPoint(label.point,label.elevation+3))})),
