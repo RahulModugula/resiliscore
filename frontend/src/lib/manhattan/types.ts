@@ -43,17 +43,17 @@ export interface TerrainGrid {
   elevationsM: (number | null)[];
   source: string;
   raster?: {
-    dataset: "USGS_3DEP_1M";
+    dataset: "USGS_3DEP_1M" | "NYC_2021_PROTOTYPE";
     horizontalCrs: "EPSG:4326";
     verticalDatum: "NAVD88";
     elevationUnit: "metre";
-    sourceResolutionM: number;
+    sourceResolutionM: number | null;
     nominalSpacingM: number;
     cellSizeDegrees: LngLat;
     extent: Bounds;
     sampleLocation: "pixel-center";
     rowOrder: "south-to-north";
-    resampling: "nearest-neighbor";
+    resampling: "nearest-neighbor" | "linear-TIN";
     quantizationM: number;
   };
 }

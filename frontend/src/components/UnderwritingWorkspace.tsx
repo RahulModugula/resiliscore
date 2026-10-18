@@ -40,9 +40,10 @@ export interface UnderwritingWorkspaceProps {
   assessmentSource?: "live" | "local";
   assessmentNotice?: string;
   initialBuildingDemo?: boolean;
+  initialTerrainPrototype?: boolean;
 }
 
-export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessmentSource, assessmentNotice, initialBuildingDemo = false }: UnderwritingWorkspaceProps = {}) {
+export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessmentSource, assessmentNotice, initialBuildingDemo = false, initialTerrainPrototype = false }: UnderwritingWorkspaceProps = {}) {
   const [contextAddress, setContextAddress] = useState<{ id: string; address: string | null } | null>(null);
   const resolveAddress = useCallback((address: string | null) => { if (selectedProperty) setContextAddress({ id: selectedProperty.id, address }); }, [selectedProperty]);
   const propertyTitle = selectedProperty ? contextAddress?.id === selectedProperty.id ? contextAddress.address ?? "Address unavailable" : selectedProperty.label : initialParcel?.parcel_identity.address;
@@ -51,6 +52,7 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
   const [attempt, setAttempt] = useState(0);
   const [tab, setTab] = useState(0);
   const [buildingDemo, setBuildingDemo] = useState(initialBuildingDemo);
+  const [terrainPrototype, setTerrainPrototype] = useState(initialTerrainPrototype);
   const [dark, setDark] = useState(true);
   const [live, setLive] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
@@ -164,7 +166,7 @@ export function UnderwritingWorkspace({ initialParcel, selectedProperty, assessm
       </>}
       <div role="tabpanel" id={`workspace-panel-${tab}`} aria-labelledby={`workspace-tab-${tab}`} className="tab-content">
         {tab === 3 ? <ModelValidationTab live={live} /> : tab === 2 ? isSelectedProperty ? <SelectedPropertyEvidence parcel={parcel} offline={offlineScreening} /> : <RegulatoryAuditTab parcel={parcel} simulated={selected.length > 0 || resolution !== "none"} /> : <>
-          <div className="workspace-grid"><div className="spatial-column">{selectedProperty ? <BlockContextView property={selectedProperty} onAddressResolved={resolveAddress} /> : <ParcelMapCanvas key={source} parcel={parcel} showIllustrativeContext={!isSelectedProperty} />}<NycLotPanel nyc={parcel.nyc} />{isSelectedProperty ? <SelectedPropertyMitigations parcel={parcel} offline={offlineScreening} contextOnly={tab === 0} /> : tab === 0 ? <FreeboardCrossSection hazard={parcel.public_hazard_layer} /> : <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} />}</div>{selectedProperty && buildingDemo ? <PropertyUnderwritingDemo parcel={baseline} buildingId={selectedProperty.id} /> : isSelectedProperty ? <SelectedPropertySummary parcel={parcel} offline={offlineScreening} /> : <ScoreGaugeCard parcel={parcel} localProjection={!isRemote && !local.error && (selected.length > 0 || resolution === "loaded")} simulated={selected.length > 0 || resolution === "loaded"} onAction={() => { if (bindable) setModal("receipt"); else setTab(1); }} />}</div>
+          <div className="workspace-grid"><div className="spatial-column">{selectedProperty ? <BlockContextView property={selectedProperty} onAddressResolved={resolveAddress} prototypeTerrain={terrainPrototype} onPrototypeTerrainChange={setTerrainPrototype} /> : <ParcelMapCanvas key={source} parcel={parcel} showIllustrativeContext={!isSelectedProperty} />}<NycLotPanel nyc={parcel.nyc} />{isSelectedProperty ? <SelectedPropertyMitigations parcel={parcel} offline={offlineScreening} contextOnly={tab === 0} /> : tab === 0 ? <FreeboardCrossSection hazard={parcel.public_hazard_layer} /> : <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} />}</div>{selectedProperty && buildingDemo ? <PropertyUnderwritingDemo parcel={baseline} buildingId={selectedProperty.id} /> : isSelectedProperty ? <SelectedPropertySummary parcel={parcel} offline={offlineScreening} /> : <ScoreGaugeCard parcel={parcel} localProjection={!isRemote && !local.error && (selected.length > 0 || resolution === "loaded")} simulated={selected.length > 0 || resolution === "loaded"} onAction={() => { if (bindable) setModal("receipt"); else setTab(1); }} />}</div>
           {tab === 0 && !isSelectedProperty && <MitigationDrawer scenarioId={address ? undefined : requestedScenario} baseline={baseline} projected={parcel} interactive={!address} selected={selected} onToggle={toggleAction} onReset={() => setSelected([])} compact />}
         </>}
       </div>

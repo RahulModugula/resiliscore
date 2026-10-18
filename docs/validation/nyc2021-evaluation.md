@@ -2,7 +2,7 @@
 
 Evaluated 2026-10-18 around Murray Hill building `1112075`, labeled `2 AVENUE` in the application. This follows the [native 2017 evaluation](nyc2017-native-evaluation.md).
 
-**Decision: the 2021 classified points are a stronger candidate for developing a newer historical ground layer. They are not a ready-made replacement DEM or verified current ground.** The application source, building geometry, camera, simulation and build/export configuration remain unchanged.
+**Decision: the 2021 classified points are a stronger candidate for developing a newer historical ground layer. They are not a ready-made replacement DEM or verified current ground.** This investigation did not change the application. The subsequent opt-in building-view implementation is documented in [the prototype validation](nyc2021-prototype.md).
 
 [Comparison figure](nyc2021-evaluation.png) · [Measurements and source hashes](nyc2021-evaluation.json) · [Compact reproducible evidence](nyc2021-evidence.zip)
 
